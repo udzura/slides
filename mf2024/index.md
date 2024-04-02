@@ -3,6 +3,7 @@ marp: true
 header: "mruby/edge 超入門"
 footer: "presentation by Uchio Kondo"
 theme: fukuokarb
+paginate: true
 ----
 
 <!--
@@ -51,7 +52,7 @@ class: normal
 
 ----
 <!--
-class: hero
+_class: hero
 -->
 
 # mruby/edgeとは
@@ -63,9 +64,28 @@ class: normal
 
 # mruby/edgeとは？
 
-- Rubyスクリプトをそのまま動くwasmのバイナリに固めて動かすためのVM
+- 一言で: **mrubyを動かすVM実装の一つ**
+- これがあると何が嬉しい
+  - RubyスクリプトをWebAssembly(wasm)のバイナリにコンパイルできる
 - Rustで書いた
 - あらゆる機能がないが、fibは動かせる
+
+----
+<!--
+class: imgright
+style: section.imgright h1 {width: 200%} section.imgright ul {width: 110%};
+-->
+
+# 世は大wasm時代を迎える
+
+- wasm発表が4つもある！すごい
+  - [ref on X](https://twitter.com/kateinoigakukun/status/1774838255827177472)
+- そのうち自分で基盤部分から  
+作った人は2名
+- @udzura は2日目やで
+  - この会場の人は応援に来てね！
+
+![bg right h:400](./tweet-wasm.png)
 
 ----
 
@@ -128,6 +148,24 @@ $ wasmedge --reactor fib.wasm fib 10
 
 ----
 
+# mruby/edge + mec の強み
+
+- Rubyのトップレベルメソッドをwasmバイナリ側で**export**できる
+- 何が嬉しい
+  - よりwasmらしいやり方で、関数をインタフェースに連携できる
+  - proxy-wasm のような特定のABIを満たして欲しい用途に対応できるかも
+  - Component Modelにも対応しやすいかも
+
+```javascript
+WebAssembly.instantiateStreaming(fetch("hello.wasm"), importObject).then(
+  (obj) => obj.instance.exports.hello(),
+);
+```
+
+import にももちろん対応予定
+
+----
+
 # mruby/edgeの仕組みagain
 
 - Rubyスクリプトをmruby bytecodeにコンパイルする（mrbcを使う）
@@ -144,7 +182,7 @@ $ wasmedge --reactor fib.wasm fib 10
 
 ----
 <!--
-class: hero
+_class: hero2
 -->
 
 # mruby/edge = mruby のbytecodeを実行できるVM
@@ -166,7 +204,11 @@ class: normal
 
 - CRubyが動くとは？
 - ざっくり言えば
-  - Rubyスクリプト→トークン→パースされたAST→CRubyのバイトコード→YARVでバイトコードを実行
+  - Rubyスクリプト
+  - →トークン
+  - →パースされたAST
+  - →CRubyのバイトコード
+  - →YARVでバイトコードを実行
 
 ----
 
@@ -328,7 +370,7 @@ function <test.lua:1,3> (4 instructions at 0x6000014c8100)
 ----
 
 <!--
-class: hero
+_class: hero
 -->
 
 # mrubyのバイトコード深掘り
@@ -392,12 +434,15 @@ $ ./sample_c/sample_no_scheduler ./sample_c/test.mrb
 ----
 
 <!--
-class: hero
+_class: hero
 -->
 
 # そして mruby/edge の話
 
 ----
+<!--
+_class: hero2
+-->
 
 # mruby/edge = (one of) mruby互換のVM
 
@@ -409,7 +454,7 @@ class: normal
 
 # recap: mruby/edge とは？
 
-- コア: mrubyを実行するためのRust製のVM
+- コア部分: mrubyを実行するためのRust製のVMである
 - mec（mruby/edge compiler） というフロントエンドcliも用意してる
   - mrubyのバイトコードと、mruby/edgeをwasmに固めて動かせる
     - このエコシステム一式を mruby/edge と呼んだりしちゃうかも
@@ -466,10 +511,10 @@ pub fn eval_insn1(vm: &mut VM, ...) -> Result<(), Error> {
 ----
 
 <!--
-class: hero
+_class: hero
 -->
 
-# …ここでLTの時間のはず…
+# …ここでLT終了時間のはず
 
 実際の内部実装の評価や自慢、諸々の成果物の披露はぜひRubyKaigi 沖縄で！
 （まだできてないところがた〜くさん）
