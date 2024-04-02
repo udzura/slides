@@ -1,0 +1,31 @@
+/* @theme rubykaigi2024 */
+
+@import 'default';
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+section h1 {
+    color:black;
+    font-family: "Dela Gothic One", sans-serif;
+    font-weight: 400;
+    font-style: normal;  
+}
+
+section p, section ul {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;  
+}
+section li {
+    list-style-image: url(./list2.png);
+    padding-left: 0.25em;
+    font-size: 130%;
+}
+
+section li ul li{
+    list-style-image: none;
+    list-style-type: "\2726";
+    padding-left: 0.4em;
+    padding-top: 0.15em;
+    font-size: 100%;
+}
