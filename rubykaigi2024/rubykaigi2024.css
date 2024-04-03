@@ -59,10 +59,12 @@ section li {
 
 section li::before {
     content: "";
+    position: relative;
+    top: -5px;
     border-color: transparent;
     border-width: 0 0 0px 52px;
     border-style: solid;
-    margin-right: 0.5em;
+    margin-right: 0.4em;
     background-color: transparent;
     background-image: url("./list1.png");
     vertical-align: middle;    
@@ -82,7 +84,6 @@ section li ul li{
     list-style-image: none;
     list-style-type: "\2726";
     margin-left: 1em;
-    
     padding-top: 0.15em;
     font-size: 90%;
 }
