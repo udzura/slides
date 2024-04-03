@@ -4,6 +4,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+section figure {
+    background-image: url(./rubykaigi2024-bgs-main.png);
+}
+
 section h1 {
     color:black;
     font-family: "Dela Gothic One", sans-serif;
@@ -62,12 +66,13 @@ section li::before {
     position: relative;
     top: -5px;
     border-color: transparent;
-    border-width: 0 0 0px 52px;
+    border-width: 0 0 0 50.5px;
     border-style: solid;
     margin-right: 0.4em;
     background-color: transparent;
-    background-image: url("./list1.png");
-    vertical-align: middle;    
+    background-image: url("./icon2-1028.svg");
+    background-repeat: repeat-x;
+    vertical-align: middle;
 }
 
 section ul li li::marker {
@@ -91,4 +96,11 @@ section li ul li{
 section img {
     float: right;
     margin-top: 5%;
+}
+
+section::after {
+    font-size: 14pt;
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
+    font-style: normal;  
 }

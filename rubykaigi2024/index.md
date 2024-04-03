@@ -1,6 +1,8 @@
 ----
 marp: true
 theme: rubykaigi2024
+paginate: true
+backgroundImage: url(./rubykaigi2024-bgs-main.png)
 ----
 
 ![bg](./rubykaigi2024-bgs.png)
@@ -8,11 +10,10 @@ theme: rubykaigi2024
 ----
 <!--
 _class: title
+_backgroundImage: url(./rubykaigi2024-bgs-title.png)
 -->
 
 # All about My Super Great Code
-
-![bg](./rubykaigi2024-bgs-title.png)
 
 ## Presentation by Uchio Kondo
 
@@ -20,8 +21,6 @@ _class: title
 <!--
 _class: normal
 -->
-
-![bg](./rubykaigi2024-bgs-main.png)
 
 # self.introduce!
 
@@ -33,8 +32,6 @@ _class: normal
 <!--
 _class: normal
 -->
-
-![bg](./rubykaigi2024-bgs-main.png)
 
 # Content.should( Be.more! ) !!1
 
@@ -51,8 +48,6 @@ _class: normal
 _class: normal
 -->
 
-![bg](./rubykaigi2024-bgs-main.png)
-
 # Why wasm is good
 
 * Run this code!
@@ -68,8 +63,6 @@ end
 _class: normal
 -->
 
-![bg](./rubykaigi2024-bgs-main.png)
-
 # Here's the Image, Niñas
 
 - Here is the desc
@@ -82,8 +75,6 @@ _class: normal
 _class: normal
 -->
 
-![bg](./rubykaigi2024-bgs-main.png)
-
 # Here's the Image #2, Niños
 
 - Here is the desc
@@ -94,17 +85,15 @@ _class: normal
 ----
 <!--
 _class: hero
+_backgroundImage: url(./rubykaigi2024-bgs-whiteback.png)
 -->
 
 # My first slide
 
-![bg](./rubykaigi2024-bgs-whiteback.png)
-
 ----
 <!--
 _class: hero
+_backgroundImage: url(./rubykaigi2024-bgs-yellowback.png)
 -->
 
 # My first slide v2
-
-![bg](./rubykaigi2024-bgs-yellowback.png)
