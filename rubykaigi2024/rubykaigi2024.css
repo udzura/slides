@@ -11,21 +11,83 @@ section h1 {
     font-style: normal;  
 }
 
+section.title h1 {
+    width: 63%;
+    font-size: 66px;
+    text-align: center;
+}
+
+section.title h2 {
+    width: 63%;
+    color:black;
+    font-family: "Dela Gothic One", sans-serif;
+    font-weight: 400;
+    font-size: 22pt;
+    text-align: center;
+}
+
+section.hero h1 {
+    font-size: 66px;
+    text-align: center;
+}
+
+section.normal h1 {
+    position: absolute;
+    top: 13%;
+}
+
 section p, section ul {
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     font-style: normal;  
 }
+
+section.normal ul {
+    position: absolute;
+    top: 29%;
+}
+
+section.normal ul ul {
+    position: relative;
+}
+
 section li {
-    list-style-image: url(./list2.png);
-    padding-left: 0.25em;
-    font-size: 130%;
+    list-style-type: none;
+    font-size: 125%;
+    margin-left: -1em;
+}
+
+section li::before {
+    content: "";
+    border-color: transparent;
+    border-width: 0 0 0px 52px;
+    border-style: solid;
+    margin-right: 0.5em;
+    background-color: transparent;
+    background-image: url("./list1.png");
+    vertical-align: middle;    
+}
+
+section ul li li::marker {
+    font-size: 110%;
+}
+
+section li ul li::before {
+    content: "";
+    border: none;
+    background-image: none;
 }
 
 section li ul li{
     list-style-image: none;
     list-style-type: "\2726";
-    padding-left: 0.4em;
+    margin-left: 1em;
+    
     padding-top: 0.15em;
-    font-size: 100%;
+    font-size: 90%;
+}
+
+section img {
+    float: right;
+    margin-top: 5%;
 }
