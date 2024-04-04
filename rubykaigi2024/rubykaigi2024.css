@@ -15,6 +15,15 @@ section h1 {
     font-style: normal;  
 }
 
+section h2 {
+    color:black;
+    margin-top: 4em;
+    text-indent: 0.3em;
+    font-family: "Poppins", sans-serif;
+    font-weight: 800;
+    font-style: bold;
+}
+
 section.title h1 {
     width: 63%;
     font-size: 66px;
@@ -35,7 +44,7 @@ section.hero h1 {
     text-align: center;
 }
 
-section.normal h1 {
+section.normal h1, section.normal2 h1 {
     position: absolute;
     top: 13%;
 }
@@ -46,7 +55,7 @@ section p, section ul {
     font-style: normal;  
 }
 
-section.normal ul {
+section.normal ul, section.normal2 ul{
     position: absolute;
     top: 29%;
 }
@@ -59,18 +68,20 @@ section li {
     list-style-type: none;
     font-size: 125%;
     margin-left: -1em;
+    line-height: 165%;
 }
 
 section li::before {
     content: "";
+    font-size: 45pt;
     position: relative;
-    top: -5px;
+    top: 5pt;
     border-color: transparent;
-    border-width: 0 0 0 50.5px;
+    border-width: 0 0 0 45.8pt;
     border-style: solid;
-    margin-right: 0.4em;
+    margin-right: 0.25em;
     background-color: transparent;
-    background-image: url("./icon2-1028.svg");
+    background-image: url("./icon2-1028-2.svg");
     background-repeat: repeat-x;
     vertical-align: middle;
 }
@@ -95,6 +106,7 @@ section li ul li{
 
 section img {
     float: right;
+    background-color: transparent;
     margin-top: 5%;
 }
 

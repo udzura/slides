@@ -13,7 +13,7 @@ _class: title
 _backgroundImage: url(./rubykaigi2024-bgs-title.png)
 -->
 
-# All about My Super Great Code
+# An mruby for WebAssembly
 
 ## Presentation by Uchio Kondo
 
@@ -22,41 +22,54 @@ _backgroundImage: url(./rubykaigi2024-bgs-title.png)
 _class: normal
 -->
 
+![w:480](./profile.png)
+
 # self.introduce!
 
-- Uchio Kondo: Infra Engineer @ Mirrativ, Inc.
-- from Fukuoka
-  - hello world!
+- Uchio Kondo (@udzura)
+- Infra Engineer @ Mirrativ, Inc.
+  - A livestreaming platform
+    for mobile games
+- FBC Advisor / Fukuoka.rb
+- Translator of "Learnig eBPF"
+
+
+----
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2024-bgs-yellowback.png)
+-->
+
+# mruby for WebAssembly
 
 ----
 <!--
 _class: normal
 -->
 
-# Content.should( Be.more! ) !!1
+# Ruby for WebAssembly(WASM)?
 
-- Uchio Kondo: Infra Engineer @ Mirrativ, Inc.
-- from Fukuoka
-  - hello world!
-- Fukuoka nice Ramens
-  - Hacchan ramen @ Yakuin
-  - Gaga @ Imaizumi
-  - Ryuu @ San-ga-Mori
+- It's `ruby.wasm`, You know.
+- A CRuby(MRI) That is compiled into wasm
+  - Using... **wasi-sdk**
+  - C-based code -> wasm
 
 ----
+
 <!--
-_class: normal
+_class: normal2
+style: section.normal2 h2 + ul { top: 66%; }
 -->
 
-# Why wasm is good
+# But for mruby?
 
-* Run this code!
+- I created yet another ruby for wasm...
+- Named "mruby/edge"
 
-```ruby
-def fib
-  return fib(n-1) + fib(n-2)
-end
-```
+## You should have 2 Questions...
+
+- Why "yet another" wasm ruby?
+- Why and How is it "mruby"?
 
 ----
 <!--
