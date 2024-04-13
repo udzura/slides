@@ -57,7 +57,7 @@ section p, section ul {
 
 section.normal ul, section.normal2 ul{
     position: absolute;
-    top: 29%;
+    top: 30.5%;
 }
 
 section.normal ul ul {
@@ -68,7 +68,7 @@ section li {
     list-style-type: none;
     font-size: 125%;
     margin-left: -1em;
-    line-height: 165%;
+    line-height: 185%;
 }
 
 section li::before {

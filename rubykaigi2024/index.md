@@ -26,11 +26,10 @@ _class: normal
 
 # self.introduce!
 
-- Uchio Kondo (@udzura)
+- Uchio Kondo
+  - from Fukuoka.rb
 - Infra Engineer @ Mirrativ, Inc.
-  - A livestreaming platform
-    for mobile games
-- FBC Advisor / Fukuoka.rb
+  - livestreaming & "live" gaming
 - Translator of "Learnig eBPF"
 
 
