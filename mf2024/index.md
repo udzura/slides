@@ -135,18 +135,34 @@ $ wasmedge --reactor fib.wasm fib 10
 ```
 
 ----
-
+<!--
+style: button { margin-top: 1em; font-size: 34pt; padding: 0.1em 1em;} input {width: 5em}
+-->
 # 動作デモ
 
-* fib.wasm の結果をalert
+<script type="text/javascript">
+  window.fire = function(e) {
+    WebAssembly.instantiateStreaming(fetch("./fib.wasm"), {})
+      .then(function (o) {
+        let value = document.getElementById("myValue").value;
+        let answer = o.instance.exports.fib(parseInt(value));
+        document.getElementById("myAnswer").style.backgroundColor = "#ffff00";
+        document.getElementById("myAnswer").value = answer;
+        // alert("answer: fib(" + value + ") = " + answer.toString());
+      }
+    );    
+  };
+  console.log("done load function");
+</script>
 
-<iframe src="./wasm.html" height="80px"></iframe>
+<button onclick="fire();">calc fib</button> 　　fib( <input id="myValue" type="text" value="20"> ) = <input id="myAnswer" type="text" value="?">
 <br>
 
 ```javascript
 WebAssembly.instantiateStreaming(fetch("./fib.wasm"), {}).then((o) => {
-    let answer = o.instance.exports.fib(20);
-    alert("answer: fib(20) = " + answer.toString());
+    let value = document.getElementById("myValue").value;
+    let answer = o.instance.exports.fib(parseInt(value));
+    document.getElementById("myAnswer").value = answer;
 });
 ```
 
@@ -165,18 +181,18 @@ WebAssembly.instantiateStreaming(fetch("./fib.wasm"), {}).then((o) => {
 # mruby/edge + mec の強み
 
 - Rubyのトップレベルメソッドをwasmバイナリ側で**export**できる
-- 何が嬉しい
-  - よりwasmらしいやり方で、関数をインタフェースに連携できる
-  - proxy-wasm のような特定のABIを満たして欲しい用途に対応できるかも
-  - Component Modelにも対応しやすいかも
 
 ```javascript
-WebAssembly.instantiateStreaming(fetch("hello.wasm"), importObject).then(
+WebAssembly.instantiateStreaming(fetch("hello.wasm"), importObj).then(
   (obj) => obj.instance.exports.hello(),
 );
 ```
 
-import にももちろん対応予定
+- 何が嬉しい
+  - よりwasmらしいやり方で、関数をインタフェースに連携できる
+  - proxy-wasm のような特定のABIを満たして欲しい用途に対応できるかも
+  - Component Modelにも対応しやすいかも
+  - import にももちろん対応予定
 
 ----
 
@@ -485,16 +501,15 @@ pub fn eval_insn1(vm: &mut VM, ...) -> Result<(), Error> {
     vm.pc += ilen;
     match opcode {
         OpCode::MOVE => {
-            if let Fetched::BB(a, b) = fetched {
-                let dst = *a as usize;
-                let src = *b as usize;
-                if let Some(val) = vm.regs.get(&src) {
-                    vm.regs.insert(dst, val.clone());
-                }
+            let (a, b) = fetched.as_bb()?;
+            let dst = a as usize;
+            let src = b as usize;
+            if let Some(val) = vm.regs.get(&src) {
+                vm.regs.insert(dst, val.clone());
             }
         }
-        OpCode::LOADI => { .... }
-        OpCode::JMP => { .... }　//....
+        OpCode::LOADL => {
+            let (a, b) = fetched.as_bb()?; //...
 ```
 
 ----
