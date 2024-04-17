@@ -80,8 +80,6 @@ style: section.imgright h1 {width: 200%} section.imgright ul {width: 110%};
 
 - wasm発表が4つもある！すごい
   - [ref on X](https://twitter.com/kateinoigakukun/status/1774838255827177472)
-- そのうち自分で基盤部分から  
-作った人は2名
 - @udzura は2日目やで
   - この会場の人は応援に来てね！
 
@@ -134,6 +132,22 @@ wasmedge で `fib` 関数を実行
 ```console
 $ wasmedge --reactor fib.wasm fib 10
 89
+```
+
+----
+
+# 動作デモ
+
+* fib.wasm の結果をalert
+
+<iframe src="./wasm.html" height="80px"></iframe>
+<br>
+
+```javascript
+WebAssembly.instantiateStreaming(fetch("./fib.wasm"), {}).then((o) => {
+    let answer = o.instance.exports.fib(20);
+    alert("answer: fib(20) = " + answer.toString());
+});
 ```
 
 ----
