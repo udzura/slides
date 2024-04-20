@@ -92,7 +92,7 @@ style: section.imgright h1 {width: 200%} section.imgright ul {width: 110%};
 - Rubyスクリプトをmruby bytecodeにコンパイルする（mrbcを使う）
 - それと別に、mruby bytecodeを評価するVMを用意する
 - mruby bytecodeとVMのコードをwasmのワンバイナリに固める
-- RBSファイルを指定して、どの関数をexportするか指定する
+- RBSファイルを指定して、どの関数をexportするか指定ができる
   - import は実装予定
 
 ----
@@ -121,8 +121,8 @@ def fib: (Integer) -> Integer
 # `mec` コマンドで「コンパイル」
 
 ```console
-$ cargo install --version 0.2.1 mec
-$ mec fib.rb
+$ cargo install --version 0.2.3 mec
+$ mec --no-wasi fib.rb
 $ file fib.wasm
 fib.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
 ```
@@ -189,9 +189,9 @@ WebAssembly.instantiateStreaming(fetch("hello.wasm"), importObj).then(
 ```
 
 - 何が嬉しい
-  - よりwasmらしいやり方で、関数をインタフェースに連携できる
+  - よりwasmらしい（？）使い方ができるように
   - proxy-wasm のような特定のABIを満たして欲しい用途に対応できるかも
-  - Component Modelにも対応しやすいかも
+  - Component Modelにも対応できるようにしたい
   - import にももちろん対応予定
 
 ----
@@ -201,7 +201,7 @@ WebAssembly.instantiateStreaming(fetch("hello.wasm"), importObj).then(
 - Rubyスクリプトをmruby bytecodeにコンパイルする（mrbcを使う）
 - それと別に、**mruby bytecodeを評価するVM**を用意する
 - mruby bytecodeとVMのコードを**wasmのワンバイナリに**固める
-- RBSファイルを指定して、どの関数をexportするか指定する
+- RBSファイルを指定して、どの関数をexportするか指定ができる
   - import は実装予定
 
 ----
