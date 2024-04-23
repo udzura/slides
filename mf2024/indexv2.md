@@ -1,7 +1,11 @@
 ----
 marp: true
+title: mruby/edge 超入門 + VMって何？
+description: 於 Money Forward Tech LT大会 vol.1 (2024/4/23)
 header: "mruby/edge 超入門"
 footer: "presentation by Uchio Kondo"
+image: https://udzura.jp/slides/2024/mf-fukuoka-tech-lt/indexv2.png
+
 theme: fukuokarb
 paginate: true
 ----
