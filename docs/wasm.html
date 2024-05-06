@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <title>My first wasm</title>
+    <script async type="text/javascript">
+      const wasiImport = {
+	  fd_write: function(id, iovs_ptr, iovs_len, nwritten_ptr) { return 0; },
+	  random_get: function(buf, buf_len) { return; },
+	  environ_get: function(environ, environ_buf) { return 0; },
+	  environ_sizes_get: function(environ_count, environ_size) { return 0; },
+	  proc_exit: function(exit_code) { return 0; }
+      };
+      // もしwasi有効ならここをコメントアウト
+      // const importObject = {
+      // 	  imports: {},
+      // 	  "wasi_snapshot_preview1": wasiImport,
+      // };
+      const importObject = {
+	      imports: {},
+      };
+
+      WebAssembly.instantiateStreaming(fetch("./fib.wasm"), importObject).then(
+	  (obj) => {
+	      let answer = obj.instance.exports.fib(20);
+	      alert("answer: fib(20) = " + answer.toString());
+	      console.log("the mruby/edge works!");
+	  },
+      );
+    </script>
+  </head>
+  <body>
+    <h1>Wasm working on browser</h1>
+    
+  </body>
+</html>
