@@ -64,6 +64,11 @@ section.normal ul ul {
     position: relative;
 }
 
+section.sample2 pre {
+    position: relative;
+    top: 20%;
+}
+
 section li {
     list-style-type: none;
     font-size: 125%;
@@ -116,3 +121,5 @@ section::after {
     font-weight: 200;
     font-style: normal;  
 }
+
+button { font-size: 30pt; }
