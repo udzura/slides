@@ -69,6 +69,11 @@ section.sample2 pre {
     top: 20%;
 }
 
+section.pre-with-desc pre {
+    position: relative;
+    top: 20%;
+}
+
 section li {
     list-style-type: none;
     font-size: 125%;
