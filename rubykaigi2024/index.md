@@ -30,7 +30,7 @@ _class: normal
   - from Fukuoka.rb
 - Infra Engineer @ Mirrativ, Inc.
   - livestreaming & "live" gaming
-- Translator of "Learnig eBPF"
+- Translator of "Learning eBPF"
 
 
 ----
@@ -40,6 +40,31 @@ _backgroundImage: url(./rubykaigi2024-bgs-yellowback.png)
 -->
 
 # Ruby and WebAssembly
+
+----
+<!--
+_class: normal
+-->
+
+# Code sample background rule:
+
+```ruby
+Ruby.has :red, :background
+```
+
+```javascript
+(window.JavaScript || TypeScript).then("yellow");
+```
+
+```rust
+Rust::<BackGround>::purple().unwrap();
+```
+
+```lua
+other_lang { "Lua" = green.background, "and" = so.on }
+```
+
+Other code or command sample has default gray back
 
 ----
 <!--
@@ -77,18 +102,18 @@ _backgroundImage: url(./rubykaigi2024-bgs-whiteback.png)
 <!--
 _class:
   - normal
-  - special1
+  - pre-top75
 -->
 
 # mruby/edge getting started
 
-- mruby/edge consists 2 components
+- mruby/edge consists of 2 components
   - mruby/edge "core" crate
   - the `mec` command (**m**ruby/**e**dge **c**ompiler)
   - Install `mec` first!
 
 ```
-$ cargo install --version 0.3.0 mec
+$ cargo install mec
 ```
 
 ----
@@ -210,8 +235,19 @@ _class: normal
 # A working demo on the slide
 
 <script type="text/javascript">
+  const wasiImport = {
+    fd_write: function(id, iovs_ptr, iovs_len, nwritten_ptr) { return 0; },
+    random_get: function(buf, buf_len) {},
+    clock_time_get: function(buf, buf_len) {},
+    environ_get: function(environ, environ_buf) { return 0; },
+    environ_sizes_get: function(environ_count, environ_size) { return 0; },
+    proc_exit: function(exit_code) { return 0; }
+  };
   window.fire = function(e) {
-    WebAssembly.instantiateStreaming(fetch("./fib.wasm"), {})
+    const importObject = {
+      "wasi_snapshot_preview1": wasiImport,
+	  };
+    WebAssembly.instantiateStreaming(fetch("./fib.wasm"), importObject)
       .then(function (o) {
         let value = document.getElementById("myValue").value;
         let answer = o.instance.exports.fib(parseInt(value));
@@ -298,66 +334,37 @@ _class: normal
 <!--
 _class:
   - normal
-  - two-sides
+  - logos
+-->
+
+# WebAssembly as a embedded config
+
+- e.g. some of middlewares supports
+wasm configuration
+  - envoy
+  - fluent-bit
+  - Open Policy Agent ...
+
+![w:200](./envoy.png)
+
+![w:200](./fluentbit.png)
+
+----
+<!--
+_class:
+  - normal
+  - two-samples
 -->
 
 # Both browsers and servers
 
-- As we have seen, one wasm binary can be executed both on browser and on terminal:
+- As we have seen, one wasm binary can be executed
+both on browser and on terminal:
 
-```
-$ wasmedge ./fib.wasm fib 20
-6765
-```
-
-![w:400 h:300](./dummy-image.png)
-
-----
-<!--
-_class: normal
--->
-
-# e.g. Server-side WASM embedding
-
-* wasmer's Go API example
-
-```golang
-// ... omitted import
-// go:embed fib.wasm
-var wasmBytes []byte
-func main() {
-  store := wasmer.NewStore(wasmer.NewEngine())
-  module, _ := wasmer.NewModule(store, wasmBytes)
-  importObject := wasmer.NewImportObject()
-  importObject.Register("env", map[string]wasmer.IntoExtern{"foo": fn})
-  instance, _ := wasmer.NewInstance(module, importObject)
-  addOne, _ := instance.Exports.GetFunction("add_one")
-  result, _ := addOne(41)
-}
-```
-
-----
-<!--
-_class: normal
--->
-
-# e.g. proxy-wasm
-
-```yaml
-http_filters:
-- name: envoy.filters.http.wasm
-  typed_config:
-    "@type": type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-    config:
-      name: "sample_envoy_filter"
-      root_id: "sample_envoy_filter"
-      vm_config:
-        vm_id: sample_envoy_filter
-        runtime: "envoy.wasm.runtime.v8"
-        code:
-          local:
-            filename: "/etc/filter.wasm" # Here!
-```
+| environment | sample |
+| ----------- | ------ |
+| Browser | ![h:100](./browser-fib.png) |
+| Terminal | ![h:100](./wasmedge-fib-sample.png) |
 
 ----
 <!--
@@ -379,7 +386,7 @@ _class: normal
 
 ```ruby
 # rk2024.rb
-def main(arg)
+def runit(arg)
   answer = arg + 42
   show_answer(answer)
 end
@@ -387,7 +394,7 @@ end
 
 ```ruby
 # rk2024.export.rbs
-def main: (Integer) -> void
+def runit: (Integer) -> void
 ```
 
 ```ruby
@@ -397,10 +404,12 @@ def show_answer: (Integer) -> void
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top5
 -->
 
-# Import this in browser
+# Setting up this in browser
 
 ```javascript
 // Will be imvoked via main()
@@ -414,19 +423,53 @@ const importObject = {
 WebAssembly.instantiateStreaming(fetch("./rk2024.wasm"), importObject).then(
   (obj) => {
     // Call exported main() after load, with arg 21
-    obj.instance.exports.main(21);
+    obj.instance.exports.runit(21);
   },
 );
 ```
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - img-front
 -->
 
 # The result:
 
-![w:600 h:300](./dummy-image.png)
+- Note: modified version
+
+<script type="text/javascript">
+  const wasiImport2 = {
+    fd_write: function(id, iovs_ptr, iovs_len, nwritten_ptr) { return 0; },
+    random_get: function(buf, buf_len) {},
+    clock_time_get: function(buf, buf_len) {},
+    environ_get: function(environ, environ_buf) { return 0; },
+    environ_sizes_get: function(environ_count, environ_size) { return 0; },
+    proc_exit: function(exit_code) { return 0; }
+  };
+  function show_answer(answer) {
+    console.log("answer = ", answer);
+    document.getElementById("myAnswer2").style.backgroundColor = "#ffff00";
+    document.getElementById("myAnswer2").value = answer;
+  }
+  
+  window.fire2 = function(e) {
+    const importObject2 = {
+      "wasi_snapshot_preview1": wasiImport2,
+      env: {show_answer: show_answer},
+	  };
+    WebAssembly.instantiateStreaming(fetch("./rk2024.wasm"), importObject2)
+      .then(function (o) {
+        let value = document.getElementById("myValue").value;
+        let answer = o.instance.exports.runit(parseInt(value));
+      }
+    );    
+  };
+  console.log("done load function");
+</script>
+
+<button onclick="fire2();">Show anwser?</button> 　　<input id="myAnswer2" type="text" value="??"><br>
 
 ----
 <!--
@@ -483,32 +526,7 @@ _class: normal
 _class: normal
 -->
 
-# Inspecting WASM sections:
-
-```
-# cf. WebAssembly/wabt:
-$ wasm-objdump -x -j Export ./fib.wasm
-
-fib.wasm:       file format wasm 0x1
-module name: <mywasm.wasm>
-
-Section Details:
-
-Export[6]:
- - memory[0] -> "memory"
- - func[11] <__mrbe_grow> -> "__mrbe_grow"
- - func[12] <fib> -> "fib"
- - func[13] <hello> -> "hello"
- - global[1] -> "__data_end"
- - global[2] -> "__heap_base"
-```
-
-----
-<!--
-_class: normal
--->
-
-# Inspecting WASM code as ASM(WAT):
+# Inspecting WASM code as WAT format:
 
 ```
 $ wasm-objdump -d ./fib.wasm | less
@@ -560,16 +578,7 @@ _class: hero
 _backgroundImage: url(./rubykaigi2024-bgs-whiteback.png)
 -->
 
-# More topics on WASM
-
-----
-<!--
-_class: hero
-_backgroundImage: url(./rubykaigi2024-bgs-whiteback.png)
--->
-
 # WASI (in preview1)
-
 
 ----
 <!--
@@ -585,15 +594,17 @@ _class: normal
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top20
 -->
 
 # What is WASI in practice
 
 - Bunch of functions to "import" 
 
-```javascript
-mec fib.rb
+```
+$ mec fib.rb
 $ wasm-objdump -x -j Import ./fib.wasm 
 ...
 Import[5]:
@@ -620,12 +631,14 @@ _class: normal
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top20
 -->
 
 # When you want to stub WASI...
 
-- Delve into [browser_wasi_shim](https://github.com/bjorn3/browser_wasi_shim) for example
+- Delve into [bjorn3/browser_wasi_shim](https://github.com/bjorn3/browser_wasi_shim) for example
 
 ```javascript
 let args = ["bin", "arg1", "arg2"]; //...
@@ -640,7 +653,9 @@ wasi.start(inst);
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top20
 -->
 
 # More concrete examples
@@ -691,7 +706,9 @@ Import[5]:
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top5
 -->
 
 # Prepare "random" on browser WASI
@@ -711,97 +728,23 @@ WebAssembly.instantiateStreaming(fetch("./random.wasm"), importObject).then(
   (obj) => { window.mywasm = obj.instance;
     for( var i = 0; i < 10; i++ ) {
       console.log("getrandom = ", window.mywasm.exports.test_random());
-    }})
+    }}
+)
 ```
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - img-top5
 -->
 
 # Result of "random" on browser WASI
 
-![](./ss-getrandom-1.png)
+- Result of function invocation 
+is at random:
 
-----
-<!--
-_class: normal
--->
-
-# Change random source to "All zero"
-
-```javascript
-const wasiImport = {
-  random_get: function(buf, buf_len) {
-    let buffer8 = new Uint8Array(
-      window.mywasm.exports.memory.buffer
-    ).subarray(buf, buf + buf_len);
-    for (let i = 0; i < buf_len; i++) {
-      // Fill in all zero!
-      buffer8[i] = 0;
-    }
-  },...};
-//...
-```
-
-![](./ss-getrandom-0.png)
-
-----
-<!--
-_class: hero
-_backgroundImage: url(./rubykaigi2024-bgs-whiteback.png)
--->
-
-# Component Models
-
-----
-<!--
-_class: normal
--->
-
-# What and how is Component Models
-
-- Component Models: WASM's broader-reaching interfacing spec for interoperablity
-- Concerns in libraries, applications, and environments
-- e.g. defines module interfaces with detailed types!
-
-----
-<!--
-_class: normal
--->
-
-# WIT: The Wasm Interface Type Format
-
-- [The wit format](https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md)
-
-```lua
-package wasi:filesystem;
-
-interface types {
-  use wasi:clocks.wall-clock.{datetime};
-
-  record stat {
-    ino: u64,
-    size: u64,
-    mtime: datetime,
-    // ...
-  }
-
-  stat-file: func(path: string) -> result<stat>;
-}
-```
-
-----
-<!--
-_class: normal
--->
-
-# WIT is a type declaration, like RBS...
-
-- It's worth enough to challenge creating converter
-from RBS to WIT, or vice varsa
-- Support of WIT in mec compiler...
-  - All future work! 
+![h:420](./ss-getrandom-1.png)
 
 ----
 
@@ -851,21 +794,24 @@ _class: normal
 # CRuby's VM
 
 - CRuby has a stack machine VM since 1.9
+- So-called **YARV**
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - img-front
 -->
 
-# How CRuby works (simply)
+# How CRuby works (simplified)
 
-- Simplified work
-
-![w:1000 h:200](./dummy-image.png)
+![w:1200](./rubyvm.svg)
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top20
 -->
 
 # How to check CRuby insn:
@@ -873,6 +819,7 @@ _class: normal
 - Use `--dump=insns` to check "compiled" instructions:
 
 ```
+# def hello; p 1 + 2; end
 $ ruby --dump=insns test.rb
 == disasm: #<ISeq:<main>@test.rb:1 (1,0)-(5,5)> (catch: FALSE)
 0000 definemethod                           :hello, hello             (   1)[Li]
@@ -891,29 +838,20 @@ $ ruby --dump=insns test.rb
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - vm-example-desc
 -->
 
 # Read the insns:
 
-```ruby
-def hello
-  p 1 + 2
-end
-```
-
-```
-0000 putself                                                          (   2)[LiCa]
-// Putting `1`
-0001 putobject_INT2FIX_1_
-// Putting `2`
-0002 putobject                              2
-// Execute plus over `1 2` on stack, then put result `3` back to stack
-0004 opt_plus                               <calldata!mid:+, argc:1, ARGS_SIMPLE>[CcCr]
-// Call self.p with arg `3`
-0006 opt_send_without_block                 <calldata!mid:p, argc:1, FCALL|ARGS_SIMPLE>
-0008 leave                                                            (   3)[Re]
-```
+- `0001 putobject_INT2FIX_1_`
+  - Putting `1`
+- `0002 putobject  2`
+  - Putting `2`
+- `0004 opt_plus`
+  - Execute plus over `1 2` on stack
+  - then put result `3` back to stack
 
 ----
 <!--
@@ -939,16 +877,20 @@ _class: normal
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - img-top6
 -->
 
 # ... And mruby has its VM, too
 
-![w:1000 h:200](./dummy-image.png)
+![w:1200](./mrubyvm.svg)
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top5
 -->
 
 # How to dump mruby's instruction
@@ -973,31 +915,9 @@ file: test.rb
 
 ----
 <!--
-_class: normal
--->
-
-# Let's read the instruction
-
-```ruby
-def hello
-  p 1 + 2
-end
-```
-
-```
-1 000 ENTER         0:0:0:0:0:0:0 (0x0)
-// Load number 3 to R3 - it's just optimized!
-2 004 LOADI_3       R3      (3)
-// Call self.p with arg R(2+1), put result back to R2
-2 006 SSEND         R2      :p      n=1
-2 010 RETURN        R2
-```
-
-※ Note mruby has shorter VM instructions
-
-----
-<!--
-_class: normal
+_class:
+  - normal
+  - pre-code-top10
 -->
 
 # c.f. Lua's VM
@@ -1018,7 +938,9 @@ $ luac -l sample.lua
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top9
 -->
 
 # Dump of Lua's instruction
@@ -1048,7 +970,7 @@ function <sample.lua:1,3> (5 instructions at 0x600000604080)
 _class: normal
 -->
 
-# Difference between C and m
+# Difference between `{C,m}ruby`
 
 - VM architecture
   - CRuby: stack-based machine
@@ -1064,7 +986,7 @@ _class: normal
 
 # What is happy with a VM?
 
-- Many aspects...
+- Many merits
   - Tuning points
   - Cross-runtime portability
 - Today focus on Cross-runtime
@@ -1083,7 +1005,9 @@ _class: normal
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top5-2
 -->
 
 # mruby/c can also handle mruby's bytecode
@@ -1107,12 +1031,15 @@ $ ./sample_c/sample_no_scheduler ./test.mrb
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
 -->
 
-# PicoRuby uses mruby/c, so your keyboards ar on mruby VM
+# FYI: PicoRuby uses mruby/c
 
-![](pico-logo.png)
+- Your keyboards can be on mruby VM
+
+![](picoruby.png)
 
 ----
 <!--
@@ -1121,7 +1048,9 @@ _class: normal
 
 # As you can imagine from the name...
 
-- mruby/edge also accepts mruby bytecode!
+- mruby/edge also accepts **mruby bytecode**!
+- The next story is about how mruby/edge uses
+mruby bytecode
 
 
 ----
@@ -1141,21 +1070,23 @@ _class: normal
 
 - Designed and specialized for running on WebAssembly
 - 2 components
-  - mruby/edge : Core VM to run mruby bytecode
+  - mruby/edge : Core VM to eval mruby bytecode
   - `mec` : The mruby/edge compiler cli
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top80
 -->
 
 # What is good in mruby/edge?
 
 - 1: Binary size
   - ruby.wasm (Ruby 3.3.1): 18 MB
-    - Small enough for its feature
+    - With all dependencies (w/o deps ~ 8 MB)
   - fib.wasm: (mec 0.3.1/mre 0.1.5) 174 KB
-    - But it include almost no feature of Ruby...
+    - But it omits basic features of Ruby...
 
 ```
 $ ls -l fib.wasm 
@@ -1164,13 +1095,14 @@ $ ls -l fib.wasm
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top20
 -->
 
 # What is good in mruby/edge?
 
 - 2: First-class support of function import/export
-  - As I descibed...
 
 ```
 $ wasm-objdump -x -j Export fib.wasm                                              
@@ -1200,40 +1132,13 @@ _class: normal
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
 -->
 
 # How it works
 
-![w:900 h:300](dummy-image.png)
-
-----
-<!--
-_class: normal
--->
-
-# The VM is written in Rust, from scratch
-
-```rust
-// Code image
-pub fn eval_insn1(vm: &mut VM, ...) -> Result<(), Error> {
-    vm.pc += ilen;
-    match opcode {
-        OpCode::NOP => {
-            fetched.as_z()?;
-        }
-        OpCode::MOVE => {
-            let (a, b) = fetched.as_bb()?; ...
-        }
-        OpCode::LOADL => {
-            let (a, b) = fetched.as_bb()?; ...
-        }
-        OpCode::JMP => {
-            let a = fetched.as_s()?;
-            vm.pc += (off as usize);
-        }
-        ...
-```
+![w:1200](./compile.svg)
 
 ----
 <!--
@@ -1267,10 +1172,14 @@ So, `fib` has signature `(i32) -> i32`
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top20
 -->
 
 # How to detect the signature `(i32) -> i32` ?
+
+- This fib method has no type declaration, right?
 
 ```ruby
 def fib(n)
@@ -1286,7 +1195,9 @@ end
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top9
 -->
 
 # RBS file can be used for "declare" type
@@ -1302,7 +1213,9 @@ def fib: (Integer) -> Integer
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top30
 -->
 
 # Naming convention
@@ -1320,42 +1233,8 @@ _class: normal
 
 ----
 <!--
-_class: normal
--->
-
-# Code generation logic from RBS
-
-- mec has its own (simplified) RBS parser
-- Parse RBS, extract type info, generate Rust code
-
-----
-<!--
-_class: normal
--->
-
-# Generated code example
-
-```rust
-// import function
-extern "C" {
-    fn plus(a0: i32, a1: i32) -> i32;
-}
-
-// function to export
-#[no_mangle]          
-pub fn fib(a0: i32) -> i32 {
-    let rite = mrubyedge::rite::load(DATA).unwrap();
-    let mut vm = mrubyedge::vm::VM::open(rite);
-    // ...
-    let retval = mrb_helper::mrb_funcall(
-      &mut vm, &top_self, "fib".to_string(), &args);
-    // ...
-}
-```
-
-----
-<!--
 _class: hero
+_backgroundImage: url(./rubykaigi2024-bgs-whiteback.png)
 -->
 
 # Handling Strings
@@ -1382,14 +1261,16 @@ _class: normal
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - img-top20
 -->
 
 # What we call “String” is...
 
-- Bytearray on wasm.memory
+- Bytearray on wasm's linear memory
 
-![](needs-picture.png)
+![](./linear-memory-str.png)
 
 ----
 <!--
@@ -1399,7 +1280,7 @@ _class: normal
 # Pass String from outer world
 
 - When you want to pass string from browser
-to WASM, you must copy bytes one by one
+to WASM, you must **copy bytes** one by one
 into WASM linear memory!
 
 ----
@@ -1426,7 +1307,9 @@ function putSomeString(str) {
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top9
 -->
 
 # Use that String in WASM module
@@ -1445,12 +1328,14 @@ pub fn use_string_i_just_put(p: *const u8, len: usize) {
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-top9
 -->
 
-# ...And passing String from WASM to JS
+# And passing String from WASM to JS
 
-- Is vice versa
+- ... Is vice versa
 
 ```javascript
 var off = window.instance.exports.get_my_string_from_wasm();
@@ -1464,7 +1349,9 @@ console.log(String.fromCharCode.apply(null, buffer));
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - table-top15
 -->
 
 # So, mruby/edge handles String for now...(1)
@@ -1481,7 +1368,9 @@ _class: normal
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - table-top15
 -->
 
 # So, mruby/edge handles String for now...(2)
@@ -1493,18 +1382,20 @@ _class: normal
 | `def: foo(String) -> void` | `foo(*const u8, usize)` |  |
 | `def: bar() -> String`     | `bar() -> *const u8`    | (*3), (*4) |
 
-(*3) also export `__set__bar_size(u32)` to set passed
+(*3) also export `__set__bar_size(u32)` to pass string's size
 (*4) when `__set__bar_size()` not set, mruby/edge assumes the buffer to be ended with `\0`, and tries to detect its length
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-ruby-top5
 -->
 
 # Sample code of passing string from JS
 
 ```ruby
-# @wasm_expoert
+# @_wasm_expoert
 def handle_msg: (String) -> void
 # converted -> handle_msg(ptr, len)
 ```
@@ -1524,13 +1415,15 @@ window.instance.exports.handle_msg()
 
 ----
 <!--
-_class: normal
+_class:
+  - normal
+  - pre-ruby-top5
 -->
 
 # Sample code of passing string to JS
 
 ```ruby
-# @wasm_import
+# @_wasm_import
 def handle_wasm_msg: (String) -> void
 
 # in Ruby script
@@ -1554,21 +1447,362 @@ _class: normal
 
 # Future plan...
 
-- Expecting WASM Component Model to solve this complication...
-  - Canonical ABI supports `string`
-  - Hope these to be ii-kanji
-- Better heap handling with wasm-gc
+- Expecting **WASM Component Model** to solve this complication...
+  - The Canonical ABI supports `string`
+  - With Component Model, there will be better
+  specification of types and better generators
+
+----
+<!--
+_class:
+  - normal
+  - pre-top5
+-->
+
+# FYI: [WIT](https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md): Wasm Interface Type Format
+
+```lua
+package wasi:filesystem;
+
+interface types {
+  use wasi:clocks.wall-clock.{datetime};
+
+  record stat {
+    ino: u64,
+    size: u64,
+    mtime: datetime,
+    // ...
+  }
+
+  stat-file: func(path: string) -> result<stat>;
+}
+```
 
 ----
 <!--
 _class: hero
+_backgroundImage: url(./rubykaigi2024-bgs-yellowback.png)
 -->
 
 # Evaluation
 
 ----
 <!--
+_class: normal
+-->
+
+# Microbench challenge
+
+- Using `fibonacci` example
+  - ruby.wasm / mruby/edge
+  - Purely JavaScript (browser only)
+- Both browser and server-side(wasmedge)
+
+----
+<!--
+_class:
+  - normal
+  - pre-top9
+-->
+
+# mruby/edge (0.1.7) bench code:
+
+```ruby
+def fib(n)
+  if n < 1
+    return 0
+  elsif n < 3
+    return 1
+  else
+    return fib(n-1)+fib(n-2)
+  end
+end
+
+def bench(num)
+  # import these JS functions from browser, using performance.now()
+  performance_start
+  fib(num)
+  performance_finish
+end
+```
+
+----
+<!--
+_class:
+  - normal
+  - table-top5
+-->
+
+# Result:
+
+| target | test case | elapsed |
+| ------ | --------- | ------- |
+| mruby/edge | fib(15) | 8.9 ms |
+| mruby/edge | fib(20) | 97.7 ms |
+| mruby/edge | fib(25) | 1024.2 ms |
+| mruby/edge | fib(30) | 11318.1 ms |
+
+※ Browser: Chrome 125.0.6422.41 on MBP-2021 M1 Max
+
+----
+<!--
+_class:
+  - normal
+  - pre-top20
+-->
+
+# ruby.wasm bench code:
+
+- Used `@ruby/3.3-wasm-wasi`
+
+```ruby
+def bench(num)
+  console = JS.global[:console]
+  performance = JS.global[:performance]
+  p1 = performance.now
+  n = fib(num)
+  p2 = performance.now
+  console.log("fib(#{num}) = #{n}")
+  console.log("Elapsed #{p2.to_f - p1.to_f} ms")
+end
+
+bench(15) #...
+```
+
+----
+<!--
+_class:
+  - normal
+  - table-top5
+-->
+
+# Result:
+
+| target | test case | elapsed |
+| ------ | --------- | ------- |
+| ruby.wasm | fib(15) | 0.2 ms |
+| ruby.wasm | fib(20) | 1.1 ms |
+| ruby.wasm | fib(25) | 12.8 ms |
+| ruby.wasm | fib(30) | 139.1 ms |
+| ruby.wasm | fib(35) | 1548.3 ms |
+
+----
+<!--
+_class: normal
+-->
+
+# cf. JavaScript bench code:
+
+
+```javascript
+function fib(num) {
+	if (num < 1) {
+		return 0;
+	}
+	if (num < 3) {
+		return 1;
+	}
+
+	return fib(num-1) + fib(num-2);
+}
+```
+
+----
+<!--
+_class:
+  - normal
+  - table-top5
+-->
+
+# Result:
+
+| target | test case | elapsed |
+| ------ | --------- | ------- |
+| JavaScript | fib(15) | 0.2 ms |
+| JavaScript | fib(20) | 0.2 ms |
+| JavaScript | fib(25) | 0.6 ms |
+| JavaScript | fib(30) | 6.8 ms |
+| JavaScript | fib(35) | 58.7 ms |
+
+----
+<!--
+_class: normal
+-->
+
+# Comparison:
+
+| test case | mruby/edge | ruby.wasm | JS | mre / r.w |
+| --------- | ---------- | --------- | -- | --------- |
+| fib(20) | 97.7 ms | 1.1 ms | 0.2 ms | 88.81818182 |
+| fib(25) | 1024.2 ms | 12.8 ms | 0.6 ms | 80.015625 |
+| fib(30) | 11318.1 ms | 139.1 ms | 6.8 ms | 81.3666427 |
+
+mruby/edge is about x80 ~ x100 slower! Lots of room for growth!
+
+----
+<!--
+_class:
+  - normal
+  - pre-top20
+-->
+
+# Bench using wasmedge:
+
+- ruby.wasm can create script-bundled wasm
+- mruby/edge is called via --reactor
+
+```
+# ruby.wasm ruby-3.3-wasm32-unknown-wasip1
+$ rbwasm pack ruby.wasm --dir ./src::/src --dir \
+  ./ruby-3.3-wasm32-unknown-wasip1-full/usr::/usr -o bench.wasm
+$ wasmedge bench.wasm /src/bench.rb
+
+# mruby/edge 0.1.7
+$ wasmedge --reactor bench.wasm bench 15
+```
+
+----
+<!--
+_class:
+  - normal
+-->
+
+# Code base (on server side):
+
+```ruby
+def fib(n)
+  # ...
+end
+
+def bench(num)
+  start = Time.now.to_f
+  p fib(num)
+  fin = Time.now.to_f
+  p (fin - start) * 1000
+end
+
+bench(15) # ...
+```
+
+----
+<!--
+_class:
+  - normal
+  - table-top5
+-->
+
+# Result (1):
+
+| target | test case | elapsed |
+| ------ | --------- | ------- |
+| mruby/edge | fib(15) | 205.3 ms |
+| mruby/edge | fib(20) | 2229.6 ms |
+| mruby/edge | fib(25) | 24203.5 ms |
+
+----
+<!--
+_class:
+  - normal
+  - table-top5
+-->
+
+# Result (2):
+
+| target | test case | elapsed |
+| ------ | --------- | ------- |
+| ruby.wasm | fib(15) | 16.8 ms |
+| ruby.wasm | fib(20) | 179.3 ms |
+| ruby.wasm | fib(25) | 1976.9 ms |
+
+----
+<!--
+_class:
+  - normal
+  - pre-top20
+-->
+
+# Focus on bootstrap:
+
+- mruby/edge is faster on bootstrap time, for now
+
+```
+$ time wasmedge --reactor bench2.wasm bench 15
+610
+200628000 # nanos
+0.21s user 0.01s system 96% cpu 0.227 total
+
+$ time wasmedge my-ruby-app.wasm /src/bench.rb
+610
+16.70217514038086
+6.67s user 0.19s system 99% cpu 6.906 total
+```
+----
+<!--
+_class: normal
+-->
+
+# mruby/edge internal bench
+
+- Bench of mruby/edge bootstrap process step by step
+- Using `criterion` crate
+
+----
+<!--
+_class:
+  - normal
+  - img-top6
+-->
+
+# mruby/edge initialization overview
+
+![w:1200](./mre-phases.svg)
+
+----
+<!--
+_class: normal
+-->
+
+# Bench code sample
+
+```rust
+// e.g. benchmarking eval_insn()
+fn bm0_eval(c: &mut Criterion) {
+    let bin = include_bytes!("./fib.mrb");
+    let rite = mrubyedge::rite::load(bin).unwrap();
+    let mut vm = mrubyedge::vm::VM::open(rite);
+    vm.prelude().unwrap();
+    c.bench_function("Eval time", |b| {
+        b.iter(|| {
+            vm.eval_insn().unwrap();
+        })
+    });
+}
+```
+
+----
+<!--
+_class: normal
+-->
+
+# Result
+
+```
+Load time               time:   [148.22 ns 149.17 ns 150.19 ns]
+
+Prelude time            time:   [629.93 ns 631.64 ns 633.60 ns]
+
+Eval time               time:   [1.9061 ns 1.9080 ns 1.9100 ns]
+
+Fib 1                   time:   [758.75 ns 760.10 ns 761.40 ns]
+
+# for comparison
+Fib 5                   time:   [9.5152 µs 9.5342 µs 9.5528 µs]
+```
+
+----
+<!--
 _class: hero
+_backgroundImage: url(./rubykaigi2024-bgs-yellowback.png)
 -->
 
 # Wrap up
@@ -1578,93 +1812,42 @@ _class: hero
 _class: normal
 -->
 
-# WebAssembly is...
+# What we learned:
 
-
-----
-
-
+- WebAssembly basics
+- mruby && VM basics
+- mruby/edge is combination of these
 
 ----
 <!--
 _class: normal
 -->
 
-# WebAssembly is...
+# mruby/edge is still actively developed
 
-----
-
-<!--
-_class: normal2
-style: section.normal2 h2 + ul { top: 66%; }
--- >
-
-# But for mruby?
-
-- I created yet another ruby for wasm...
-- Named "mruby/edge"
-
-## You should have 2 Questions...
-
-- Why "yet another" wasm ruby?
-- Why and How is it "mruby"?
+- Component Model support...
+- Bunch of unsupported Ruby features...
+- Better wrapper for users...
+- Documents...
+- Examples...
 
 ----
 <!--
 _class: normal
--- >
-
-# Here's Code
-
-```ruby
-def fib(n)
-  case n
-  when 0
-    return 0
-  when 1..2
-    return 1
-  else
-    return fib(n-1) + fib(n-2)
-  end
-end
-```
-
-----
-<!--
-_class: normal
--- >
-
-# Here's the Image, Niñas
-
-- Here is the desc
-- Also desc
-
-![w:400](./dummy-image.png)
-
-----
-<!--
-_class: normal
--- >
-
-# Here's the Image #2, Niños
-
-- Here is the desc
-- Also desc
-
-![w:600 h:360](./dummy-image.png)
-
-----
-<!--
-_class: hero
-_backgroundImage: url(./rubykaigi2024-bgs-whiteback.png)
--- >
-
-# My first slide
-
-----
-<!--
-_class: hero
-_backgroundImage: url(./rubykaigi2024-bgs-yellowback.png)
 -->
 
-# My first slide v2
+# WASM is cool technology for embed use
+
+- proxy-wasm, configs, containers...
+- mruby/edge will help you to "embed" your Ruby code!
+
+----
+
+<!--
+_class: title
+_backgroundImage: url(./rubykaigi2024-bgs-title.png)
+-->
+
+# Thank you!
+
+## I hope you enjoy Kaigi && Okinawa

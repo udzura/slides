@@ -1,0 +1,1 @@
+def show_answer: (Integer) -> void

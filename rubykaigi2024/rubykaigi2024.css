@@ -128,3 +128,141 @@ section::after {
 }
 
 button { font-size: 30pt; }
+
+marp-pre:has(code.language-ruby) {
+    background-color: #ffe8e8;
+}
+
+marp-pre:has(code.language-javascript) {
+    background-color: #f8ffdd;
+}
+
+marp-pre:has(code.language-typescript) {
+    background-color: #f8ffdd;
+}
+
+marp-pre:has(code.language-html) {
+    background-color: #f8ffdd;
+}
+
+marp-pre:has(code.language-rust) {
+    background-color: #f8eeff;
+}
+
+marp-pre:has(code.language-go) {
+    background-color: #f0ffee;
+}
+
+marp-pre:has(code.language-lua) {
+    background-color: #f0ffee;
+}
+
+section.pre-top75 pre {
+    margin-top: 40%;
+}
+
+section.pre-top80 pre {
+    margin-top: 45%;
+}
+
+section.pre-top5 pre {
+    margin-top: 5%;
+}
+
+section.pre-top9 pre {
+    margin-top: 9%;
+}
+
+section.pre-top20 pre {
+    position: relative;
+    margin-top: 22%;
+}
+
+section.pre-top30 pre {
+    position: relative;
+    margin-top: 32%;
+}
+
+section.pre-top5-2 + h1 + pre {
+    margin-top: 15%;
+}
+
+section.pre-ruby-top5 marp-pre:has(code.language-ruby) {
+    margin-top: 5%;
+}
+
+section.pre-code-top10 marp-pre:has(code.language-lua) {
+    margin-top: 13%;
+}
+
+section.img-front img {
+    float: none;
+    text-align: center;
+}
+
+section.two-samples table {
+    font-size: 22pt;
+    position: relative;
+    top: 22%;
+}
+
+section.two-samples img {
+    float: left;
+    margin-top: 0.2em;
+}
+
+section.img-top5 img {
+    position: relative;
+    top: 8%;
+    right: 3em;
+}
+
+section.img-top6 img {
+    position: relative;
+    top: 6%;
+}
+
+section.img-top20 img {
+    position: relative;
+    top: 20%;
+}
+
+section.img-top-minus img {
+    position: relative;
+    top: -50%;
+    right: 2.5em;
+}
+
+table {
+    margin-top: 5%;
+    font-size: 28pt;
+}
+
+section.table-top5 table {
+    font-size: 28pt;
+}
+
+section.table-top9 table {
+    margin-top: 12%;
+    font-size: 28pt;
+}
+
+section.table-top15 table {
+    margin-top: 17%;
+    font-size: 24pt;
+}
+
+section.vm-example-desc ul {
+    font-size: 22pt;
+}
+
+section.logos img {
+    top: 1em;
+    position: relative;
+    float: right;
+}
+
+section.logos img + img {
+    position: relative;
+    float: right;
+}
