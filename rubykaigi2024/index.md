@@ -3,6 +3,10 @@ marp: true
 theme: rubykaigi2024
 paginate: true
 backgroundImage: url(./rubykaigi2024-bgs-main.png)
+title: An mruby for WebAssembly
+description: On RubyKaigi 2024 Okinawa / An mruby for WebAssembly
+header: "An mruby for WebAssembly"
+image: https://udzura.jp/slides/2024/rubykaigi/ogp.png
 ----
 
 ![bg](./rubykaigi2024-bgs.png)
