@@ -461,8 +461,7 @@ _class:
 	  };
     WebAssembly.instantiateStreaming(fetch("./rk2024.wasm"), importObject2)
       .then(function (o) {
-        let value = document.getElementById("myValue").value;
-        let answer = o.instance.exports.runit(parseInt(value));
+        let answer = o.instance.exports.runit(21);
       }
     );    
   };
