@@ -268,7 +268,7 @@ _class: normal
 
 # 今日の結論
 
-![bg h:400 right](book.png)
+![bg h:400 right](./book.png)
 
 - よか本なので読んで
 - ジュンク堂にも丸善にも<br>あるけね
