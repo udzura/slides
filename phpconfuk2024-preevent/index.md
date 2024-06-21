@@ -4,7 +4,7 @@ title: 超入門 よかBPF for PHPer（とApacher）
 description: 於 【非公式】PHPカンファレンス福岡2024・前日Meetup (2024/6/20)
 header: "超入門 よかBPF for PHPer"
 footer: "presentation by Uchio Kondo"
-image: https://udzura.jp/slides/2024/mf-fukuoka-tech-lt/indexv2.png#fixme
+image: https://udzura.jp/slides/2024/phpconfuk2024-preevent/ogp.png
 theme: fukuokarb
 paginate: true
 ----
