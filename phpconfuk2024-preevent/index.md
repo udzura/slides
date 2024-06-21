@@ -1,6 +1,6 @@
 ----
 marp: true
-title: 超入門 よかBPF for PHPer（とApacher）
+title: 超入門 よかBPF for PHPer
 description: 於 【非公式】PHPカンファレンス福岡2024・前日Meetup (2024/6/20)
 header: "超入門 よかBPF for PHPer"
 footer: "presentation by Uchio Kondo"
@@ -15,7 +15,7 @@ _class: hero
 
 # 超入門 よかBPF
 
-## for PHPer （とApacher）
+## for PHPer edition
 
 ----
 <!--
@@ -23,7 +23,7 @@ class: profile
 style: section.profile ul { width: 110% }
 -->
 
-# 近藤うちお
+# 近藤うちお / @udzura
 
 - 所属: 株式会社ミラティブ
 - 福岡市エンジニアカフェ
