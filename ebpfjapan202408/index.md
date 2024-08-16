@@ -1,10 +1,10 @@
 ----
 marp: true
-title: eBPFと ともだち になる方法
-description: 於eBPF Japan Meetup #1
-header: eBPFと ともだち になる方法
+title: Become Friends with eBPF
+description: At eBPF Japan Meetup #1
+header: Become Friends with eBPF
 footer: "presentation by Uchio Kondo"
-image: https://udzura.jp/slides/2024/ebpfjapan-1/ogp.png#FIXME
+image: https://udzura.jp/slides/2024/ebpfjapan/ogp.png
 theme: ebpfjapan
 paginate: true
 ----
@@ -13,7 +13,7 @@ paginate: true
 _class: hero
 -->
 
-# eBPFと ともだち になる方法
+# Become Friends with eBPF
 
 ----
 <!--
@@ -21,14 +21,12 @@ class: profile
 style: section.profile ul { width: 110% }
 -->
 
-# 近藤うちお / @udzura
+# Uchio Kondo / @udzura
 
-- 所属: 株式会社ミラティブ
-- 福岡市エンジニアカフェ
-ハッカーサポーター
-- フィヨルドブートキャンプ
-アドバイザー
-- 普段はGoでミドルウェア開発
+- Affiliation: Mirrativ Inc.
+- Fukuoka City Engineer Cafe hacker supporter
+- Fjord Bootcamp advisor
+- Primarily engaged in developing middlewares with Go
 
 ![bg right w:82%](./profile2.png)
 
@@ -38,10 +36,11 @@ style: section.profile ul { width: 110% }
 _class: normal
 -->
 
-# オライリージャパン『入門eBPF』<br>共同翻訳者
+# Co-translated ["Learning eBPF"](https://www.oreilly.co.jp/books/9784814400560/)
 
-- 去年12月刊行
-（原書の刊行年に間に合った！）
+- Published by O'Reilly Japan in December last year.
+  - (We made it in time for the original publication!)
+
 
 ![bg h:400 right](./book.png)
 
@@ -59,7 +58,7 @@ _class: hero
 _class: hero
 -->
 
-# 開催めでたい 🥳
+# 🥳 Congrats on holding today!
 
 ----
 
@@ -67,13 +66,13 @@ _class: hero
 _class: normal
 -->
 
-# 今日する話
+# What we'll cover today
 
-- 作ったものを振り返ってみます
+- Looking back at what I've created:
   - RbBCC
   - Rucy
-- 何故それをしているか？
-- フリーでオープンなものをハックして楽しむ自由
+- Why am I doing this?
+- The freedom to hack and have fun with free and open things
 
 ----
 
@@ -81,9 +80,9 @@ _class: normal
 _class: normal
 -->
 
-# @udzura の作ったもの
+# What @udzura has created
 
-- eBPF関係では
+- In the domain of eBPF:
   * RbBCC
   * Rucy
 
@@ -103,9 +102,9 @@ _class: normal
 
 # RbBCC
 
-- BCC(libbcc)のRuby binding
-- Rubyアソシエーション開発助成の対象（メンターはRubyコミッタ笹田さん）
-- 正直eBPFの勉強のつもりで作った
+- Ruby binding for BCC(libbcc)
+- [Development support by Ruby Association's Grant](https://www.ruby.or.jp/ja/news/20200508) (Mentor: Koichi Sasada, Ruby committer)
+- To speak honestly, originally created to learn eBPF for myself
 
 ----
 
@@ -113,7 +112,7 @@ _class: normal
 _class: normal
 -->
 
-# RbBCC のコード
+# RbBCC code
 
 ```ruby
 require 'rbbcc'
@@ -126,11 +125,14 @@ int hello(struct pt_regs *ctx) {
     buffer.ringbuf_output(&data, sizeof(data), 0);
     return 0;
 }"
-b = RbBCC::BCC.new(text: prog).tap{|b|
-  b.attach_kprobe(event: "__arm64_sys_clone", fn_name: "hello")}
+
+b = RbBCC::BCC.new(text: prog)
+b.attach_kprobe(event: "__arm64_sys_clone", fn_name: "hello")
+
 b["buffer"].open_ring_buffer do |_, data, _|
   puts "Hello world! comm = %s" % b["buffer"].event(data).comm
 end
+
 loop { b.ring_buffer_poll; sleep 0.1 }
 ```
 
@@ -140,7 +142,7 @@ loop { b.ring_buffer_poll; sleep 0.1 }
 _class: normal
 -->
 
-# BCC のコードと比べてみよう
+# Compare with BCC(Python) code
 
 ```python
 import time
@@ -171,7 +173,7 @@ while 1:
 _class: sample
 -->
 
-# RbBCC のdemo
+# RbBCC demo
 
 ![h:500](./output.gif)
 
@@ -191,10 +193,10 @@ _class: sample
 
 # Rucy
 
-- RubyのスクリプトをBPFにコンパイルするコンパイラ
-- RubyKaigi 2021-takeout で発表
-- 実装には mruby のバイトコード仕様とコンパイラを使っている
-- 本当に簡単なプログラムしか動かせない
+- A compiler, which compiles Ruby scripts into BPF bytecode
+- Presented at RubyKaigi 2021-takeout
+- Uses mruby's bytecode specification and its compiler internally
+- Can only run very simple programs
 
 ----
 
@@ -202,9 +204,11 @@ _class: sample
 _class: sample
 -->
 
-# Rucy のコンパイルパス
+# Rucy's compilation pass
 
-![w:750](./rucy-overview.png)
+![w:770](./rucy-overview.png)
+
+- [RubyKaigi 2021 slide](https://speakerdeck.com/udzura/story-of-rucy-on-rubykaigi-takeout-2021?slide=18)
 
 ----
 
@@ -212,7 +216,7 @@ _class: sample
 _class: sample
 -->
 
-# Rucy の"Ruby" code sample
+# "Ruby" code sample for Rucy
 
 ```ruby
 license! "GPL"
@@ -239,7 +243,7 @@ end
 _class: sample
 -->
 
-# この C とほぼ同等
+# This is (virtually) equivalent to this C code
 
 ```c
 #include <linux/bpf.h>
@@ -264,13 +268,13 @@ char _license[] SEC("license") = "GPL";
 _class: sample
 -->
 
-# このeBPFプログラムの詳細
+# Details of eBPF program displayed above
 
-- 今後の説明の理解に必要なので説明
-- eBPFのcgroup deviceプログラムタイプ
+- To help understand the following slides
+- Uses eBPF cgroup device program type
   - `BPF_PROG_TYPE_CGROUP_DEVICE`
-- コンテナ（cgroup v2利用）からアクセスできるデバイスをフィルタする
-  - e.g. deviceが `/dev/urandom` ならdeny、その他はpass
+- Filters devices accessible from containers (using cgroup v2)
+  - e.g. deny if device is `/dev/urandom`, pass otherwise
 
 ----
 
@@ -278,9 +282,9 @@ _class: sample
 _class: sample
 -->
 
-# `CGROUP_DEVICE` の基本的なロードの仕方
+# Basic loading code example of `CGROUP_DEVICE`
 
-- libbpfを使った例
+- Example using libbpf
 
 ```c
 // 抜粋
@@ -299,9 +303,9 @@ bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_DEVICE, 0);
 _class: sample
 -->
 
-# 基本的なロードの仕方(2)
+# Basic loading example (2)
 
-- ロードの成功を確認
+- Confirming successfully loaded
 
 ```
 $ sudo mkdir /sys/fs/cgroup/test-device
@@ -320,9 +324,9 @@ $ sudo bpftool prog
 _class: sample
 -->
 
-# 動作確認
+# Verification
 
-- docker containerを `--pid=host` で立ち上げてPIDを取得
+- Start a docker container with `--pid=host` and get the shell PID
 
 ```
 $ sudo docker run -ti --pid=host debian:11-slim bash
@@ -330,7 +334,7 @@ root@987bbaa4c62c:/# echo $$
 51959
 ```
 
-- cgroupに書き込む
+- Write PID to the cgroup
 
 ```
 $ echo 51787 | sudo tee /sys/fs/cgroup/test-device/cgroup.procs
@@ -343,16 +347,16 @@ $ echo 51787 | sudo tee /sys/fs/cgroup/test-device/cgroup.procs
 _class: sample
 -->
 
-# 動作確認(2)
+# Verification (2)
 
-- 当該cgroupに所属することを確認
+- Confirm that it belongs to the specified cgroup
 
 ```
 root@987bbaa4c62c:/# cat /proc/self/cgroup
 0::/../../test-device
 ```
 
-- `/dev/urandom` だけアクセスできないことを確認
+- Confirm that only /dev/urandom cannot be accessed
 
 ```
 root@987bbaa4c62c:/# head -c 4 /dev/random | od
@@ -369,7 +373,7 @@ head: cannot open '/dev/urandom' for reading: Operation not permitted
 _class: sample
 -->
 
-# c.f. kprobeをトレースすることも
+# c.f. kprobe example also available
 
 ![w:750](./rucy-kprobetrace.png)
 
@@ -382,24 +386,13 @@ _class: sample
 _class: sample
 -->
 
-# Rucy 開発に必要だった知識
+# Technologies Required for Rucy Development
 
-- Rucy
-  - mruby バイトコードのこと
-  - ELF のレイアウトのこと
-  - Rust
-  - BPF バイナリの作り方 ...
+- mruby bytecode spec
+- ELF binary & layout
+- Rust
+- How to create BPF binaries ...
 
-----
-
-<!--
-_class: sample
--->
-
-# BPF バイナリの作り方
-
-- BPF バイナリはどうやって作られているのだろうか？
-- 最小のサンプルで追いかけてみる
 
 ----
 
@@ -407,7 +400,18 @@ _class: sample
 _class: sample
 -->
 
-# Cのコード (again)
+# How to create BPF binaries
+
+- How are BPF binaries created?
+- Let's follow the smallest sample
+
+----
+
+<!--
+_class: sample
+-->
+
+# C code (again)
 
 ```c
 #include <linux/bpf.h>
@@ -432,7 +436,7 @@ char _license[] SEC("license") = "GPL";
 _class: sample
 -->
 
-# LLVM-IRに変換する
+# Convert to LLVM-IR
 
 ```
 $ clang -g -O1 -c -S -emit-llvm \
@@ -441,7 +445,7 @@ $ clang -g -O1 -c -S -emit-llvm \
 ```
 
 ```llvm
-; 抜粋/debug情報なし
+; Excerpts/omitted debug information
 define dso_local i32 @bpf_prog1(...) #0 section "cgroup/dev" {
   %2 = getelementptr inbounds %struct.bpf_cgroup_dev_ctx,
     %struct.bpf_cgroup_dev_ctx* %0, i64 0, i32 2
@@ -458,7 +462,7 @@ define dso_local i32 @bpf_prog1(...) #0 section "cgroup/dev" {
 _class: sample
 -->
 
-# BPFバイナリに変換する
+# Convert to BPF binary
 
 ```
 $ clang -g -O1 -c -target bpf cgroup1.ll -o cgroup1.o
@@ -488,7 +492,7 @@ SYMBOL TABLE:
 _class: sample
 -->
 
-# 生成されたバイトコードを見る
+# Check out the generated bytecode
 
 ```
 $ llvm-objdump -Sd cgroup1.o
@@ -511,21 +515,21 @@ Disassembly of section cgroup/dev:
 _class: sample
 -->
 
-# 生成されたバイトコードを読む
+# Interpret the generated bytecode
 
 ```
 0000000000000000 <bpf_prog1>:
-                                    # ctx->minor のオフセットを辿っている
+                                     # Following the offset of ctx->minor
     0:       61 11 08 00 00 00 00 00 r1 = *(u32 *)(r1 + 8)
-                                    # デフォルトの戻り値をセット
+                                     # Setting the default return value
     1:       b7 00 00 00 01 00 00 00 r0 = 1
-                                    # ctx->minor != 9 ならそのままexit
+                                     # If ctx->minor != 9, then goto exit
     2:       55 01 01 00 09 00 00 00 if r1 != 9 goto +1 <LBB0_2>
-                                    # そうでないので、戻り値を0にする
+                                     # Otherwise, set the return value to 0
     3:       b7 00 00 00 00 00 00 00 r0 = 0
 
 0000000000000020 <LBB0_2>:
-                                    # プログラムを抜ける
+                                     # Exit the program
     4:       95 00 00 00 00 00 00 00 exit
 ```
 
@@ -535,7 +539,7 @@ _class: sample
 _class: sample
 -->
 
-# FYI: 命令フォーマット
+# FYI: Instruction format
 
 - See: https://datatracker.ietf.org/doc/draft-ietf-bpf-isa/
 
@@ -559,9 +563,9 @@ _class: sample
 _class: sample
 -->
 
-# これをロードする
+# Loading the binary
 
-- 再掲
+- Reposted codes
 
 ```c
 bpf_prog_load("./obj.o", BPF_PROG_TYPE_CGROUP_DEVICE, &obj, &prog_fd);
@@ -574,19 +578,7 @@ bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_DEVICE, 0);
 _class: hero
 -->
 
-# ロードした先は？
-
-
-----
-
-<!--
-_class: sample
--->
-
-# cgroup deviceの実装箇所を眺める
-
-- カーネルコードリーディングは基本避けているのですが、少し頑張りますね
-- Ubuntu 22.04 の 5.15.0-118-generic をターゲットにします
+# Where is it loaded?
 
 ----
 
@@ -594,9 +586,20 @@ _class: sample
 _class: sample
 -->
 
-# この分野は素人ですが... 
+# Looking at the implementation of cgroup-v2 device
 
-- [[link]](https://elixir.bootlin.com/linux/v5.15/source/kernel/bpf/cgroup.c#L1159)
+- I generally avoid delving into kernel code, but I'll give it a try...
+- Targeting Ubuntu 22.04 5.15.0-118-generic
+
+----
+
+<!--
+_class: sample
+-->
+
+# I'm not familiar with Linux, but...
+
+- [[code link]](https://elixir.bootlin.com/linux/v5.15/source/kernel/bpf/cgroup.c#L1159)
 
 ```c
 int __cgroup_bpf_check_dev_permission(short dev_type, u32 major, u32 minor,
@@ -699,9 +702,9 @@ static __always_inline u32 bpf_prog_run(const struct bpf_prog *prog, const void 
 _class: sample
 -->
 
-# ちなみに: Rucyで結局どうしたか
+# BTW: What did I implement with Rucy?
 
-- mruby bytecode -> BPF bytecode を対応させた
+- Created pass from mruby bytecode -> to BPF bytecode. [Slide](https://speakerdeck.com/udzura/story-of-rucy-on-rubykaigi-takeout-2021?slide=35)
 
 ![h:420](./rucy-transpile.png)
 
@@ -711,15 +714,15 @@ _class: sample
 _class: sample
 -->
 
-# ここまでのまとめ
+# Recap so far
 
-- RbBCCを作った
-  - BCCの移植をした
-  - 使う側としてAPIがなんとなくわかった
-- Rucyを作った
-  - BPFプログラムがどう動くかの解像度が上がった
-  - 真面目にパスを実装すれば小さいものは動く
-  - バイナリと友達になれた（？）
+- I've created RbBCC:
+  - Ported BCC to Ruby
+  - Got a rough idea of the API as a eBPF user
+- I've created Rucy:
+  - Enhanced understanding of how BPF programs work
+  - Small programs can run if we implement the pass carefully
+    - Became friends with binaries (?)
 
 ----
 
@@ -727,11 +730,11 @@ _class: sample
 _class: sample
 -->
 
-# なお、こういう話は
+# Incidentally, these stories...
 
-- 入門eBPFに大体全部
-- より詳しく載ってます
-（ほんと？）
+- Are mostly in "Learning eBPF"
+- More details are included in the book!
+(really? including about binary format too?)
 
 ![bg h:400 right](./book.png)
 
@@ -741,7 +744,7 @@ _class: sample
 _class: hero
 -->
 
-# なぜ作ったか？
+# Why did I create it?
 
 ----
 
@@ -749,14 +752,15 @@ _class: hero
 _class: sample
 -->
 
-# 正直な話をすると
+# To be honest
 
-- RubyKaigi で喋りたかったので...ゴホゴホ
-- RbBCC の時は: 勉強したかった
-  - じゃあ移植するか（？）
-  - 軽く調べたらlibbccのFFIでしかないと気づいたので、それは普通に移植できるよなと思った
-    - Pythonほんとに苦手なんだけどctypesだけ詳しくなった...
-  - ちまちま移植するのは **楽しい**
+
+- Because I wanted to talk at RubyKaigi... lol
+- For RbBCC: I wanted to learn more
+  - So, why not port it?
+  - After a quick search, I realized that libbcc was just one of FFI use cases, so I thought I could port it with less effort than I've expected
+    - I was almost new to Python, but finally I became really good at ctypes...
+  - It was **fun** to port it line by line
 
 ----
 
@@ -764,13 +768,13 @@ _class: sample
 _class: sample
 -->
 
-# 正直な話をすると(2)
+# To be honest (2)
 
-- Rucyの時は...
-  - そもそもボイラーテンプレートなCをあまり書きたくなかったのはあるが...
-  - 急にアイデアが降ってきて、作ってみたら意外と行けたので
-    - PoCまで完成させた
-  - できたら **面白くね？** って思ったので実装した
+- For Rucy...
+  - In the first place, I wanted to avoid to C boilerplate...
+  - But I suddenly had an idea, and when I implemented it, it worked surprisingly and interestingly well
+    - So I created the PoC
+  - I thought it'd be **interesting** if I could do it, so I completed
 
 ----
 
@@ -786,20 +790,13 @@ _class: hero
 _class: hero
 -->
 
-# cf. 「趣味」
+# cf. "as a hobby."
 
-> 「いつか私の開発したプログラムが世界中で使われるようになる」なんて、ぜんぜん思っていなくて、ただ趣味として作っていたんですね。
+> "I never thought that the program I developed would be used all over the world someday. I was just making it(Ruby) as a hobby."
 
-- cite: https://logmi.jp/tech/articles/322453
+- Yukihiro Matsumoto -- cite: https://logmi.jp/tech/articles/322453
 
-----
-
-<!--
-_class: hero
--->
-
-# でもそういう気持ちが大事かも
-
+<!-- 「いつか私の開発したプログラムが世界中で使われるようになる」なんて、ぜんぜん思っていなくて、ただ趣味として作っていたんですね。 -->
 
 ----
 
@@ -807,7 +804,7 @@ _class: hero
 _class: hero
 -->
 
-# オープンなものを<br>ハックする自由
+# But that kind of feeling is important - I believe
 
 ----
 
@@ -815,7 +812,15 @@ _class: hero
 _class: hero
 -->
 
-# 手を動かせば<br>「友達」になれる
+# The freedom to hack open things
+
+----
+
+<!--
+_class: hero
+-->
+
+# You can only be "friends" by doing it yourself
 
 ----
 
@@ -831,7 +836,7 @@ _class: hero
 _class: hero
 -->
 
-# オープンなものから<br>面白いものを作ろう
+# Let's create interesting things from open source
 
 ----
 
@@ -839,4 +844,4 @@ _class: hero
 _class: hero
 -->
 
-# eBPFなら面白いものを作れる
+# You can create interesting things with eBPF
