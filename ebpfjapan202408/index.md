@@ -807,11 +807,10 @@ _class: hero
 
 # cf. "as a hobby."
 
-> "I never thought that the program I developed would be used all over the world someday. I was just making it(Ruby) as a hobby."
+> <span style="color: #222222;">"I never thought that the program I developed would be used all over the world someday. I was just making it(Ruby) as a hobby."</span>
+> <span style="color: #aaaaaa;font-size: smaller;">「いつか私の開発したプログラムが世界中で使われるようになる」なんて、ぜんぜん思っていなくて、ただ趣味として作っていたんですね。</span>
 
 - Yukihiro Matsumoto -- cite: https://logmi.jp/tech/articles/322453
-
-<!-- 「いつか私の開発したプログラムが世界中で使われるようになる」なんて、ぜんぜん思っていなくて、ただ趣味として作っていたんですね。 -->
 
 ----
 
