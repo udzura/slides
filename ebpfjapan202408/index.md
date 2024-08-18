@@ -204,18 +204,6 @@ _class: sample
 _class: sample
 -->
 
-# Rucy's compilation pass
-
-![w:770](./rucy-overview.png)
-
-- [RubyKaigi 2021 slide](https://speakerdeck.com/udzura/story-of-rucy-on-rubykaigi-takeout-2021?slide=18)
-
-----
-
-<!--
-_class: sample
--->
-
 # "Ruby" code sample for Rucy
 
 ```ruby
@@ -275,6 +263,20 @@ _class: sample
   - `BPF_PROG_TYPE_CGROUP_DEVICE`
 - Filters devices accessible from containers (using cgroup v2)
   - e.g. deny if device is `/dev/urandom`, pass otherwise
+
+----
+
+<!--
+_class: sample
+-->
+
+# Compile Ruby code into eBPF binary object
+
+```
+$ rucy object ./sample.rb --dest obj.o
+```
+
+<blockquote class="twitter-tweet" data-media-max-width="560"><p lang="ja" dir="ltr">Rucy、Rubyのスクリプト辺を渡すとその情報からBPFオブジェクトファイルを「コンパイル」するようになりました。<br>このオブジェクトをそのまま使って他言語でツールを書くなりできますが、せっかくなのでmrubyのlibbpfバインディングも作る。 <a href="https://t.co/8JSwJySnNJ">pic.twitter.com/8JSwJySnNJ</a></p>&mdash; Uchio Kondo (@udzura) <a href="https://twitter.com/udzura/status/1430046852699680769?ref_src=twsrc%5Etfw">August 24, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 ----
 
@@ -709,6 +711,19 @@ _class: sample
 ![h:420](./rucy-transpile.png)
 
 ----
+
+<!--
+_class: sample
+-->
+
+# Rucy's overall compilation pass
+
+![w:770](./rucy-overview.png)
+
+- [RubyKaigi 2021 slide](https://speakerdeck.com/udzura/story-of-rucy-on-rubykaigi-takeout-2021?slide=18)
+
+----
+
 
 <!--
 _class: sample
