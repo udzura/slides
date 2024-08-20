@@ -339,8 +339,8 @@ root@987bbaa4c62c:/# echo $$
 - Write PID to the cgroup
 
 ```
-$ echo 51787 | sudo tee /sys/fs/cgroup/test-device/cgroup.procs
-51787
+$ echo 51959 | sudo tee /sys/fs/cgroup/test-device/cgroup.procs
+51959
 ```
 
 ----
