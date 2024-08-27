@@ -810,6 +810,13 @@ fib(15) = 610
 
 ---
 <!--
+_class: normal
+-->
+
+![](./wasmcloud-zu.png)
+
+---
+<!--
 _class: hero
 -->
 
