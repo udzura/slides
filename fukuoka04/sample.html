@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>My first wasm</title>
+  </head>
+  <body>
+    <h1>Wasm working on browser</h1>
+    Output: <strong id="placeholder">{{here}}</strong>
+  </body>
+
+    <script async type="text/javascript">
+      const importObject = {
+	  env: {
+	      log_value: function(value) {
+		  let log = "sample log! 12 + 34 = " + value.toString();
+		  document.getElementById("placeholder").innerText = log;
+		  console.log("OK");
+	      }
+	  },
+      };
+
+      WebAssembly.instantiateStreaming(fetch("./sample.wasm"), importObject).then(
+	  (obj) => {
+	      obj.instance.exports.calc_plus(12 + 34);
+	  },
+      );
+    </script>
+</html>

@@ -39,14 +39,28 @@ _class: profile
 _class: hero
 -->
 
-# 生活発表会
+# 生活発表
 
 ---
 <!--
 _class: hero
 -->
 
-# 生活歴を振り返る
+# 目論見書
+
+---
+<!--
+_class: hero
+-->
+
+# 生活の振り返り
+
+---
+<!--
+_class: hero
+-->
+
+# 解題
 
 ---
 <!--
@@ -209,6 +223,9 @@ _class: hero
 
 # [PR]
 
+- これを読むと解像度が上がる
+- 鳥井さんのお力で文章も読みやすい！
+
 ![bg right w:450](./book.png)
 
 ---
@@ -304,7 +321,7 @@ _class: hero
 
 ---
 <!--
-_class: sample
+_class: normal
 -->
 
 # 低めのレイヤーにRubyでいっちょ噛み
@@ -320,22 +337,57 @@ _class: hero
 
 ---
 <!--
-_class: hero
+_class: normal
 -->
 
-# Rubyという「ハンマー」
+# 低レイヤ(あるいは SOTA)の世界にRubyがいない
+
+- Rubyのバインディングがない
+- Rubyのサンプルコードがない
+  - Go、Python、C++、そしてRust他みたいな
+  - e.g. eBPF(BCC) の対応言語はPython、Lua、C++
+    - GoとRustは有志がeBPF向けSDKを作っていた
 
 ---
 <!--
-_class: sample
+_class: normal
 -->
 
-# OSSに「貢献」？
+# RubyからSOTAに触りたい
+
+- コンピューターの世界は日々進歩しているらしい
+- Rubyが成果を享受できることもあるが...（それこそ、漸進的型とか）
+- 便利なものや進んだものに触れる時もRubyからがいい
+
+---
+<!--
+_class: normal
+-->
+
+# あるいはRubyという「ハンマー」
+
+- コンピューターの世界、たくさん釘があって便利
+
+---
+<!--
+_class: normal
+-->
+
+# OSSに「貢献」したい？
 
 - 実はあまり興味が...
   - もちろん使っているものは直す、オープンなら還元しますが
-- 自分が納得するものを作りたい
+- 大きなOSSに何かしたいという気持ちが薄い
+  - もちろん「自分ごと」になればやります
+- 基本的には、自分が納得するものを作りたい
   - 納得できそうなものがたまたま低いレイヤに多い
+
+---
+<!--
+_class: hero
+-->
+
+# 良いもの・面白いものを作る
 
 ---
 <!--
@@ -366,17 +418,151 @@ _class: hero
 
 ---
 <!--
-_class: hero
+_class: normal
 -->
 
 # 最も小さなWebAssemblyバイナリ
+
+- C言語で書いたもの
+
+```c
+// sample.c
+#include <emscripten.h>
+
+void log_value(int size);
+
+int EMSCRIPTEN_KEEPALIVE calc_plus(int n, int m) {
+  log_value(n + m);
+  return 0;
+}
+```
+
+---
+<!--
+_class: normal
+-->
+
+# コンパイルする
+
+```
+$ emcc -o sample.wasm --js-library ./lib.js --no-entry ./sample.c
+cache:INFO:  - ok
+```
+
+- ※ lib.js is here
+
+```js
+mergeInto(LibraryManager.library, {
+    log_value: function(value) { /* TODO */ }
+});
+```
+
+---
+<!--
+_class: normal
+-->
+
+# Exportセクション
+
+```
+$ wasm-objdump -x -j Export sample.wasm 
+
+sample.wasm:    file format wasm 0x1
+
+Section Details:
+
+Export[10]:
+ - memory[0] -> "memory"
+ - func[2] <calc_plus> -> "calc_plus"
+ - table[0] -> "__indirect_function_table"
+ - func[3] <_initialize> -> "_initialize" ...
+```
+
+- `calc_plus()` を外部から呼び出す
+
+---
+<!--
+_class: normal
+-->
+
+# Importセクション
+
+```
+$ wasm-objdump -x -j Import sample.wasm
+
+sample.wasm:    file format wasm 0x1
+
+Section Details:
+
+Import[1]:
+ - func[0] sig=2 <env.log_value> <- env.log_value
+```
+
+- インスタンス化するときに外部関数 `log_value()` を注入する
+
+---
+<!--
+_class: normal
+-->
+
+# 使い方
+
+```javascript
+const obj = {
+  env: {
+    // ここでブラウザ側の関数を指定
+    log_value: function(value) {
+      let log = "sample wasm! 12 + 34 = " + value.toString();
+      document.getElementById("placeholder").innerText = log;
+    }
+  },
+};
+
+WebAssembly.instantiateStreaming(fetch("./sample.wasm"), obj).then(
+  (obj) => {
+    // ここでwasmの中の関数を呼び出し
+    obj.instance.exports.calc_plus(12 + 34);
+  },
+);
+```
 
 ---
 <!--
 _class: hero
 -->
 
-# WebAssemblyバイナリの一丁目一番地
+# Live demo
+
+<script async type="text/javascript">
+const importObject = {
+  env: {
+    log_value: function(value) {
+      let log = "sample wasm! 12 + 34 = " + value.toString();
+      document.getElementById("placeholder").innerText = log;
+      console.log("OK");
+    }
+  },
+};
+
+window.fire = function() {
+  WebAssembly.instantiateStreaming(fetch("./sample.wasm"), importObject).then(
+    function (obj) {
+      obj.instance.exports.calc_plus(12 + 34);
+    },
+  );
+};
+</script>
+
+<div>
+  Output: <strong style="color: blue; font-size: larger;" id="placeholder" onclick="fire();">{{here}}</strong>
+</div>
+
+---
+<!--
+_class: hero
+-->
+
+# WebAssemblyの一丁目一番地
 
 
 - 個人の意見です！
@@ -391,10 +577,10 @@ _class: hero
 
 ---
 <!--
-_class: sample
+_class: normal
 -->
 
-# ここを押さえればWASIもシンプル
+# import/exportを押さえればWASIもシンプル
 
 - WASI = 「これをimportして使えばシステム操作がええ感じにできるで」という関数のセット
 - プログラム側では仕様の通りに使えばいい
@@ -403,12 +589,13 @@ _class: sample
 
 ---
 <!--
-_class: sample
+_class: normal
 -->
 
 # e.g. ブラウザでWASIをエミュレートする
 
 - https://github.com/bjorn3/browser_wasi_shim
+- random_get という「システムコール」をブラウザJSで実装
 
 ```typescript
 random_get(buf: number, buf_len: number) {
@@ -422,7 +609,7 @@ random_get(buf: number, buf_len: number) {
 
 ---
 <!--
-_class: sample
+_class: normal
 -->
 
 # mruby/edgeでやりたいこともシンプル
@@ -432,10 +619,12 @@ _class: sample
 
 ---
 <!--
-_class: sample
+_class: normal
 -->
 
 # コードのイメージ（将来）
+
+- この通りに実装するとは限らないのですが...
 
 ```ruby
 # @export!
@@ -446,7 +635,7 @@ end
 
 # @import!
 # @rbs (String) -> void
-def console_log(str) = __imported__
+def console_log(str) = __imported__!
 
 def _start
   console_log("Hello World " + fib(10).to_s)
@@ -458,14 +647,14 @@ end
 _class: hero
 -->
 
-# ところで
+# One More Thing
 
 ---
 <!--
 _class: hero
 -->
 
-# WebAssembly、進化してるらしい
+# WebAssemblyの未来
 
 ---
 <!--
@@ -534,12 +723,90 @@ _class: normal
 _class: normal
 -->
 
-# WASM Cloud のご紹介
+# 例えば wasmCloud
 
 ![bg right w:600](./wasmcloud.png)
 
 - https://wasmcloud.com/
 - A CNCF Sandbox Project
+
+---
+<!--
+_class: normal
+-->
+
+# wasmCloudでRubyを動かす
+
+- mruby/edge を(雑に)動かした例
+
+```rust
+use mrubyedge::{mrb_helper, vm::RObject};
+// ...
+impl Guest for HttpServer {
+    fn handle(_request: IncomingRequest, response_out: ResponseOutparam) {
+        let write_response = |body: &str| { ... };
+        let bin = include_bytes!("./fib.mrb");
+        let rite = mrubyedge::rite::load(bin).unwrap();
+        let mut vm = mrubyedge::vm::VM::open(rite);
+        vm.prelude().unwrap(); //...
+        match mrb_helper::mrb_funcall(&mut vm, &top_self, "fib".to_string(), &args) {
+            Ok(val) => { write_response(&val) }
+            Err(ex) => { dbg!(ex); }
+        } //...
+    }
+}
+```
+
+---
+<!--
+_class: normal
+-->
+
+# mruby入りのWASMバイナリを作る
+
+```console
+$ wash build
+   Compiling http-hello-world v0.1.0 (/home/ubuntu/mrubyhttp)
+    Finished `release` profile [optimized] target(s) in 0.29s
+
+Component built and signed and can be found at "/../build/http_hello_world_s.wasm"
+
+$ # mruby バイナリが組み込まれている
+$ strings build/http_hello_world_s.wasm | grep MATZ
+MATZ0000IREP
+
+$ wasm-tools component wit build/http_hello_world_s.wasm | head -n 20
+package root:component;
+
+world root {
+  import wasi:clocks/monotonic-clock@0.2.0;
+  // ....
+
+  // entry point
+  export wasi:http/incoming-handler@0.2.0;
+}
+```
+
+---
+<!--
+_class: normal
+-->
+
+# このWASMをwasmCloudで動かす
+
+```console
+$ wash app deploy wadm.yaml
+$ wash app status rust-hello-world
+
+rust-hello-world@ - Deployed                   
+  Name                                         Kind           Status    
+  http_component                               SpreadScaler   Deployed  
+  httpserver -(wasi:http)-> http_component     LinkScaler     Deployed  
+  httpserver                                   SpreadScaler   Deployed
+
+$ curl localhost:8080
+fib(15) = 610
+```
 
 ---
 <!--
@@ -560,18 +827,7 @@ _class: hero
 _class: hero
 -->
 
-# 今日のまとめ
-
-
-
-----
-
-<!--
-_class: hero
--->
-
-# 終わりに
-
+# Wrapping up
 
 ----
 
