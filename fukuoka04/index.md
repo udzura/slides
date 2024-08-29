@@ -67,7 +67,7 @@ _class: hero
 _class: hero
 -->
 
-# Reflection of daily discipline
+# Reflection of daily life
 
 ---
 <!--
@@ -104,12 +104,16 @@ _class: hero
 _class: normal
 -->
 
-# Linux Container
+# Haconiwa is a Linux container
 
-- Focusing on container component technologies
-  - Linux Namespace
+- Combine Linux container components from scratch
   - cgroup
-  - Capability, etc ...
+  - namespace
+  - pivot_root
+  - capability
+  - seccomp, ...
+
+![bg right w:500](haconiwa.png)
 
 ---
 <!--
@@ -146,10 +150,11 @@ _class: normal
 
 # CRIU
 
-- Checkpoint and restore of processes (including containers)
-  - Saves the process state to a file and restores it
-  - Applied to speeding up Rails bootstrap in my case
-  - Can also be used for live migration / other purposes
+- Checkpoint and restore of processes (or containers)
+  - Dump Rails' process status into files
+  - Boot from it -> it's fast!
+
+![bg right w:460](criu.png)
 
 <!--
 - プロセス（=コンテナも対象）のCheckpoint&Restore
@@ -174,43 +179,51 @@ _class: hero
 
 ---
 <!--
-_class: normal
+_class: hero
 -->
 
-# eBPF
-
-- Technology for executing programs inside the Linux kernel
-  - Which can use deeper functionarities than ordinary system calls
-  - (A bit) safer than kernel modules
-  - For Networking, Observability, Security...
-
-
-<!--
-- Linuxカーネル内部でプログラムを実行する技術
-  - 普通のシステムコールより奥深い情報を使える
-  - カーネルモジュールより**は**安全
-  - ネットワーク、Observability、セキュリティ...
--->
+# Rucy
 
 ---
 <!--
 _class: normal
 -->
 
-# Rucy - My product
+# eBPF
 
-- eBPF has a dedicated VM inside the kernel, and...
-- Has a dedicated bytecode instruction set
-  - Kinda like YARV (saying very roughly)
-- Rucy **compiles** Ruby scripts into eBPF bytecode
+- Running programs with special format inside the Linux kernel
+  - For Networking, Observability, Security...
+  - Safer than kernel module
+  - Deeper than system calls
+
+![bg right w:400](ebpf.png)
+
+<!--
+- Linuxカーネル内部で特別なバイナリ形式のプログラムを実行する技術
+  - ネットワーク、Observability、セキュリティ...
+  - カーネルモジュールより**は**安全
+  - 普通のシステムコールより奥深い情報を使える
+-->
+
+<!-- logo: https://ebpf.foundation/brand-guidelines/ -->
+
+---
+<!--
+_class: normal
+-->
+
+# What is Rucy
+
+- Rucy **compiles Ruby scripts** into special bytecodes
+  - The eBPF bytecodes!
   - Rucy = Ruby Compiler = RuC
 
 <!-- 
+- RucyはRubyのスクリプトをそのバイトコードに**コンパイル**する
+  - Rucy = Ruby Compiler = RuC
 - eBPFはカーネル内部に専用のVMを持つ＋
 - 専用のバイトコード命令系をもつ
   - YARVみたいなもんですね〜（そう？）
-- RucyはRubyのスクリプトをそのバイトコードに**コンパイル**する
-  - Rucy = Ruby Compiler = RuC
 -->
 
 ---
@@ -225,7 +238,7 @@ _class: hero
 _class: hero
 -->
 
-# eBPF (BCC)
+# eBPF (RbBCC)
 
 ---
 <!--
@@ -234,12 +247,10 @@ _class: normal
 
 # How is Rucy different from RbBCC?
 
-- Rucy **compiles** Ruby scripts into their bytecode
-  - It is AOT compiler
-- RbBCC is basically an FFI for BCC (libbcc)
-  - libbcc compiles C-like code into eBPF binaries on the fly
-  - It is **JIT** compiler
-  - Can use data sent from Ruby
+| Name      | Strategy | Detail               |
+| ---       | -----    | ----                 |
+| **RbBCC** | JIT      | Is an FFI to libbcc / Rusy Assoc. Grant |
+| **Rucy**  | AOT      | Compiles Ruby scripts into eBPF via mruby bytecodes |
 
 <!--
 # RucyとRbBCCはどう違うのか
@@ -256,13 +267,11 @@ _class: normal
 _class: normal
 -->
 
-# How is BCC different from compiled eBPF?
+# How are they different? (details)
 
-- Basically, eBPF is moving towards a **AOT-compiled** ecosystem
-  - Search for `BPF CO-RE`, etc.
+- Basically, eBPF is moving towards a **AOT-compiled** ecosystem (BPF CO-RE)
   - So the future is Rucy's side
-- On the other hand, RbBCC can use most of the basic functions of eBPF
-  - Many functions are properly ported
+- RbBCC has **a larger coverage** of eBPF functions
   - Sufficient enough for learning and small tools
 
 <!--
@@ -288,8 +297,8 @@ _class: hero
 - 鳥井さんのお力で文章も読みやすい！
 -->
 
-- Reading this book will increase your understanding
-- Thanks to Tori-san, it is easy to read!
+- This book will help your understanding
+- Thanks to Tori-san, it is pleasant to read!
 
 ![bg right w:450](./book.png)
 
@@ -322,15 +331,28 @@ _class: normal
 # WebAssembly
 
 - As you know, a technology for running code in browsers
-  - But I **don't** think that's all
-- IMO, it's the final answer for **embedded application** environments
-  - Browsers are just "one of the embeddable environments"
-  - Can be embedded in various applications with portable VM specifications
-  - envoy, fluent-bit, Containers like youki...
-- Someday, [even for real embedded systems](https://arxiv.org/html/2405.09213v1)
+  - Only browsers?
+
+![bg right w:550](wa.png)
 
 <!--
 - ご存知、ブラウザでコードを動かす技術
+-->
+
+---
+<!--
+_class: normal
+-->
+
+# WebAssembly is not only for browsers
+
+- Browsers are just "one of the runnable environments"
+- Can run everywhere with portable VM
+  - envoy, fluent-bit, Containers like youki...
+
+> [even for real embedded systems...](https://arxiv.org/html/2405.09213v1)
+
+<!--
 - でも僕は**そうは思ってない**
 - アプリ組み込み環境のファイナルアンサーだと思っている
   - ブラウザは「組み込める環境の一つ」にすぎない
@@ -362,9 +384,8 @@ _class: normal
 
 # Why Ruby for WebAssembly (again)
 
-Ruby for "WebAssembly as an embedded environment" is desired
-  - (At least there's one customer - it's ME!)
-- I came to the initial idea; I could manege to do it with mruby
+- Ruby for WebAssembly, with more "embeddability"
+  - Also with the mruby.
 
 <!--
 - 「組み込み環境としてのWebAssembly」のためのRubyが欲しい
@@ -384,7 +405,7 @@ _class: hero
 _class: hero
 -->
 
-# Daily trends
+# Trends of thoughts
 
 ---
 <!--
@@ -394,8 +415,8 @@ _class: normal
 # Trends
 
 - So-called low-level technologies?
-- Lots of Linux stuff (it's coincidentally)
-- I tried utilizing `${mysterious_tech}` from Ruby!
+- Linux mania? (it's coincidentally)
+- "I tried utilizing `${mysterious_tech}` from Ruby!"
 
 <!--
 - 所謂低レイヤ？
@@ -405,14 +426,19 @@ _class: normal
 
 ---
 <!--
+_class: sample
+-->
+
+# My fighting style
+
+---
+<!--
 _class: hero
 -->
 
-# Gave a jab to the lower layers from Ruby World
+# Give a jab to the lower layers from Ruby World
 
 <!-- 低めのレイヤーにRubyでいっちょ噛み -->
-
-- My fighting style
 
 ---
 <!--
@@ -421,8 +447,18 @@ _class: normal
 
 # Gave a jab from Ruby World
 
-- Long live low layers!
-- It's also that ordinary web application engineers don't usually touch...
+- Long live low layers! 💥🥊
+
+---
+<!--
+_class: normal
+-->
+
+# Are you interested in low layers?
+
+- It's even "unknown unknown" from ordinary web application engineers...
+
+![bg right w:300](image-1.png)
 
 ---
 <!--
@@ -436,14 +472,11 @@ _class: hero
 _class: normal
 -->
 
-# Ruby has a weaker presence in the low-level (or SOTA) world
+# A typical low-layer project...
 
-- A typical low-layer project...
-  - Has no Ruby bindings
-  - Has no Ruby sample code
-    - Just has samples for like Go, Python, C++, and Rust
-    - e.g. Supported languages for eBPF(BCC) are Python, Lua, C++
-      - Go and Rust have SDKs for eBPF by volunteers
+- Has **NO** Ruby bindings
+- Has **NO** Ruby sample code
+- Just has samples for like Go, Python, C++, and Rust
 
 <!--
 - Rubyのバインディングがない
@@ -458,15 +491,17 @@ _class: normal
 _class: normal
 -->
 
-# Desire to touch SOTA from Ruby
+# low-layer is SOTA (state-of-the-art)
 
-- The world of computers is constantly evolving
-- Ruby may receive benefit from the results...
-  - (such as gradual typing)
+- Desire to touch SOTA
 - **I want to use Ruby** even when touching advanced things
+  - (image: [Link](https://life-science-project.com/908/))
+
+![bg right w:560](hakase.png)
 
 <!--
 - コンピューターの世界は日々進歩しているらしい
+- SOTAから進化が始まる
 - Rubyが成果を享受できることもあるが...（それこそ、漸進的型とか）
 - 便利なものや進んだものに触れる時もRubyからがいい
 -->
@@ -476,14 +511,10 @@ _class: normal
 _class: normal
 -->
 
-# Desire to make technology my own
+# How am I satisfied with "Getting Started"?
 
-- I hate pretending to understand
-  - Am I satisfied with doing "Getting Started"?
 - Understand the essence through Ruby
-  - They're often not assumed that you'll use them from Ruby
-  - == Hack is required
-  - Deepening understangings by hacking
+  - Adapting SOTAs to Ruby == **Hack**
 
 <!--
 - 自分ごとにしたい
@@ -501,12 +532,9 @@ _class: normal
 
 # Do I really want to "contribute" to OSS?
 
-- Actually, I'm not so interested...
-  - Of course, I'll fix what I'm using and give back if it's open
-- I don't feel like doing anything for a large OSS
-  - Of course, I'll do it if it becomes "my own problem"
-- Basically, I want to create something I'm convinced of
-  - It just happens that they're low-level stuffs
+- Actually, I'm not so interested in huge projects
+  (Of course I'm willing to give back if it's open)
+- I prefer realizing my own ideas!
 
 <!--
 - 実はあまり興味が...
@@ -519,10 +547,26 @@ _class: normal
 
 ---
 <!--
+_class: normal
+-->
+
+- e.g. "Better to be the head of a dog than the tail of a lion"
+
+> 「鶏口となるも牛後となるなかれ」
+
+---
+<!--
 _class: hero
 -->
 
 # Create something<br>useful || interesting
+
+---
+<!--
+_class: hero
+-->
+
+# Back to my newest idea
 
 ---
 <!--
@@ -564,10 +608,10 @@ _class: normal
 // sample.c
 #include <emscripten.h>
 
-void log_value(int size);
+void log_something(int size);
 
 int EMSCRIPTEN_KEEPALIVE calc_plus(int n, int m) {
-  log_value(n + m);
+  log_something(n + m);
   return 0;
 }
 ```
@@ -588,7 +632,7 @@ cache:INFO:  - ok
 
 ```js
 mergeInto(LibraryManager.library, {
-    log_value: function(value) { /* TODO */ }
+    log_something: function(value) { /* TODO */ }
 });
 ```
 
@@ -630,10 +674,10 @@ sample.wasm:    file format wasm 0x1
 Section Details:
 
 Import[1]:
- - func[0] sig=2 <env.log_value> <- env.log_value
+ - func[0] sig=2 <env.log_something> <- env.log_something
 ```
 
-- Inject `log_value()` "browser" function into wasm instance
+- Inject `log_something()` "browser" function into wasm instance
 
 ---
 <!--
@@ -646,7 +690,7 @@ _class: normal
 const obj = {
   env: {
     // Specify the browser-side function here
-    log_value: function(value) {
+    log_something: function(value) {
       let log = "sample wasm! 12 + 34 = " + value.toString();
       document.getElementById("placeholder").innerText = log;
     }
@@ -717,10 +761,9 @@ _class: normal
 
 # WASI is simple if you understand import/export
 
-- WASI = A set of functions that represent "If you import and use them, you can cooperate with the system nicely"
-- On the program side, you just need to use it according to the specification
-- In WASI-compatible runtimes, you just need to prepare those import functions
-  - It's like implementing system calls
+- WASI = A set of usable functions to `import`
+  - For cooperation with the system in a nice way
+
 
 <!--
 - WASI = 「これをimportして使えばシステム操作がええ感じにできるで」という関数のセット
@@ -728,6 +771,13 @@ _class: normal
 - WASI対応ランタイムでは、それらのimport用関数を準備すればいい
   - まさにシステムコールを実装するような感じ
 -->
+
+---
+<!--
+_class: normal
+-->
+
+![](./wasi.png)
 
 ---
 <!--
@@ -754,10 +804,17 @@ random_get(buf: number, buf_len: number) {
 _class: normal
 -->
 
-# What I want to do with mruby/edge is also simple
+# What I want with mruby/edge
 
 - To export Ruby method definitions as they are
-- To be able to use imported functions as the Ruby level methods
+- To use imported functions as Ruby-level methods
+
+---
+<!--
+_class: hero
+-->
+
+# Write it straightforward
 
 ---
 <!--
@@ -803,7 +860,7 @@ _class: hero
 _class: hero
 -->
 
-# WebAssembly Component Model
+# Component Model
 
 ---
 <!--
@@ -813,11 +870,8 @@ _class: normal
 # WebAssembly Component Model
 
 - Refer to interface of Core WASM
-  - It's a bit fuzzy like a C DLL
-- It would be convenient and safe if we define the "connection spec" properly
-  - Types (which are also somewhat flexible and powerful)
-  - Binary specification
-  - Toolchain
+  - It's a bit fuzzy - like a C dynamic object
+- Be more convenient to "connect" programs and world
 
 <!--
 - Core WASMのインタフェース
@@ -837,11 +891,10 @@ _class: normal
 
 - User-friendly typing system
   - WIT format
-  - Can also be considered a kind of RPC
 - Binary specification
   - Canonical ABI
-- Toolchain
-  - We can create more and more once the above is generally available
+- Toolchains
+  - Once the above is generally available
 
 <!--
 - いい感じの型
@@ -858,7 +911,7 @@ _class: normal
 _class: normal
 -->
 
-# FYI: WIT format
+# WIT format
 
 ```lua
 world rubyist-kaigi {
@@ -873,7 +926,7 @@ world rubyist-kaigi {
 _class: normal
 -->
 
-# FYI: Understanding Components by Hands-on
+# FYI: Understanding by Hands-on
 
 - "手書きで理解するWebAssembly Component Model"
   - (Understanding the WebAssembly Component Model by Hand Assemble)
@@ -885,7 +938,7 @@ _class: normal
 _class: normal
 -->
 
-# wasmCloud, Future for example
+# wasmCloud,<br>Future for example
 
 ![bg right w:600](./wasmcloud.png)
 
