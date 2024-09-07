@@ -1,8 +1,11 @@
 ----
 marp: true
+title: "Rubyをこじらせて"
+description: "At Fukuoka Rubyist Kaigi 2024.09.02; Presentation by Uchio Kondo"
 header: "Rubyをこじらせて"
-footer: "presentation by Uchio Kondo"
+footer: "@ Fukuoka Rubyist Kaigi 2024.09"
 theme: fukuokarb
+image: https://udzura.jp/slides/2024/rubyistkaigi/ogp.png
 paginate: true
 ----
 
@@ -15,7 +18,12 @@ _class: hero
 ## &nbsp;Ruby is like a teenage angst to me
 
 <!--
-"こじらせる" means: to develop a kind of obsession or a heavy addiction with something; e.g. hobby, hard job, complex, etc.
+For audiences who's not so good at Japanese; Hola, I'm so happy to meet you here in Fukuoka.
+
+"こじらせる" means: to develop a kind of obsession or a heavy addiction with something; for example, "趣味をこじらせる" means they has some addiction in their hobby.
+
+I've written this slides in English, but I'll present this talk in Japanese.
+So please feel free if you want to ask details about slide contents or codes at any time later.
 -->
 
 ----
@@ -60,7 +68,7 @@ _class: hero
 
 # Prospectus
 
-<!-- 目論見書 -->
+> 「目論見書」
 
 ---
 <!--
@@ -76,7 +84,7 @@ _class: hero
 
 # Bibliographic commentary
 
-<!-- 解題 -->
+> 「解題」
 
 ---
 <!--
@@ -110,8 +118,9 @@ _class: normal
   - cgroup
   - namespace
   - pivot_root
-  - capability
-  - seccomp, ...
+  - capability, seccomp, ...
+
+> Linuxの要素技術を自分で繋ぎ直したのがHaconiwa
 
 ![bg right w:500](haconiwa.png)
 
@@ -154,6 +163,8 @@ _class: normal
   - Dump Rails' process status into files
   - Boot from it -> it's fast!
 
+> CRIUはプロセスをファイルにダンプして、そこから再生できるツール
+
 ![bg right w:460](criu.png)
 
 <!--
@@ -186,7 +197,9 @@ _class: hero
 
 ---
 <!--
-_class: normal
+_class:
+  - normal
+  - wider-note
 -->
 
 # eBPF
@@ -195,6 +208,9 @@ _class: normal
   - For Networking, Observability, Security...
   - Safer than kernel module
   - Deeper than system calls
+
+> eBPFは、カーネルの機能を使うための仕組みの一つ
+> カーネルモジュールより安全、システムコールより奥深い
 
 ![bg right w:400](ebpf.png)
 
@@ -217,6 +233,8 @@ _class: normal
 - Rucy **compiles Ruby scripts** into special bytecodes
   - The eBPF bytecodes!
   - Rucy = Ruby Compiler = RuC
+
+> RucyはRubyスクリプトをeBPFの形式に「コンパイル」する
 
 <!-- 
 - RucyはRubyのスクリプトをそのバイトコードに**コンパイル**する
@@ -274,8 +292,13 @@ _class: normal
 - RbBCC has **a larger coverage** of eBPF functions
   - Sufficient enough for learning and small tools
 
+> 今の潮流はAOTだが、サクッと使う分にはRbBCCの方が機能が多い
+
 <!--
 # BCCはどう違うのか
+
+- 今の潮流はAOTコンパイルeBPFではあるので、Rucyを作りました
+- RbBCCの方が使える機能は多いです
 
 - 基本的にeBPFは**コンパイル型**のエコシステムに移行中
   - BPF CO-RE などで検索
@@ -300,6 +323,8 @@ _class: hero
 - This book will help your understanding
 - Thanks to Tori-san, it is pleasant to read!
 
+> 鳥井さん、ありがとうございました
+
 ![bg right w:450](./book.png)
 
 ---
@@ -308,6 +333,8 @@ _class: hero
 -->
 
 # <s>2023</s>
+
+> 敗北を知りたい
 
 ---
 <!--
@@ -333,6 +360,8 @@ _class: normal
 - As you know, a technology for running code in browsers
   - Only browsers?
 
+> 「なんかブラウザで動くやつ」
+
 ![bg right w:550](wa.png)
 
 <!--
@@ -349,8 +378,10 @@ _class: normal
 - Browsers are just "one of the runnable environments"
 - Can run everywhere with portable VM
   - envoy, fluent-bit, Containers like youki...
+  - [even for real embedded systems...](https://arxiv.org/html/2405.09213v1)
 
-> [even for real embedded systems...](https://arxiv.org/html/2405.09213v1)
+> ブラウザ外の「アプリケーション組み込み」が個人的に熱い。
+> envoy、youki、使ったことありますか？
 
 <!--
 - でも僕は**そうは思ってない**
@@ -371,7 +402,6 @@ _class: normal
 - **Web**Assembly will probably not be just for the web
 - ... Just like eBPF is no longer "Berkeley **Packer Filter**"
 
-
 <!--
 - eBPFがもはや全く "Berkeley **Packer Filter**" でないように
 - **Web**AssemblyもWebだけではなくなるのだろう
@@ -386,6 +416,8 @@ _class: normal
 
 - Ruby for WebAssembly, with more "embeddability"
   - Also with the mruby.
+
+> 違うアプローチをしたい理由があります
 
 <!--
 - 「組み込み環境としてのWebAssembly」のためのRubyが欲しい
@@ -418,6 +450,8 @@ _class: normal
 - Linux mania? (it's coincidentally)
 - "I tried utilizing `${mysterious_tech}` from Ruby!"
 
+> 「 `${謎技術}` をRubyから使ってみた！」
+
 <!--
 - 所謂低レイヤ？
 - Linux ネタが多め（たまたま）
@@ -431,6 +465,8 @@ _class: sample
 
 # My fighting style
 
+> 「芸風」
+
 ---
 <!--
 _class: hero
@@ -438,16 +474,7 @@ _class: hero
 
 # Give a jab to the lower layers from Ruby World
 
-<!-- 低めのレイヤーにRubyでいっちょ噛み -->
-
----
-<!--
-_class: normal
--->
-
-# Gave a jab from Ruby World
-
-- Long live low layers! 💥🥊
+> 低めのレイヤーにRubyでいっちょ噛み
 
 ---
 <!--
@@ -457,6 +484,8 @@ _class: normal
 # Are you interested in low layers?
 
 - It's even "unknown unknown" from ordinary web application engineers...
+
+> 普通にWebアプリを作ってる分には隠蔽されていることばかり...
 
 ![bg right w:300](image-1.png)
 
@@ -478,6 +507,8 @@ _class: normal
 - Has **NO** Ruby sample code
 - Just has samples for like Go, Python, C++, and Rust
 
+> 最近の低レイヤツール、クラウドネイティブミドルウェア、マジでRubyの<br>サポートがない（個人の感想です）
+
 <!--
 - Rubyのバインディングがない
 - Rubyのサンプルコードがない
@@ -488,7 +519,9 @@ _class: normal
 
 ---
 <!--
-_class: normal
+_class:
+  - normal
+  - wider-note
 -->
 
 # low-layer is SOTA (state-of-the-art)
@@ -496,6 +529,8 @@ _class: normal
 - Desire to touch SOTA
 - **I want to use Ruby** even when touching advanced things
   - (image: [Link](https://life-science-project.com/908/))
+
+> Rubyから触れない＝ `${最新の超技術X}` がアウトオブ眼中になる、はなんか勿体無い
 
 ![bg right w:560](hakase.png)
 
@@ -516,6 +551,8 @@ _class: normal
 - Understand the essence through Ruby
   - Adapting SOTAs to Ruby == **Hack**
 
+> Rubyサポートを入れるには「本質」が分かってないといけないので勉強になる
+
 <!--
 - 自分ごとにしたい
 - 「わかったつもりになる」のは嫌だ
@@ -527,32 +564,10 @@ _class: normal
 
 ---
 <!--
-_class: normal
+_class: hero
 -->
 
-# Do I really want to "contribute" to OSS?
-
-- Actually, I'm not so interested in huge projects
-  (Of course I'm willing to give back if it's open)
-- I prefer realizing my own ideas!
-
-<!--
-- 実はあまり興味が...
-  - もちろん使っているものは直す、オープンなら還元しますが
-- 大きなOSSに何かしたいという気持ちが薄い
-  - もちろん「自分ごと」になればやります
-- 基本的には、自分が納得するものを作りたい
-  - 納得できそうなものがたまたま低いレイヤに多い
--->
-
----
-<!--
-_class: normal
--->
-
-- e.g. "Better to be the head of a dog than the tail of a lion"
-
-> 「鶏口となるも牛後となるなかれ」
+# Hack the SOTA technologies
 
 ---
 <!--
@@ -592,8 +607,10 @@ _class: normal
 - Key specifications:
   - import/export Functions
   - Linear memory
+- I'll omit the latter for today...
+    
 
-> I'll omit the latter for today...
+> Linear memoryは線形メモリとも / その話は今日は時間なし...
 
 ---
 <!--
@@ -743,9 +760,7 @@ _class: hero
 
 # The primary concept of WebAssembly
 
-
-- Opinions are my own...
-
+> 昭和の表現で言えば「一丁目一番地」の仕様やで（個人の意見です）
 
 ---
 <!--
@@ -764,6 +779,7 @@ _class: normal
 - WASI = A set of usable functions to `import`
   - For cooperation with the system in a nice way
 
+>  WASI = 「これをimportして使えばシステム操作がええ感じにできるで」<br>という関数のセット
 
 <!--
 - WASI = 「これをimportして使えばシステム操作がええ感じにできるで」という関数のセット
@@ -799,12 +815,14 @@ random_get(buf: number, buf_len: number) {
 }
 ```
 
+> `random_get` をJSで書いてimportさせればWASMでrandomが使えるということ
+
 ---
 <!--
 _class: normal
 -->
 
-# What I want with mruby/edge
+# What I expect with mruby/edge
 
 - To export Ruby method definitions as they are
 - To use imported functions as Ruby-level methods
@@ -815,6 +833,8 @@ _class: hero
 -->
 
 # Write it straightforward
+
+> 素直にメソッドを書いたらexport/importされて欲しい
 
 ---
 <!--
@@ -873,6 +893,8 @@ _class: normal
   - It's a bit fuzzy - like a C dynamic object
 - Be more convenient to "connect" programs and world
 
+> Core WASM の仕様は色々余地があるので、型をしっかりし、自動検知や<br>自動生成にフレンドリーにした感じという理解でOK、だと思う
+
 <!--
 - Core WASMのインタフェース
   - CのDLLのようにふわっとしたところがある
@@ -921,6 +943,10 @@ world rubyist-kaigi {
 }
 ```
 
+- OK, some kinda DSL may be desired
+
+> Rubyist的には...
+
 ---
 <!--
 _class: normal
@@ -947,7 +973,7 @@ _class: normal
 
 ---
 <!--
-_class: normal
+_class: quote
 -->
 
 # Running Ruby on wasmCloud
@@ -1043,17 +1069,22 @@ _class: normal
 
 ---
 <!--
-_class: hero
+_class:
+  - hero
+  - wider-note
 -->
 
 # Ruby wants to connect the world, too
 
+> Rubyでコアビジネスロジックを書く、特殊なアルゴリズムとかLLMなところとかクラウドネイティブな機能は
+他の言語のものと組み合わせる、という世界観。例えば
+
 ---
 <!--
-_class: hero
+_class: quote
 -->
 
-<div style="position: absolute; left: 62%; width: 30%; font-size: smaller;">
+<div style="position: absolute; left: 62%; width: 35%; font-size: smaller;">
 
 > I talked with @yu_suke1994 at tskaigi about the future of Ruby, and we agreed that the only way for Ruby to survive is to release a lightweight runtime that supports wasm soon and integrate it with the component model ecosystem. So, @udzura, please do your best!
 
