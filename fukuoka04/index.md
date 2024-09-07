@@ -1007,6 +1007,8 @@ impl Guest for HttpServer {
 }
 ```
 
+- https://github.com/udzura/mruby-wasmcloud-http
+
 ---
 <!--
 _class: normal
