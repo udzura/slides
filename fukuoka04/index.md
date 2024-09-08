@@ -5,7 +5,7 @@ description: "At Fukuoka Rubyist Kaigi 2024.09.02; Presentation by Uchio Kondo"
 header: "Rubyをこじらせて"
 footer: "@ Fukuoka Rubyist Kaigi 2024.09"
 theme: fukuokarb
-image: https://udzura.jp/slides/2024/rubyistkaigi/ogp.png
+image: https://udzura.jp/slides/2024/rubyistkaigi04/ogp.png
 paginate: true
 ----
 
