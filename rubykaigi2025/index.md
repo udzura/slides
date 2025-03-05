@@ -6,7 +6,7 @@ backgroundImage: url(./rubykaigi2025_bg.004.jpeg)
 title: Running ruby.wasm on Pure Ruby WASM Runtime
 description: On RubyKaigi 2025 Matzyama / Running ruby.wasm on Pure Ruby WASM Runtime
 # header: "Running ruby.wasm on Pure Ruby WASM Runtime"
-image: https://udzura.jp/slides/2025/rubykaigi/ogp.png#TODO
+image: https://udzura.jp/slides/2025/rubykaigi/ogp.png
 ----
 
 ![bg](./rubykaigi2025_bg.001.jpeg)
