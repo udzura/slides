@@ -1,4 +1,10 @@
-/* @theme rubykaigi2025 */
+/* 
+ * @theme rubykaigi2025
+ * @auto-scaling true
+ * @size 16:9 1280px 720px
+ * @size 4:3 960px 720px
+ * @size 16:10 1280px 800px
+ */
 
 @import 'default';
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');

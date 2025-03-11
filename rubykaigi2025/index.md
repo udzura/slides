@@ -7,6 +7,7 @@ title: Running ruby.wasm on Pure Ruby WASM Runtime
 description: On RubyKaigi 2025 Matzyama / Running ruby.wasm on Pure Ruby WASM Runtime
 # header: "Running ruby.wasm on Pure Ruby WASM Runtime"
 image: https://udzura.jp/slides/2025/rubykaigi/ogp.png
+size: 16:9
 ----
 
 ![bg](./rubykaigi2025_bg.001.jpeg)
