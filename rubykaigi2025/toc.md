@@ -267,7 +267,32 @@ Running ruby.wasm on Pure Ruby WASM Runtime
 
 # バイナリフォーマット
 
+- ゴリラ本の通りに素直に実装している
+  - セクションのフォーマット
+    - 冒頭にヘッダ、中身のサイズ
+    - その後にセクションごとの中身というシンプルな構造ではある
 - leb128という数値表現の実装が必要で、自作した
+
+----
+
+# VMの基本的なコード
+
+- 基本的にはこういうコードなのでVMもシンプル
+
+```ruby
+def execute!
+  loop do
+    cur_frame = self.call_stack.last #: Frame
+    break unless cur_frame
+    cur_frame.pc += 1
+    insn = cur_frame.body[cur_frame.pc] #: Op
+    break unless insn
+    eval_insn(cur_frame, insn)
+  end
+end
+```
+
+- 細かい点はデバッグしながら修正
 
 ----
 
@@ -292,7 +317,10 @@ Running ruby.wasm on Pure Ruby WASM Runtime
 
 # 苦労した点
 
-- いやめっちゃ数多いやん...（めっちゃ、でもない？）
+- いやめっちゃ数多いやん...（もしかしたら、めっちゃ、でもない？）
+- 全部で 192 命令を実装した
+  - そんなに多くなく見える...
+- なんか地道に頑張った
 
 ----
 
@@ -300,31 +328,552 @@ Running ruby.wasm on Pure Ruby WASM Runtime
 
 - 数値演算系はファイル生成で対応している
 - Rake taskでgenerator作った
+- この自動生成した命令が167個らしい
+
+```
+$ git grep 'when :' lib/*/*generated.rb | wc -l
+     167
+```
+
+----
+# 自動生成と言っても
+
+- 割とテンプレートは頑張って書かないといけない...
+- 型が4つあるので、共通のものは同じ様になる
+  - i32, i64, f32, f64
 
 ----
 
-# TBD: 次のマイルストーン
+# サンプルプログラムの動作
+
+- 命令が実装できたので
+- 別のプロジェクトで作ってた、Rust製のgrayscale処理のプログラムを動かしてみた
 
 ----
 
-	Warditeの開発の歴史
-		マイルストーン //  [* TODO]！ここをこれから詳しく書く ref [Wardite開発の歴史を思い出したい] 他
-			ゴリラ本の実装
-			全実装のカバー
-			grayscaleサンプルプログラムの動作
-   	上の中でwasm specを動かす話が出る
- 		ruby.wasmの起動
- 		ruby.wasmでrequireを動かす（予定）
- 	最後に、ruby.wasmの動作デモ
- パフォーマンス計測との向き合い（経過でも）
-	 最初のパフォーマンス改善
-	 	簡単
-	 インスタンス作りすぎ問題
-	 	よく使うやつのメモ化
-	 	インスタンス作成自体を削減してみるか...
-	 YJITの影響
-	 	バージョンが上がると確かに高速になる話か
- 今後について
- 	全体的なリファクタ、　パフォーマンスに加えて...
- 	core specのカバレッジ向上
- 	component model対応
+# 動かない...
+
+- ということでこれをデバッグしていく
+- ref: https://udzura.hatenablog.jp/entry/2024/11/24/210124
+
+----
+
+# メモリ確保(memory.grow)の修正
+
+- まず、メモリの確保が正しく動いてなくてオーバーフローしてしまっていた
+- 修正箇所は1行だが、原因箇所を突き止めるのになかなか苦労...
+
+----
+
+# しかしそれでも動かない
+
+- Rustのpanicは `unreachable` に変換されてしまいよくわからない
+- panicさせず、エラー文字列を返却する様に変えてみた
+
+----
+
+# エラー文字列
+
+> `Format error decoding Png: Corrupt deflate stream. DistanceTooFarBack`
+- Rust側の処理を眺めてみる
+- なるほどわからん
+- やってることは
+  - pngをデコードしている
+  - deflateの圧縮を解いている
+  - その中でエラーが出ている
+
+----
+
+# deflateを正しく...？
+
+- deflateの処理を見る限りビットシフト演算が多用されているのはわかる
+- これらのうちどれかがうまく動いていないのでは？
+
+----
+
+# i32 の命令の正しさを確認する
+
+- core specのテストを実行してみる
+- 動かし方
+  - core specのテストケースが用意されている
+  - それから、wasmのバイナリと実行シナリオを生成する
+  - それをWarditeで実行する
+
+----
+
+# 参考: core spec を動かしている例
+
+- wast2json でテストケースを生成できる
+- そもそもRubyを使っているので、こういう地道なタスクの自動化は楽チン
+
+----
+
+# こういう感じのテスターを作成
+
+- wast2json でテストケースのためのファイルを作る
+- そのファイルをiterateして、Rubyのtest-unitのテストとして実行する
+  - バイナリ、パラメータをもとに Wardite.load().call する
+
+----
+
+# それで逐一直していく
+
+- バイナリフォーマットが壊れている等のテストケースは一旦オミット
+- 正常系は全体が通る様になった
+
+----
+
+# grayscaleが動いた！
+
+- 変換された画像の様子
+- パフォーマンスの話は最後にまとめて
+
+----
+
+# もっと（？）実用的なものを動かしたい
+
+- いよいよruby.wasmを動かすチャレンジ
+
+----
+
+# ruby.wasmを動かす
+
+- warditeコマンドにruby.wasmを渡すと動くようにしたい
+- 必要なものは？
+  - ruby.wasmの動作にはWASIの対応が必要
+
+----
+
+# ruby.wasmに必要なWASI関数は？
+
+- 全部じゃないがそれなりにある
+  - ビルドオプションによって変わりそうだが
+  - 37関数が必要
+
+```
+$ wasm-objdump -x -j Import ./ruby-wasm32-wasi/usr/local/bin/ruby
+```
+
+----
+
+```
+Import[37]:
+ - func[0] sig=1 <__imported_wasi_snapshot_preview1_args_get> <- wasi_snapshot_preview1.args_get
+ - func[1] sig=1 <__imported_wasi_snapshot_preview1_args_sizes_get> <- wasi_snapshot_preview1.args_sizes_get
+ - func[2] sig=1 <__imported_wasi_snapshot_preview1_environ_get> <- wasi_snapshot_preview1.environ_get
+ - func[3] sig=1 <__imported_wasi_snapshot_preview1_environ_sizes_get> <- wasi_snapshot_preview1.environ_sizes_get
+ - func[4] sig=1 <__imported_wasi_snapshot_preview1_clock_res_get> <- wasi_snapshot_preview1.clock_res_get
+ - func[5] sig=37 <__imported_wasi_snapshot_preview1_clock_time_get> <- wasi_snapshot_preview1.clock_time_get
+ - func[6] sig=38 <__imported_wasi_snapshot_preview1_fd_advise> <- wasi_snapshot_preview1.fd_advise
+ - func[7] sig=2 <__imported_wasi_snapshot_preview1_fd_close> <- wasi_snapshot_preview1.fd_close
+ - func[8] sig=2 <__imported_wasi_snapshot_preview1_fd_datasync> <- wasi_snapshot_preview1.fd_datasync
+ - func[9] sig=1 <__imported_wasi_snapshot_preview1_fd_fdstat_get> <- wasi_snapshot_preview1.fd_fdstat_get
+ - func[10] sig=1 <__imported_wasi_snapshot_preview1_fd_fdstat_set_flags> <- wasi_snapshot_preview1.fd_fdstat_set_flags
+ - func[11] sig=1 <__imported_wasi_snapshot_preview1_fd_filestat_get> <- wasi_snapshot_preview1.fd_filestat_get
+ - func[12] sig=26 <__imported_wasi_snapshot_preview1_fd_filestat_set_size> <- wasi_snapshot_preview1.fd_filestat_set_size
+ - func[13] sig=27 <__imported_wasi_snapshot_preview1_fd_pread> <- wasi_snapshot_preview1.fd_pread
+ - func[14] sig=1 <__imported_wasi_snapshot_preview1_fd_prestat_get> <- wasi_snapshot_preview1.fd_prestat_get
+ - func[15] sig=0 <__imported_wasi_snapshot_preview1_fd_prestat_dir_name> <- wasi_snapshot_preview1.fd_prestat_dir_name
+ - func[16] sig=27 <__imported_wasi_snapshot_preview1_fd_pwrite> <- wasi_snapshot_preview1.fd_pwrite
+ - func[17] sig=3 <__imported_wasi_snapshot_preview1_fd_read> <- wasi_snapshot_preview1.fd_read
+ - func[18] sig=27 <__imported_wasi_snapshot_preview1_fd_readdir> <- wasi_snapshot_preview1.fd_readdir
+ - func[19] sig=1 <__imported_wasi_snapshot_preview1_fd_renumber> <- wasi_snapshot_preview1.fd_renumber
+ - func[20] sig=45 <__imported_wasi_snapshot_preview1_fd_seek> <- wasi_snapshot_preview1.fd_seek
+ - func[21] sig=2 <__imported_wasi_snapshot_preview1_fd_sync> <- wasi_snapshot_preview1.fd_sync
+ - func[22] sig=1 <__imported_wasi_snapshot_preview1_fd_tell> <- wasi_snapshot_preview1.fd_tell
+ - func[23] sig=3 <__imported_wasi_snapshot_preview1_fd_write> <- wasi_snapshot_preview1.fd_write
+ - func[24] sig=0 <__imported_wasi_snapshot_preview1_path_create_directory> <- wasi_snapshot_preview1.path_create_directory
+ - func[25] sig=5 <__imported_wasi_snapshot_preview1_path_filestat_get> <- wasi_snapshot_preview1.path_filestat_get
+ - func[26] sig=64 <__imported_wasi_snapshot_preview1_path_filestat_set_times> <- wasi_snapshot_preview1.path_filestat_set_times
+ - func[27] sig=13 <__imported_wasi_snapshot_preview1_path_link> <- wasi_snapshot_preview1.path_link
+ - func[28] sig=65 <__imported_wasi_snapshot_preview1_path_open> <- wasi_snapshot_preview1.path_open
+ - func[29] sig=9 <__imported_wasi_snapshot_preview1_path_readlink> <- wasi_snapshot_preview1.path_readlink
+ - func[30] sig=0 <__imported_wasi_snapshot_preview1_path_remove_directory> <- wasi_snapshot_preview1.path_remove_directory
+ - func[31] sig=9 <__imported_wasi_snapshot_preview1_path_rename> <- wasi_snapshot_preview1.path_rename
+ - func[32] sig=5 <__imported_wasi_snapshot_preview1_path_symlink> <- wasi_snapshot_preview1.path_symlink
+ - func[33] sig=0 <__imported_wasi_snapshot_preview1_path_unlink_file> <- wasi_snapshot_preview1.path_unlink_file
+ - func[34] sig=3 <__imported_wasi_snapshot_preview1_poll_oneoff> <- wasi_snapshot_preview1.poll_oneoff
+ - func[35] sig=4 <__imported_wasi_snapshot_preview1_proc_exit> <- wasi_snapshot_preview1.proc_exit
+ - func[36] sig=1 <__imported_wasi_snapshot_preview1_random_get> <- wasi_snapshot_preview1.random_get
+```
+
+----
+
+# WarditeのWASI実装方針
+
+- `Wardite::WasiSnapshotPreview1` というクラスにまとめて実装する様にした
+
+----
+
+```ruby
+module Wardite
+  class WasiSnapshotPreview1
+    # @rbs store: Store
+    # @rbs args: Array[wasmValue]
+    # @rbs return: Object
+    def clock_time_get(store, args)
+      clock_id = args[0].value
+      _precision = args[1].value
+      timebuf64 = args[2].value
+      if clock_id != 0 # - CLOCKID_REALTIME
+        return Wasi::EINVAL
+      end
+      now = Time.now.to_i * 1_000_000
+      memory = store.memories[0]
+      now_packed = [now].pack("Q!")
+      memory.data[timebuf64...(timebuf64+8)] = now_packed
+      0
+    end
+  end
+end
+```
+
+----
+
+# 基本戦略
+
+- `loop do`
+  - ruby.wasm を起動させようとする
+  - **** という関数がなくて動かない！と言われる
+  - それを実装していく
+- `end` !
+
+----
+
+# どんな関数を実装したか
+
+```
+- argvの取得
+- 環境変数の取得
+- 現在時間の取得
+- 乱数の取得
+- prestat系の関数
+  - 後述するがこれは実装を間違えていた。いわゆる `stat(2)` と無関係な関数
+- read/write
+- その他、 `fd` から各種情報を取得する関数(filestat系)
+```
+
+----
+
+# ちなみに
+
+- 最後の最後で `if` の実装を間違えていてハマってた
+  - いやなんかWASI無関係に動かないんだけどってなって
+  - `wasm-tools print` でwat形式と睨めっこしてたらやっと気づいた...。
+
+----
+
+# ruby.wasmの `--version` が動く様になった
+
+- Wardite 0.6.0 としてリリースした
+- [その時点でのコード](https://github.com/udzura/wardite/blob/7ef48389415df9e44784d515f3e0e96aa00f2ad2/lib/wardite/wasi.rb)
+- 12個の関数で動いた
+
+----
+
+# この時点での挙動
+
+- ファイルを認識できない。requireで警告
+- RubyのC実装コアライブラリは読み込んでるので動く
+  - Integer#timesの例
+
+```
+$ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
+`RubyGems' were not loaded.
+`error_highlight' was not loaded.
+`did_you_mean' was not loaded.
+`syntax_suggest' was not loaded.
+"hello: 0"
+"hello: 1"
+"hello: 2"
+"hello: 3"
+"hello: 4"
+```
+
+----
+
+# requireを動かしたい
+
+- そのためには、Warditeにファイルシステムをまともに認識させる必要がある
+
+----
+
+# ファイルシステムはじめの実装
+
+- まずはファイルをオープンさせるところから
+  - 雑に `path_open` という関数を実装してみたが、ちゃんと動かない
+- そもそも呼ばれない。なぜ？
+
+----
+
+# preopensという仕組み
+
+- wasi-sdkのlibcを参照する
+- https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L246-L276
+
+----
+
+# WASI p1対応ランタイムにおけるファイルシステムの扱い
+
+- WASI p1対応のWASMランタイムは、通常、何もしないと起動時に親のファイルシステムに触れることができない。
+- WASMランタイムを起動する時、事前に、 fd = 3 以降に親環境の共有したいファイルシステムの情報を渡す必要がある
+- wasi-sdkであれば `__wasilibc_populate_preopens(void)` という関数でファイルシステムの登録を行っている
+  - fd = 3 から順番にpreopen環境を検査する: `fd_prestat_get()`
+  - 正常なら、 `fd_prestat_dir_name()` で名前を取得し、プロセスに登録している
+  - 登録がなくなれば `EBADF` を返却して抜ける
+- `path_open()` などはそのpreopen環境が登録されていないとそもそも呼ばれない
+
+----
+
+# prestat系の関数を実装した
+
+- `fd_prestat_get()` と `fd_prestat_dir_name()` を実装した
+- これで動くか...と思いきや追加でいくつか実装
+  - 特に `fd_readdir()` がしんどかったですね...。
+
+----
+
+# requireの警告なしで通常のRubyが起動した
+
+- めでたしめでたし
+
+![alt text](image.png)
+
+- ただし、起動はすごく遅くなる...
+
+----
+
+# ここまでで起動のデモをします
+
+- `--disable gems` でやらせてください(1分近く違うので...)
+
+```
+$ bundle exec wardite \
+    --mapdir ./ruby-wasm32-wasi/:/ ./ruby -- \
+    --disable-gems -e '5.times { p "hello: #{_1}" }'
+```
+
+----
+
+# パフォーマンス計測との向き合い
+
+----
+
+# パフォーマンス計測との向き合い
+
+- いくつか実施した内容を話します
+  - ブロックジャンプ先のキャッシュ
+  - インスタンス生成の問題（TODO）
+  - YJITの効果
+
+----
+
+# お断り
+
+- サンプルプログラムはgrayscale処理(Rust製)を使っている
+  - 内部はbase64 encode/decode + PNGの展開(deflate)
+  - ワークロードで結果が変わるもんであることは留意の上で読んでほしい
+
+----
+
+# ブロックジャンプ先のキャッシュ
+
+- WebAssemblyのジャンプ系の命令の説明
+  - if, block, loop
+  - これらの命令は、対応するendの位置を知っている必要がある
+
+----
+
+# ところで、　ruby-profで初期実装を計測したところ
+
+- 明らかに `fetch_ops_while_end` というメソッドが上位に...
+
+```
+------------------------------------------------------------------------------------------------------------------------------------------------------
+                     54.539      9.845      0.000     44.69413069318/13069318     Kernel#loop
+  73.63%  13.29%     54.539      9.845      0.000     44.694         13069318     Wardite::Runtime#eval_insn     /Users/udzura/ghq/github.com/udzura/wardite/lib/wardi
+te.rb:420
+                     19.493      0.024      0.000     19.469      95886/95886     Wardite::Runtime#fetch_ops_while_end
+                     15.638      6.483      0.000      9.156  5225913/5225913     <Module::Wardite::Evaluator>#i32_eval_insn
+                      3.330      1.238      0.000      2.093  1155055/1155055     Wardite::Runtime#do_branch
+                      0.773      0.773      0.000      0.00013069318/13069318     Wardite::Op#namespace
+                      0.757      0.757      0.000      0.00012631671/73174992     Array#[]
+                      0.749      0.749      0.000      0.00015275900/53340046     BasicObject#!
+                      0.542      0.542      0.000      0.00010109073/23362733     Wardite::Runtime#stack
+```
+
+----
+
+# 最初の素朴な実装
+
+- if/block/loop 命令に来るごとに：
+  - 現在のcodeの先を見て、対応するendの位置を計算していた
+- したがって、何回もループしたり、ifを含む関数を何度も呼んだりしたら毎回fetchして計算していることになる...
+
+----
+
+# 事前に計算させることにした
+
+- 一度命令をパースしたらrevisitさせる
+  - その際if/block/loop 命令の時に、その場でendの位置を計算させる
+- 命令のメタデータで `end` の位置を持たせてそれを使うことにした
+- WebAssemblyは命令が動的に書き変わることはないので、事前計算の方向でやっていった
+  - WarditeはJITをしないんで...。
+
+----
+
+# これだけで実行時間を43%削った
+
+- ひとまず改善！
+
+----
+
+# インスタンス生成の問題
+
+- 次に、perfでWarditeのボトルネックを計測したが...
+- これと言って、明らかに遅い箇所はなさそう
+- ただ、よく出てくるのが
+  - `rb_vm_set_ivar_id`
+  - `rb_class_new_instance_pass_kw`
+- これらはYJITしてもしなくても上位に出てくる
+
+----
+
+# つまり
+
+- インスタンスを作りまくってて遅い
+- Warditeの内部Valueはこういう実装なので、インスタンス変数に値を持ってるのも遅い、か？
+
+```ruby
+class I32
+  def initialize(value)
+    @value = value
+  end
+end
+```
+
+----
+
+# 実際どんぐらい作ってるの？
+
+- Warditeの内部Valueは同名のメソッド経由で作るので以下の様に計測できる
+
+```ruby
+$COUNTER = {}
+
+TracePoint.trace(:call) do |tp|
+  if %i(I32 I64 F32 F64).include?(tp.method_id)
+    $COUNTER[tp.method_id] ||= 0
+    $COUNTER[tp.method_id] += 1
+  end
+end
+
+END {
+  pp $COUNTER
+}
+```
+
+----
+
+# 例えばgrayscale
+
+```
+{:I32=>18845604, :I64=>1710552, :F32=>247500}
+```
+
+I32の場合1880万個のインスタンスを作っている...
+
+----
+
+# 思ったこと
+
+- I32とは言っても、特定の値のインスタンスが多いのでは？
+  - 例えば、-1, 0, 1, 2, 3, 4, 5...
+- メモ化してみよう
+
+----
+
+```ruby
+class I32
+  (0..64).each do |value|
+    @@i32_object_pool[value] = I32.new(value)
+  end
+  value = -1 & I32::I32_MAX
+  @@i32_object_pool[value] = I32.new(value)
+
+  def self.cached_or_initialize(value)
+    @@i32_object_pool[value] || I32.new(value)
+  end
+end
+```
+
+----
+
+# 一応効果が出た
+
+- 1秒ぐらいは変わった
+- 計測結果が見つからない。あとで再計測して置いとく
+
+----
+
+# これ以上のチューニングは？
+
+- I32 などの値でそもそもオブジェクトを作らない（Integerをそのまま扱う）様にすればいいだろう
+- しかし、設計の大幅な変更を伴うので...
+  - 今後の課題になっている
+
+----
+
+# YJITの効果
+
+- もちろんWarditeの実行速度向上にYJITは効果覿面
+- 参考のため結果だけ置いておく
+
+----
+
+# Ruby 3.3系での結果
+
+- デフォルト
+- `--yjit`
+
+----
+
+# Ruby 3.4系での結果
+
+- デフォルト
+- `--yjit`
+- ご覧の通り3.3より効果が大きくなってる。いつもアリガト！
+
+----
+
+# Ruby-dev@2025/04/05 では...？
+
+- `# TODO`
+
+----
+
+# 参考ブログ
+
+- https://udzura.hatenablog.jp/entry/2024/12/20/173728
+
+----
+
+# Warditeの今後
+
+- まだまだ実装が必要
+  - Core Specのカバレッジ向上
+  - 全体的なリファクタリング
+  - パフォーマンス改善
+  - WASIのカバレッジ向上
+  - component model対応 ...
+
+----
+
+# Wasm Runtimeに興味がある方募集中
+
+- まずは、遊びでもいいのでぜひ使って見てください
+
+----
+
+# Thanks!
+
