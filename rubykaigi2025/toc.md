@@ -24,6 +24,40 @@ Running ruby.wasm on Pure Ruby WASM Runtime
 
 # 今日のテーマ: Wardite
 
+----
+
+# Warditeとは
+
+- Pure Ruby WebAssembly Runtimeです
+
+----
+
+# Warditeを動かす
+
+```
+$ gem install wardite
+$ wardite --mapdir ./root/:/ ./helloworld.wasm
+Hello, world
+```
+
+----
+
+# Warditeをgemとして使う
+
+```ruby
+require 'wardite'
+
+instance = Wardite.new(path: './helloworld.wasm', enable_wasi: true)
+ret = instance._start
+#=> Output: Hello, world
+p ret
+#=> I32(0)
+```
+
+----
+
+# 改めて、Warditeとは
+
 - Pure Ruby WebAssembly Runtimeです
 - WebAssembly って何？
 - WebAssembly Runtimeって何？
@@ -828,6 +862,7 @@ end
 
 - もちろんWarditeの実行速度向上にYJITは効果覿面
 - 参考のため結果だけ置いておく
+  - 環境は全部 aarch64
 
 ----
 
@@ -846,7 +881,7 @@ end
 
 ----
 
-# Ruby-dev@2025/04/05 では...？
+# Ruby 3.5-dev@2025/04/05 では...？
 
 - `# TODO`
 
