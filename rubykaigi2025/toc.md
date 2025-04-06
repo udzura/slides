@@ -36,7 +36,7 @@ Running ruby.wasm on Pure Ruby WASM Runtime
 
 ```
 $ gem install wardite
-$ wardite --mapdir ./root/:/ ./helloworld.wasm
+$ wardite ./helloworld.wasm
 Hello, world
 ```
 
@@ -73,16 +73,29 @@ p ret
 
 ----
 
-# WebAssembly　はブラウザで動く
+# WebAssemblyはブラウザで動く
 
 - こういうCのコードをwasmにコンパイルして動かせる
+
+```c
+int add(int a, int b) {
+    return a + b;
+}
+```
+
+// TBA ブラウザのconsoleの様子
 
 ----
 
 # WebAssembly はどこでも動く
 
 - cli commandにwasmバイナリを渡せば動く
-- 後述するが、VM実行環境を組み込んだアプリケーションの内部でも動かせる
+- 後述するが、Wasm実行環境を組み込んだアプリケーションの内部でも動かせる
+
+```
+$ wasmtime --invoke add add.wasm 100 200
+300
+```
 
 ----
 
@@ -98,7 +111,7 @@ p ret
 # WebAssembly Runtime とは何か
 
 - WebAssemblyを実行するための環境 = WebAssembly Runtime
-- ブラウザもRuntime
+- ブラウザもRuntimeとみなす
 - 代表的な実装は wasmtime、wasmedge
 - 言語内部に組み込める実装もある
     - Go = wazero, Swift = swiftwasm
@@ -229,6 +242,14 @@ p ret
 
 ----
 
+# 個人的に可能性を感じるポイント
+
+- Core specは非常に小く、いろいろなランタイムを作れるし、いろいろな環境に組み込みやすいという点
+  - 色々拡張はあるけどwasmのコアはシンプルに保ちたい意志
+  - この点は例えばJVMとは設計思想が違う感じがする(感想です)
+  - 「ブラウザで動くから価値がある」なんて観点だけでは可能性を狭めるんじゃないかなあ
+
+<!--
 # JVMとの違い？
 
 - JVMにあまり詳しくないのでツッコミ歓迎です
@@ -255,6 +276,8 @@ p ret
 # JVMとの違い？
 
 - 全体に色々拡張はあるけどwasmのコアはシンプルに保ちたい方向性があり、それがうまく作用してそう
+
+-->
 
 ----
 
@@ -394,8 +417,11 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 
 # メモリ確保(memory.grow)の修正
 
-- まず、メモリの確保が正しく動いてなくてオーバーフローしてしまっていた
-- 修正箇所は1行だが、原因箇所を突き止めるのになかなか苦労...
+- メモリの確保が正しく動いてなくてオーバーフロー
+- 修正箇所は1行だが、
+  - 原因箇所を突き止めるのになかなか苦労...
+    - ブラウザで当該のwasmを動かし、メモリ周りで落ちる箇所にブレークポイントを置いて変数の変遷を確認
+    - 今思うと、そもそも命令の挙動が全体に正しいかcore spec testを流すべきだった感もある
 
 ----
 
@@ -409,19 +435,22 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 # エラー文字列
 
 > `Format error decoding Png: Corrupt deflate stream. DistanceTooFarBack`
-- Rust側の処理を眺めてみる
+- [Rust側の処理を眺めてみる](https://github.com/image-rs/fdeflate/blob/4610c916ae1000c9b5839059340598a7c55130e8/src/decompress.rs#L42)
 - なるほどわからん
-- やってることは
-  - pngをデコードしている
-  - deflateの圧縮を解いている
-  - その中でエラーが出ている
+----
+
+# やってることは
+
+- pngをデコードしている
+- deflateの圧縮を解いている
+- その中でエラーが出ている
 
 ----
 
 # deflateを正しく...？
 
 - deflateの処理を見る限りビットシフト演算が多用されているのはわかる
-- これらのうちどれかがうまく動いていないのでは？
+- 関係する命令うちどれかがうまく動いていないのでは？
 
 ----
 
@@ -439,6 +468,7 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 
 - wast2json でテストケースを生成できる
 - そもそもRubyを使っているので、こういう地道なタスクの自動化は楽チン
+- ref: https://zenn.dev/ri5255/articles/bac96cf74f82f0
 
 ----
 
@@ -450,9 +480,34 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 
 ----
 
+```ruby
+testcase = JSON.load_file("spec/i32.json", symbolize_names: true)
+testcase[:commands].each do |command|
+  case command[:type]
+  when "module"
+    command => {filename:}
+    current = filename
+  when "assert_return"
+    command => {line:, action:, expected:}
+    action => {type:, field:, args:}
+    args_ = args.map{|v| parse_value(v) } 
+    expected_ = expected.map{|v| parse_result(v) }
+    ret = Wardite::new(path: "spec/" + current).runtime.call(field, args_)
+    if ret != expected_[0]
+      warn "test failed! expect: #{expected_} got: #{ret}"
+    else
+      puts "test OK: line=#{line}"
+    end
+  end
+end
+```
+
+----
+
 # それで逐一直していく
 
 - バイナリフォーマットが壊れている等のテストケースは一旦オミット
+- 実際、確かにビットシフト系の命令中心に通ってなかったので修正
 - 正常系は全体が通る様になった
 
 ----
@@ -460,7 +515,8 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 # grayscaleが動いた！
 
 - 変換された画像の様子
-- パフォーマンスの話は最後にまとめて
+
+![w:500](image-1.png)
 
 ----
 
@@ -591,9 +647,15 @@ end
 
 # ちなみに
 
-- 最後の最後で `if` の実装を間違えていてハマってた
+- 最後の最後で `if/block/loop` の実装を間違えていてハマってた
   - いやなんかWASI無関係に動かないんだけどってなって
   - `wasm-tools print` でwat形式と睨めっこしてたらやっと気づいた...。
+
+----
+
+# [当該コミット](https://github.com/udzura/wardite/commit/605dd7cb6db1ddfd3b84078d733400d56f400f3c#diff-bff9b2bd05ba0d106ae6c1e3e5a1b41c41aff0e0e6e245aa123bf6589627a711)
+
+![w:800](image-2.png)
 
 ----
 
@@ -651,18 +713,30 @@ $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
 
 - WASI p1対応のWASMランタイムは、通常、何もしないと起動時に親のファイルシステムに触れることができない。
 - WASMランタイムを起動する時、事前に、 fd = 3 以降に親環境の共有したいファイルシステムの情報を渡す必要がある
-- wasi-sdkであれば `__wasilibc_populate_preopens(void)` という関数でファイルシステムの登録を行っている
-  - fd = 3 から順番にpreopen環境を検査する: `fd_prestat_get()`
-  - 正常なら、 `fd_prestat_dir_name()` で名前を取得し、プロセスに登録している
-  - 登録がなくなれば `EBADF` を返却して抜ける
-- `path_open()` などはそのpreopen環境が登録されていないとそもそも呼ばれない
 
 ----
 
-# prestat系の関数を実装した
+# ファイルシステム共有の初期化処理
 
-- `fd_prestat_get()` と `fd_prestat_dir_name()` を実装した
-- これで動くか...と思いきや追加でいくつか実装
+- wasi-sdkであれば `__wasilibc_populate_preopens(void)` という関数でファイルシステムの登録を行っている
+  - fd = 3 から順番にpreopen環境を検査: `fd_prestat_get()`
+  - 正常なら、 `fd_prestat_dir_name()` で名前を取得し、プロセスに登録している
+  - 登録がなくなれば `EBADF` を返却して抜ける
+
+----
+
+# なぜファイルにアクセスできなかったのか？
+
+- `path_open()` などはそのpreopen環境が登録されていないとそもそも呼ばれない
+- `__wasilibc_find_abspath()` を参照せよ:
+  - https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L190-L213
+
+----
+
+# ということでprestat系の関数を修正
+
+- `fd_prestat_get()` と `fd_prestat_dir_name()` を大体正しく直した
+- これで動くか...と思いきや追加でいくつか実装した
   - 特に `fd_readdir()` がしんどかったですね...。
 
 ----
@@ -673,7 +747,8 @@ $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
 
 ![alt text](image.png)
 
-- ただし、起動はすごく遅くなる...
+- ただし、起動はすごく遅い...
+  - パフォーマンスの話は後ほど
 
 ----
 
@@ -710,11 +785,12 @@ $ bundle exec wardite \
 
 ----
 
-# ブロックジャンプ先のキャッシュ
+# 前提: ブロックジャンプ先のキャッシュ
 
-- WebAssemblyのジャンプ系の命令の説明
-  - if, block, loop
+- WebAssemblyのジャンプ系の命令
+  - if, block, loop がある
   - これらの命令は、対応するendの位置を知っている必要がある
+    - よくあるジャンプ系の命令の様にオフセットを保持しているわけではない
 
 ----
 
@@ -723,10 +799,9 @@ $ bundle exec wardite \
 - 明らかに `fetch_ops_while_end` というメソッドが上位に...
 
 ```
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
                      54.539      9.845      0.000     44.69413069318/13069318     Kernel#loop
-  73.63%  13.29%     54.539      9.845      0.000     44.694         13069318     Wardite::Runtime#eval_insn     /Users/udzura/ghq/github.com/udzura/wardite/lib/wardi
-te.rb:420
+  73.63%  13.29%     54.539      9.845      0.000     44.694         13069318     Wardite::Runtime#eval_insn     /.../lib/wardite.rb:420
                      19.493      0.024      0.000     19.469      95886/95886     Wardite::Runtime#fetch_ops_while_end
                      15.638      6.483      0.000      9.156  5225913/5225913     <Module::Wardite::Evaluator>#i32_eval_insn
                       3.330      1.238      0.000      2.093  1155055/1155055     Wardite::Runtime#do_branch
@@ -748,11 +823,16 @@ te.rb:420
 
 # 事前に計算させることにした
 
-- 一度命令をパースしたらrevisitさせる
-  - その際if/block/loop 命令の時に、その場でendの位置を計算させる
-- 命令のメタデータで `end` の位置を持たせてそれを使うことにした
 - WebAssemblyは命令が動的に書き変わることはないので、事前計算の方向でやっていった
   - WarditeはJITをしないんで...。
+
+----
+
+# 事前に計算の具体的実装
+
+- 一度命令をパースしたら命令列をrevisitさせる
+  - その際if/block/loop 命令を見つけたら、その場でendの位置を計算させる
+- 命令のメタデータで `end` の位置を持たせてそれを使うことにした
 
 ----
 
@@ -846,7 +926,7 @@ end
 # 一応効果が出た
 
 - 1秒ぐらいは変わった
-- 計測結果が見つからない。あとで再計測して置いとく
+- TBA: 計測結果が見つからない。あとで再計測して置いとく
 
 ----
 
@@ -855,6 +935,19 @@ end
 - I32 などの値でそもそもオブジェクトを作らない（Integerをそのまま扱う）様にすればいいだろう
 - しかし、設計の大幅な変更を伴うので...
   - 今後の課題になっている
+
+----
+
+# 参考: ruby.wasm の起動の計測結果
+
+```
+TBA!!!1
+```
+
+- 測りたいもの:
+  - 全体に対するバイナリパース処理の所要時間
+  - --disable-gems とそうでない時の比較
+  - 全体に対するWASIの関数呼び出しの所要時間
 
 ----
 
@@ -883,7 +976,7 @@ end
 
 # Ruby 3.5-dev@2025/04/05 では...？
 
-- `# TODO`
+- `# TODO TBA`
 
 ----
 
