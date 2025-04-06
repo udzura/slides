@@ -101,7 +101,7 @@ $ wasmtime --invoke add add.wasm 100 200
 
 # WebAssembly 実行の流れ
 
-- ここにtokyo12で作った図解を置く
+- TBA: ここにtokyo12で作った図解を置く
 - まずソースコード
 - それをコンパイル
 - wasmバイナリをランタイムで実行
@@ -161,6 +161,7 @@ $ wasmtime --invoke add add.wasm 100 200
 - WebAssembly System Interface
 - WebAssemblyのCore Spec自体には、OSとのやり取りの定義はない
 - WASIは、WebAssemblyがOSとやり取りするためのAPIを定義している
+- p1とp2があるが、今はp1を実装中
 
 ----
 
@@ -201,7 +202,7 @@ $ wasmtime --invoke add add.wasm 100 200
 
 - 様々なコンパイル型言語で、wasmターゲットをサポートしている
   - Rust、Go、C/C++、Swift、Zig、Dart、Scala...
-  - LLVM
+  - LLVM のバックエンド
 - C言語を経由で数多くの資産がwasmに...
   - C言語で書かれた言語もある。Ruby、Python、Lua、Perl...
 
@@ -221,24 +222,55 @@ $ wasmtime --invoke add add.wasm 100 200
 - アプリケーション組み込み実行への適正
   - ランタイムも小さくできがちで、各環境に組み込みやすい
   - 実際各言語でのランタイム実装が出てきている
-    - Goのwazeroによるpure goプラグイン機構
-      - Goでは普通できない動的ロードの実現
 
 ----
 
-# アプリケーション組み込みの可能性
+# e.g. Goでの組み込みwasmの活用
+
+- Goのwazeroによるpure goプラグイン機構
+  - wazero = Pure Go WebAssembly Runtime
+  - wasmはGOARCH=wasm32/tinygoで用意する
+- 一般にGoから直接Cの関数利用は考慮点が多く難しい
+  - よってdlload()なども難しい
+  - wasmを経由することで安全な動的ロードの実現
+
+----
+
+# ブラウザもまた組み込みの環境
 
 - ブラウザ実行も、「ブラウザにwasm runtimeが組み込まれている」と考えた方が正しそう
+- TBA: ブラウザに組み込まれている感のある作図
 
 ----
 
-# 言語組み込みの可能性
+# 可能性を突き詰めると
 
-- 組み込み実行への強さ
-  - 設定言語としてのwasm
-    - envoy、fluent-bit、...
-    - wasmbots
-  - mrubyもLuaもピンチ！
+- 組み込み実行に親和性
+  - いろいろなアプリケーションの一部をwasm化する
+    - 設定言語として e.g. envoy、fluent-bit、...
+  - mrubyやLuaの想定用途を置き換えうるかもしれない
+- また、wasmはどんな言語でも書けるので...
+  - 様々な言語を組み合わせる未来を予感させてくれる
+
+----
+
+# wasmCloud のサイト上の概念図
+
+- https://wasmcloud.com/
+
+![h:400](image-4.png)
+
+----
+
+# 余談: [wasmbots](https://shaneliesegang.com/projects/wasmbots/)
+
+- wasmでダンジョンを解くアルゴリズムを書いて遊ぶローグライク風何か
+- 特定のインタフェースを実装したwasmバイナリを用意する
+  - どんな言語でもアルゴリズムを書いて遊べる！
+
+----
+
+![h:500](image-3.png)
 
 ----
 
@@ -311,14 +343,17 @@ $ wasmtime --invoke add add.wasm 100 200
 # ゴリラ本とは？
 
 - RustでWebAssemblyの基本的な実装を学ぶための本
-- ほなRubyで書くか〜RBS全体に使えば元コードがRustでもいけるっしょ
+- ちょうど有休消化するチャンスを得た
+- ほな、勉強したいしRubyで書くか
+  - 元コードがRustなので、RBS全体に使えばやりやすそう
 
 ----
 
-# 苦労した点
+# 本の感想
 
-- 基本的な実装をえいやとやったので大変だった
-- Rustの参考実装があったので助かった
+- wasmは比較的シンプルとはいえ、VM全体の設計思想の理解から入るのでなかなか骨が折れる
+- しかし本を丁寧に＋specのドキュメントをちゃんと読めば理解可能
+- また、Rustの参考実装があったので助かった
 
 ----
 
@@ -328,13 +363,18 @@ $ wasmtime --invoke add add.wasm 100 200
   - セクションのフォーマット
     - 冒頭にヘッダ、中身のサイズ
     - その後にセクションごとの中身というシンプルな構造ではある
-- leb128という数値表現の実装が必要で、自作した
+
+----
+
+# バイナリフォーマット図解
+
+- TBA
 
 ----
 
 # VMの基本的なコード
 
-- 基本的にはこういうコードなのでVMもシンプル
+- 基本的にはこういうコードで動く
 
 ```ruby
 def execute!
@@ -350,6 +390,21 @@ end
 ```
 
 - 細かい点はデバッグしながら修正
+
+----
+
+# 実は「出力」は難しい
+
+- プログラミング言語自作あるあるか？
+- 「出力」はOSの機能を使う必要がある
+- 今回の場合、「出力」のために、WASIの `fd_write()` だけは実装しないといけない
+  - これも本の通りでOK。ありがてえ
+
+----
+
+# Hello Worldが動いた
+
+- TBA: ツイートを探す
 
 ----
 
@@ -372,6 +427,13 @@ end
 
 ----
 
+# 命令の全貌
+
+- TBA: opcode tableのサイトをキャプチャ
+- なんなら2画面にしてもいいかも
+
+----
+
 # 苦労した点
 
 - いやめっちゃ数多いやん...（もしかしたら、めっちゃ、でもない？）
@@ -384,6 +446,8 @@ end
 # 数値演算系をなるべく宣言的に実装したい
 
 - 数値演算系はファイル生成で対応している
+- 型が4つあるので、共通のものは同じ様になる
+  - i32, i64, f32, f64
 - Rake taskでgenerator作った
 - この自動生成した命令が167個らしい
 
@@ -396,14 +460,13 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 # 自動生成と言っても
 
 - 割とテンプレートは頑張って書かないといけない...
-- 型が4つあるので、共通のものは同じ様になる
-  - i32, i64, f32, f64
+  - TBA: ジェネレータ付近のコード
 
 ----
 
 # サンプルプログラムの動作
 
-- 命令が実装できたので
+- 命令が実装できたので、実戦に進む
 - 別のプロジェクトで作ってた、Rust製のgrayscale処理のプログラムを動かしてみた
 
 ----
@@ -411,7 +474,14 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 # 動かない...
 
 - ということでこれをデバッグしていく
+  - TBA: 動かない様子のキャプチャ
 - ref: https://udzura.hatenablog.jp/entry/2024/11/24/210124
+
+----
+
+# grayscaleのプログラムの概要
+
+- TBA: 作図
 
 ----
 
@@ -428,6 +498,7 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 # しかしそれでも動かない
 
 - Rustのpanicは `unreachable` に変換されてしまいよくわからない
+  - `unreachable` = wasmにある、「ここに到達した場合必ずエラー」とするための命令
 - panicさせず、エラー文字列を返却する様に変えてみた
 
 ----
@@ -437,6 +508,8 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 > `Format error decoding Png: Corrupt deflate stream. DistanceTooFarBack`
 - [Rust側の処理を眺めてみる](https://github.com/image-rs/fdeflate/blob/4610c916ae1000c9b5839059340598a7c55130e8/src/decompress.rs#L42)
 - なるほどわからん
+  - TBA: コードのキャプチャあっていいかも
+
 ----
 
 # やってることは
@@ -458,8 +531,8 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 
 - core specのテストを実行してみる
 - 動かし方
-  - core specのテストケースが用意されている
-  - それから、wasmのバイナリと実行シナリオを生成する
+  - Wasm公式のcore specのテストケースが用意されている
+  - それらから、wasmのバイナリと実行シナリオを生成する
   - それをWarditeで実行する
 
 ----
@@ -467,8 +540,8 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 # 参考: core spec を動かしている例
 
 - wast2json でテストケースを生成できる
-- そもそもRubyを使っているので、こういう地道なタスクの自動化は楽チン
 - ref: https://zenn.dev/ri5255/articles/bac96cf74f82f0
+- そもそもRubyを使っているので、こういう地道なタスクの自動化は楽チン
 
 ----
 
@@ -504,11 +577,11 @@ end
 
 ----
 
-# それで逐一直していく
+# あとは逐一直していく
 
-- バイナリフォーマットが壊れている等のテストケースは一旦オミット
 - 実際、確かにビットシフト系の命令中心に通ってなかったので修正
 - 正常系は全体が通る様になった
+- なお、バイナリフォーマットが壊れている等のテストケースは一旦オミット
 
 ----
 
@@ -529,16 +602,15 @@ end
 # ruby.wasmを動かす
 
 - warditeコマンドにruby.wasmを渡すと動くようにしたい
-- 必要なものは？
+- 命令のカバーの他に必要なものは？
   - ruby.wasmの動作にはWASIの対応が必要
 
 ----
 
 # ruby.wasmに必要なWASI関数は？
 
-- 全部じゃないがそれなりにある
-  - ビルドオプションによって変わりそうだが
-  - 37関数が必要
+- ビルドオプションによって変わる前提で
+- 今回は37関数が必要。以下のコマンドで確認可能
 
 ```
 $ wasm-objdump -x -j Import ./ruby-wasm32-wasi/usr/local/bin/ruby
@@ -661,6 +733,12 @@ end
 
 # ruby.wasmの `--version` が動く様になった
 
+- TBA: capture
+
+----
+
+# ruby.wasmの `--version` が動く様になった
+
 - Wardite 0.6.0 としてリリースした
 - [その時点でのコード](https://github.com/udzura/wardite/blob/7ef48389415df9e44784d515f3e0e96aa00f2ad2/lib/wardite/wasi.rb)
 - 12個の関数で動いた
@@ -669,8 +747,7 @@ end
 
 # この時点での挙動
 
-- ファイルを認識できない。requireで警告
-- RubyのC実装コアライブラリは読み込んでるので動く
+- RubyのC実装コアライブラリは動く
   - Integer#timesの例
 
 ```
@@ -688,6 +765,23 @@ $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
 
 ----
 
+# この時点での挙動
+
+- ファイルシステムを認識できない
+  - requireももちろんできない
+  - 起動時にloadの警告が出る
+
+```
+$ bundle exec wardite ./ruby -- -e 'puts "Hello"'        
+`RubyGems' were not loaded.
+`error_highlight' was not loaded.
+`did_you_mean' was not loaded.
+`syntax_suggest' was not loaded.
+Hello
+```
+
+----
+
 # requireを動かしたい
 
 - そのためには、Warditeにファイルシステムをまともに認識させる必要がある
@@ -697,8 +791,9 @@ $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
 # ファイルシステムはじめの実装
 
 - まずはファイルをオープンさせるところから
-  - 雑に `path_open` という関数を実装してみたが、ちゃんと動かない
-- そもそも呼ばれない。なぜ？
+  - 雑に `path_open` という関数を実装してみたが、ちゃんと動かない...
+  - そもそも呼ばれない？
+- なぜ？
 
 ----
 
@@ -709,19 +804,55 @@ $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
 
 ----
 
+```c
+    for (__wasi_fd_t fd = 3; fd != 0; ++fd) {
+        __wasi_prestat_t prestat;
+        __wasi_errno_t ret = __wasi_fd_prestat_get(fd, &prestat);
+        if (ret == __WASI_ERRNO_BADF)
+            break;
+        if (ret != __WASI_ERRNO_SUCCESS)
+            goto oserr;
+        switch (prestat.tag) {
+        case __WASI_PREOPENTYPE_DIR: {
+            char *prefix = malloc(prestat.u.dir.pr_name_len + 1);
+            if (prefix == NULL)
+                goto software;
+
+            ret = __wasi_fd_prestat_dir_name(fd, (uint8_t *)prefix,
+                                             prestat.u.dir.pr_name_len);
+            if (ret != __WASI_ERRNO_SUCCESS)
+                goto oserr;
+            prefix[prestat.u.dir.pr_name_len] = '\0';
+
+            if (internal_register_preopened_fd_unlocked(fd, prefix) != 0)
+                goto software;
+            free(prefix);
+
+            break;
+        }
+        default:
+            break;
+        }
+    }
+```
+
+----
+
 # WASI p1対応ランタイムにおけるファイルシステムの扱い
 
-- WASI p1対応のWASMランタイムは、通常、何もしないと起動時に親のファイルシステムに触れることができない。
-- WASMランタイムを起動する時、事前に、 fd = 3 以降に親環境の共有したいファイルシステムの情報を渡す必要がある
+- WASI p1対応のWASMランタイムは、通常、何もしないと起動時に親環境のファイルシステムに触れることができない。
+- WASMランタイムを起動する時に、 fd = 3 以降に親環境と共有したいファイルシステムの情報を渡す必要がある
+  - preopensと呼んでいる模様
 
 ----
 
 # ファイルシステム共有の初期化処理
 
-- wasi-sdkであれば `__wasilibc_populate_preopens(void)` という関数でファイルシステムの登録を行っている
-  - fd = 3 から順番にpreopen環境を検査: `fd_prestat_get()`
-  - 正常なら、 `fd_prestat_dir_name()` で名前を取得し、プロセスに登録している
-  - 登録がなくなれば `EBADF` を返却して抜ける
+- （wasi-sdkの前提で）
+- `__wasilibc_populate_preopens(void)` という関数でファイルシステムの登録を行っている
+  - fd = 3 から順番に`fd_prestat_get()`でpreopensを検査
+  - `fd_prestat_dir_name()`で名前を取得しプロセスに登録している
+  - 登録がないときは `EBADF` を返却して抜ける
 
 ----
 
@@ -730,6 +861,28 @@ $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
 - `path_open()` などはそのpreopen環境が登録されていないとそもそも呼ばれない
 - `__wasilibc_find_abspath()` を参照せよ:
   - https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L190-L213
+
+----
+
+```c
+    // by udzura: preopensから一致するパスを探す処理
+    for (size_t i = num_preopens; i > 0; --i) {
+        const preopen *pre = &preopens[i - 1];
+        const char *prefix = pre->prefix;
+        size_t len = strlen(prefix);
+
+        // If we haven't had a match yet, or the candidate path is longer than
+        // our current best match's path, and the candidate path is a prefix of
+        // the requested path, take that as the new best path.
+        if ((fd == -1 || len > match_len) &&
+            prefix_matches(prefix, len, path))
+        {
+            fd = pre->fd;
+            match_len = len;
+            *abs_prefix = prefix;
+        }
+    }
+```
 
 ----
 
@@ -754,7 +907,7 @@ $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
 
 # ここまでで起動のデモをします
 
-- `--disable gems` でやらせてください(1分近く違うので...)
+- `--disable-gems` でやらせてください(1分近く違う...)
 
 ```
 $ bundle exec wardite \
@@ -770,22 +923,40 @@ $ bundle exec wardite \
 
 # パフォーマンス計測との向き合い
 
+- 道半ばです！
 - いくつか実施した内容を話します
-  - ブロックジャンプ先のキャッシュ
+  - ブロックジャンプの改善
   - インスタンス生成の問題（TODO）
   - YJITの効果
 
 ----
 
-# お断り
+# 計測時の前提 (1)
 
-- サンプルプログラムはgrayscale処理(Rust製)を使っている
-  - 内部はbase64 encode/decode + PNGの展開(deflate)
-  - ワークロードで結果が変わるもんであることは留意の上で読んでほしい
+- ベンチ用プログラムは一旦以下のユースケース
+  - grayscale処理(Rust製)
+    - 内部はbase64 encode/decode + PNGの展開(deflate)
+  - ruby.wasm でバージョン表示
+  - ruby.wasm w/ RubyGems
 
 ----
 
-# 前提: ブロックジャンプ先のキャッシュ
+# 計測時の前提 (2)
+
+- ソフトウェアのバージョン等
+  - macOS 14.0 / Apple M3 Pro
+  - ruby 3.4.2 (2025-02-15 revision d2930f8e7a) +YJIT +PRISM [arm64-darwin24]
+    - Mac側、wasm側ともに
+    - Mac側は断りがない場合 YJIT enabled
+  - Wardite 0.6.1
+
+----
+
+# ブロックジャンプの改善
+
+----
+
+# 前提: ジャンプ系の命令について
 
 - WebAssemblyのジャンプ系の命令
   - if, block, loop がある
@@ -817,13 +988,13 @@ $ bundle exec wardite \
 
 - if/block/loop 命令に来るごとに：
   - 現在のcodeの先を見て、対応するendの位置を計算していた
-- したがって、何回もループしたり、ifを含む関数を何度も呼んだりしたら毎回fetchして計算していることになる...
+- したがって、何回もループしたり、ifを含む関数を何度も呼んだりしたら毎回fetchして計算することになる...
 
 ----
 
 # 事前に計算させることにした
 
-- WebAssemblyは命令が動的に書き変わることはないので、事前計算の方向でやっていった
+- 命令は動的に書き変わることはないという前提で、endの位置を事前計算の方向でやっていった
   - WarditeはJITをしないんで...。
 
 ----
@@ -839,24 +1010,28 @@ $ bundle exec wardite \
 # これだけで実行時間を43%削った
 
 - ひとまず改善！
+- TBA: 比較のキャプチャか、グラフ
+
+----
+
+# インスタンス生成の問題
 
 ----
 
 # インスタンス生成の問題
 
 - 次に、perfでWarditeのボトルネックを計測したが...
-- これと言って、明らかに遅い箇所はなさそう
-- ただ、よく出てくるのが
+- よく出てくるのが
   - `rb_vm_set_ivar_id`
   - `rb_class_new_instance_pass_kw`
-- これらはYJITしてもしなくても上位に出てくる
+- ちなみにこれらはYJITしてもしなくても上位に出てくる
 
 ----
 
 # つまり
 
 - インスタンスを作りまくってて遅い
-- Warditeの内部Valueはこういう実装なので、インスタンス変数に値を持ってるのも遅い、か？
+- Warditeの内部Valueはこういう実装なので、インスタンス変数に値を持ってるのも遅そう？
 
 ```ruby
 class I32
@@ -874,7 +1049,6 @@ end
 
 ```ruby
 $COUNTER = {}
-
 TracePoint.trace(:call) do |tp|
   if %i(I32 I64 F32 F64).include?(tp.method_id)
     $COUNTER[tp.method_id] ||= 0
@@ -889,7 +1063,7 @@ END {
 
 ----
 
-# 例えばgrayscale
+# 例えばgrayscale処理
 
 ```
 {:I32=>18845604, :I64=>1710552, :F32=>247500}
@@ -902,7 +1076,7 @@ I32の場合1880万個のインスタンスを作っている...
 # 思ったこと
 
 - I32とは言っても、特定の値のインスタンスが多いのでは？
-  - 例えば、-1, 0, 1, 2, 3, 4, 5...
+  - 例えば、-1, 0, 1, 2, 3, 4, 8, 16 ... ?
 - メモ化してみよう
 
 ----
@@ -926,19 +1100,19 @@ end
 # 一応効果が出た
 
 - 1秒ぐらいは変わった
-- TBA: 計測結果が見つからない。あとで再計測して置いとく
+- TBA: 計測結果が見つからない。あとで再計測して置いとく、グラフも
 
 ----
 
 # これ以上のチューニングは？
 
-- I32 などの値でそもそもオブジェクトを作らない（Integerをそのまま扱う）様にすればいいだろう
+- I32 などの値でそもそもオブジェクトを作らない（Integerをそのまま扱う）様にすれば効果はあるだろう
 - しかし、設計の大幅な変更を伴うので...
-  - 今後の課題になっている
+  - 今後の課題としておいてある
 
 ----
 
-# 参考: ruby.wasm の起動の計測結果
+# 参考: ruby.wasm の起動の所要時間の内訳
 
 ```
 TBA!!!1
@@ -959,14 +1133,14 @@ TBA!!!1
 
 ----
 
-# Ruby 3.3系での結果
+# Ruby 3.3系での結果 TBA
 
 - デフォルト
 - `--yjit`
 
 ----
 
-# Ruby 3.4系での結果
+# Ruby 3.4系での結果 TBA
 
 - デフォルト
 - `--yjit`
@@ -974,7 +1148,7 @@ TBA!!!1
 
 ----
 
-# Ruby 3.5-dev@2025/04/05 では...？
+# Ruby 3.5-dev@2025/04/0X では...？
 
 - `# TODO TBA`
 
@@ -983,6 +1157,10 @@ TBA!!!1
 # 参考ブログ
 
 - https://udzura.hatenablog.jp/entry/2024/12/20/173728
+
+----
+
+# 終わりに
 
 ----
 
