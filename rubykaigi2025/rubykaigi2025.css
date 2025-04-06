@@ -67,7 +67,7 @@ section.hero h1 {
     text-align: center;
 }
 
-section.normal h1, section.normal2 h1 {
+section:not(.title):not(.hero):not(.hero0) h1, section.normal2 h1 {
     position: absolute;
     top: 13%;
 }
@@ -78,12 +78,17 @@ section p, section ul {
     font-style: normal;  
 }
 
-section.normal ul, section.normal2 ul{
+section:not(.title):not(.hero):not(.hero0) ul{
     position: absolute;
-    top: 30.5%;
+    top: 28.5%;
 }
 
-section.normal ul ul {
+ul.underpre {
+    position: relative !important;
+    top: 2.5% !important;
+}
+
+section:not(.title):not(.hero):not(.hero0) ul ul {
     position: relative;
 }
 
@@ -99,7 +104,7 @@ section.pre-with-desc pre {
 
 section li {
     list-style-type: none;
-    font-size: 125%;
+    font-size: 115%;
     margin-left: -1em;
     line-height: 185%;
 }
@@ -140,6 +145,14 @@ section li ul li{
     font-size: 90%;
 }
 
+section li ul li ul li{
+    list-style-image: none;
+    list-style-type: "\2726";
+    margin-left: 0.1em;
+    padding-top: 0.15em;
+    font-size: 90%;
+}
+
 section.normal img {
     float: right;
     background-color: transparent;
@@ -164,7 +177,11 @@ section::after {
 button { font-size: 30pt; }
 
 marp-pre:has(code.language-ruby) {
-    background-color: #ffe8e8;
+    background-color: #faf4f4;
+}
+
+marp-pre:has(code.language-c) {
+    background-color: #f0f8f8;
 }
 
 marp-pre:has(code.language-javascript) {

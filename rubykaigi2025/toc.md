@@ -10,6 +10,10 @@ image: https://udzura.jp/slides/2025/rubykaigi/ogp.png
 size: 16:9
 ----
 
+<!--
+_class: hero
+-->
+
 Running ruby.wasm on Pure Ruby WASM Runtime
 =============
 
@@ -111,11 +115,16 @@ $ wasmtime --invoke add add.wasm 100 200
 # WebAssembly Runtime とは何か
 
 - WebAssemblyを実行するための環境 = WebAssembly Runtime
-- ブラウザもRuntimeとみなす
+- ブラウザもRuntimeとみなすことができる
 - 代表的な実装は wasmtime、wasmedge
+
+----
+
+# WebAssembly Runtime とは何か
+
 - 言語内部に組み込める実装もある
-    - Go = wazero, Swift = swiftwasm
-    - これらの実装はその言語でpureな実装をしている
+  - 組み込みライブラリ実装はpureにその言語で実装のこともある
+  - Go = wazero, Swift = swiftwasm ...
 
 ----
 
@@ -256,9 +265,11 @@ $ wasmtime --invoke add add.wasm 100 200
 
 # wasmCloud のサイト上の概念図
 
-- https://wasmcloud.com/
+![h:300](image-4.png)
 
-![h:400](image-4.png)
+<ul class="underpre">
+<li><a href="https://wasmcloud.com/">wasmCloud 公式サイトより</a></li>
+</ul>
 
 ----
 
@@ -374,8 +385,6 @@ $ wasmtime --invoke add add.wasm 100 200
 
 # VMの基本的なコード
 
-- 基本的にはこういうコードで動く
-
 ```ruby
 def execute!
   loop do
@@ -389,7 +398,9 @@ def execute!
 end
 ```
 
-- 細かい点はデバッグしながら修正
+<ul class="underpre">
+<li>基本的にはこういうコードで動く</li>
+</ul>
 
 ----
 
@@ -449,7 +460,7 @@ end
 - 型が4つあるので、共通のものは同じ様になる
   - i32, i64, f32, f64
 - Rake taskでgenerator作った
-- この自動生成した命令が167個らしい
+- この自動生成した命令が167個あるらしい
 
 ```
 $ git grep 'when :' lib/*/*generated.rb | wc -l
@@ -505,10 +516,14 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 
 # エラー文字列
 
-> `Format error decoding Png: Corrupt deflate stream. DistanceTooFarBack`
+- 内容:
+  > `Format error decoding Png: Corrupt deflate stream. DistanceTooFarBack`
 - [Rust側の処理を眺めてみる](https://github.com/image-rs/fdeflate/blob/4610c916ae1000c9b5839059340598a7c55130e8/src/decompress.rs#L42)
 - なるほどわからん
-  - TBA: コードのキャプチャあっていいかも
+
+----
+
+![alt text](image-6.png)
 
 ----
 
@@ -587,9 +602,14 @@ end
 
 # grayscaleが動いた！
 
-- 変換された画像の様子
+&nbsp;
+&nbsp;
 
 ![w:500](image-1.png)
+
+<ul class="underpre">
+<li>grayscaleの実行結果</li>
+</ul>
 
 ----
 
@@ -609,12 +629,15 @@ end
 
 # ruby.wasmに必要なWASI関数は？
 
-- ビルドオプションによって変わる前提で
 - 今回は37関数が必要。以下のコマンドで確認可能
 
 ```
 $ wasm-objdump -x -j Import ./ruby-wasm32-wasi/usr/local/bin/ruby
 ```
+
+<ul class="underpre">
+<li>※ ruby.wasmの同梱gemなどにより変化する</li>
+</ul>
 
 ----
 
@@ -663,7 +686,8 @@ Import[37]:
 
 # WarditeのWASI実装方針
 
-- `Wardite::WasiSnapshotPreview1` というクラスにまとめて実装する様にした
+- `Wardite::WasiSnapshotPreview1` というクラスにまとめて実装する
+- importの際はこのクラスだけ特別扱い
 
 ----
 
@@ -698,11 +722,11 @@ end
   - ruby.wasm を起動させようとする
   - **** という関数がなくて動かない！と言われる
   - それを実装していく
-- `end` !
+- `end`
 
 ----
 
-# どんな関数を実装したか
+# どんな関数を実装したかの例
 
 ```
 - argvの取得
@@ -719,13 +743,14 @@ end
 
 # ちなみに
 
+- WASIの必要関数は実装したが...
 - 最後の最後で `if/block/loop` の実装を間違えていてハマってた
   - いやなんかWASI無関係に動かないんだけどってなって
   - `wasm-tools print` でwat形式と睨めっこしてたらやっと気づいた...。
 
 ----
 
-# [当該コミット](https://github.com/udzura/wardite/commit/605dd7cb6db1ddfd3b84078d733400d56f400f3c#diff-bff9b2bd05ba0d106ae6c1e3e5a1b41c41aff0e0e6e245aa123bf6589627a711)
+# [修正の当該コミット](https://github.com/udzura/wardite/commit/605dd7cb6db1ddfd3b84078d733400d56f400f3c#diff-bff9b2bd05ba0d106ae6c1e3e5a1b41c41aff0e0e6e245aa123bf6589627a711)
 
 ![w:800](image-2.png)
 
@@ -733,7 +758,10 @@ end
 
 # ruby.wasmの `--version` が動く様になった
 
-- TBA: capture
+```
+$ bundle exec wardite ./ruby -- --version        
+ruby 3.4.2 (2025-02-15 revision d2930f8e7a) +PRISM [wasm32-wasi]
+```
 
 ----
 
@@ -746,9 +774,6 @@ end
 ----
 
 # この時点での挙動
-
-- RubyのC実装コアライブラリは動く
-  - Integer#timesの例
 
 ```
 $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
@@ -763,13 +788,13 @@ $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
 "hello: 4"
 ```
 
+<ul class="underpre">
+<li>RubyのC実装コアライブラリは動く</li>
+</ul>
+
 ----
 
 # この時点での挙動
-
-- ファイルシステムを認識できない
-  - requireももちろんできない
-  - 起動時にloadの警告が出る
 
 ```
 $ bundle exec wardite ./ruby -- -e 'puts "Hello"'        
@@ -780,24 +805,31 @@ $ bundle exec wardite ./ruby -- -e 'puts "Hello"'
 Hello
 ```
 
+<ul class="underpre">
+<li>ファイルシステムを認識できない</li>
+<li>requireももちろんできない/起動時にloadの警告が出る</li>
+</ul>
+
 ----
 
 # requireを動かしたい
 
-- そのためには、Warditeにファイルシステムをまともに認識させる必要がある
+- そのためには...
+  - Warditeにファイルシステムをまともに認識させる必要がある
 
 ----
 
 # ファイルシステムはじめの実装
 
 - まずはファイルをオープンさせるところから
-  - 雑に `path_open` という関数を実装してみたが、ちゃんと動かない...
+  - で、雑に `path_open` という関数を実装してみたが、
+  - ちゃんと動かない...
   - そもそも呼ばれない？
 - なぜ？
 
 ----
 
-# preopensという仕組み
+# WASIにはpreopensという仕組みがある
 
 - wasi-sdkのlibcを参照する
 - https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L246-L276
@@ -858,7 +890,7 @@ Hello
 
 # なぜファイルにアクセスできなかったのか？
 
-- `path_open()` などはそのpreopen環境が登録されていないとそもそも呼ばれない
+- `path_open()` などはそのpreopen環境が登録されていないと、そもそも呼ばれない
 - `__wasilibc_find_abspath()` を参照せよ:
   - https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L190-L213
 
@@ -888,20 +920,27 @@ Hello
 
 # ということでprestat系の関数を修正
 
-- `fd_prestat_get()` と `fd_prestat_dir_name()` を大体正しく直した
+- `fd_prestat_get()` と `fd_prestat_dir_name()` を大体正しく修正
 - これで動くか...と思いきや追加でいくつか実装した
   - 特に `fd_readdir()` がしんどかったですね...。
 
 ----
 
-# requireの警告なしで通常のRubyが起動した
+# loadの警告なしで通常のRubyが起動した
 
 - めでたしめでたし
 
 ![alt text](image.png)
 
-- ただし、起動はすごく遅い...
-  - パフォーマンスの話は後ほど
+----
+
+![w:800](image-7.png)
+
+----
+
+# ...結構な時間がかかってますが...
+
+- パフォーマンスの話を最後にします
 
 ----
 
@@ -924,6 +963,7 @@ $ bundle exec wardite \
 # パフォーマンス計測との向き合い
 
 - 道半ばです！
+  - 何もしていなかったわけではない
 - いくつか実施した内容を話します
   - ブロックジャンプの改善
   - インスタンス生成の問題（TODO）
@@ -933,7 +973,7 @@ $ bundle exec wardite \
 
 # 計測時の前提 (1)
 
-- ベンチ用プログラムは一旦以下のユースケース
+- ベンチ用プログラムは一旦以下のユースケースを用意
   - grayscale処理(Rust製)
     - 内部はbase64 encode/decode + PNGの展開(deflate)
   - ruby.wasm でバージョン表示
@@ -1182,4 +1222,3 @@ TBA!!!1
 ----
 
 # Thanks!
-
