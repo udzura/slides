@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# スライド作成ルール
+
+- スライドの利用言語は指示に従うこと。指示がない場合、英語にすること。
+- marp のフォーマットに従って markdown を作成すること。
+- marp でのスライドの作り方は [marp-howto](mdc:marp-howto.md) や [公式ドキュメント](mdc:https:/github.com/marp-team/marp/tree/main/website/docs/guide) を参考にすること。
+- 基本的には以下のまとまりを1つのページとすること
+
+```markdown
+----
+
+# 自己紹介 ... ヘッダサイズは h1 からにすること
+
+- Uchio Kondo
+  - Rubyist
+- Product Engineer at SmartHR
+
+```
+
+- 大見出しとなるスライドでは以下のfrontmatterを付与すること
+
+```markdown
+<!--
+_class: hero
+-->
+```
