@@ -193,6 +193,13 @@ $ wasmtime --invoke add add.wasm 100 200
 
 ----
 
+# 先行実装
+
+- https://github.com/technohippy/wasmrb
+- とはいえ結構未実装の箇所もあったので、やるか！となった
+
+----
+
 # WebAssemblyの可能性
 
 - そもそもwasmに大きな可能性を感じており、Rubyでのアクセスパスを増やしたい
