@@ -10,9 +10,6 @@ image: https://udzura.jp/slides/2025/rubykaigi/ogp.png
 size: 16:9
 ----
 
-![bg](./rubykaigi2025_bg.001.jpeg)
-
-----
 <!--
 _class: title
 _backgroundImage: url(./rubykaigi2025_bg.002.jpeg)
@@ -131,6 +128,8 @@ p ret
 
 - You can compile C code like this into wasm and run it
 
+<br>
+
 ```c
 int add(int a, int b) {
     return a + b;
@@ -173,7 +172,8 @@ $ wasmtime --invoke add add.wasm 100 200
 
 # What is a WebAssembly Runtime?
 
-- A WebAssembly Runtime is an environment for executing WebAssembly
+- A WebAssembly Runtime...
+  - is an environment for executing WebAssembly
 - Browsers can also be considered as Runtimes
 - Notable implementations include wasmtime and wasmedge
 
@@ -966,7 +966,7 @@ Hello
 - (Based on wasi-sdk's assumptions)
 - File system registration is done 
   - in the `__wasilibc_populate_preopens(void)` function
-  - Checks preopens sequentially from fd = 3 using `fd_prestat_get()`
+  - Checks preopens sequentially using `fd_prestat_get()`
   - Gets names with `fd_prestat_dir_name()` and register
   - Returns `EBADF` and exits when there's no more preopens
 
@@ -974,7 +974,8 @@ Hello
 
 # Why Couldn't We Access Files?
 
-- Functions like `path_open()` aren't even called if the preopen environment isn't registered
+- Functions like `path_open()` aren't even called
+  - if the preopen environment isn't registered
 - See `__wasilibc_find_abspath()`:
   - [`libc-bottom-half/sources/preopens.c#L190-L213`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L190-L213)
 
@@ -1343,18 +1344,23 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 ----
 
 <!--
-_class: hero0
+_class: hero1
 _backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
 -->
 
 # Thanks!
 
-<br>
+
+<!--
+- 人を見ん桜は酒の肴なり
+- 花に酔ふた頭重たし春の雨
+-->
 
 <blockquote>
 一枝の花おもさうや酒の酔<br />
-&nbsp;<small><small>... A Haiku from Shiki Masaoka</small></small>
+&nbsp;<small><small>... A Haiku from Masaoka Shiki</small></small>
 </blockquote>
 
+----
 
-
+![bg](./rubykaigi2025_bg.001.jpeg)
