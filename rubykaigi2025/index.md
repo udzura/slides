@@ -1353,11 +1353,13 @@ _backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
 
 <!--
 - 人を見ん桜は酒の肴なり
+- 一枝の花おもさうや酒の酔
 - 花に酔ふた頭重たし春の雨
+  - 雨は降ってほしくないので
 -->
 
 <blockquote>
-一枝の花おもさうや酒の酔<br />
+花に酔ふた頭重たし春の風<br />
 &nbsp;<small><small>... A Haiku from Masaoka Shiki</small></small>
 </blockquote>
 
