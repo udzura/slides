@@ -23,6 +23,15 @@ _backgroundImage: url(./rubykaigi2025_bg.002.jpeg)
 ## Presentation by Uchio Kondo
 
 ----
+
+<!--
+_class: hero0
+_backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
+-->
+
+# Hello from Matzyama!
+
+----
 <!--
 _class: profile
 -->
@@ -39,13 +48,41 @@ _class: profile
 
 ----
 
+<!--
+_class: hero0
+_backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
+-->
+
 # Today's Theme: Wardite
 
 ----
 
-# What is Wardite?
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
 
-- It's a Pure Ruby WebAssembly Runtime
+# What's Wardite?
+
+----
+
+# Wardite?
+
+- A Pure Ruby WebAssembly Runtime
+
+![bg right](./image-wardite.png)
+
+<address>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+photo: https://en.wikipedia.org/wiki/Wardite#/media/File:Wardite.jpg 
+</address>
+
 
 ----
 
@@ -75,7 +112,7 @@ p ret
 
 # Revisiting: What is Wardite?
 
-- It's a Pure Ruby WebAssembly Runtime
+- A Pure Ruby WebAssembly Runtime...
 - What is WebAssembly?
 - What is a WebAssembly Runtime?
 
@@ -86,7 +123,7 @@ p ret
 - WebAssembly is:
   - A binary instruction format
   - Originally designed for execution in web browsers
-  - Nowadays used in various environments including server-side and IoT devices
+  - Nowadays used in various environments including server-side
 
 ----
 
@@ -107,21 +144,30 @@ int add(int a, int b) {
 # WebAssembly Runs Anywhere
 
 - You can run wasm binaries as CLI commands
-- As we'll discuss later, you can also run them within applications that have a Wasm execution environment
 
 ```
 $ wasmtime --invoke add add.wasm 100 200
 300
 ```
 
+<ul class="lowered">
+<li>As we'll discuss later, you can also run them within applications that have a Wasm execution environment</li>
+</ul>
+
+
 ----
 
 # WebAssembly Execution Flow
 
-- TBA: Insert diagram created for tokyo12 here
-- First, source code
-- Then compilation
-- Finally, executing wasm binary in runtime
+- First, prepare source code (in C, C++, Rust...)
+- Then compile it into wasm binary
+- Finally, executing wasm binary via runtime
+
+----
+
+# WebAssembly Execution Flow
+
+![w:1000](image-9.png)
 
 ----
 
@@ -145,7 +191,7 @@ $ wasmtime --invoke add add.wasm 100 200
 
 - A WebAssembly Runtime written in Pure Ruby
 - Since it's written in Ruby, you can run WebAssembly within Ruby
-- For quick testing, we also provide a command-line tool
+- For quick try, we also provide a command-line tool
 
 ----
 
@@ -162,9 +208,9 @@ $ wasmtime --invoke add add.wasm 100 200
 - WebAssembly Core Spec implementation
   - Basic parts are complete
   - Sufficient testing is still pending
-- WASI p1
+- WASI preview1 (p1)
   - Implemented some WASI p1 functions
-  - Should have implemented everything needed for ruby.wasm to work
+  - Implemented (roughly) everything needed to run ruby.wasm
 
 ----
 
@@ -187,22 +233,41 @@ $ wasmtime --invoke add add.wasm 100 200
 
 ----
 
+# WASI
+
+<br>
+<br>
+
+![w:950](image-10.png)
+
+----
+
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
+
 # Why Wardite?
 
 ----
 
 # Wardite's Goals
 
-- Want to expand use cases for wasm language embedding in Ruby
-- Want a highly portable implementation (works where Ruby works, or works with mruby)
-- Would be happy if it helps with Ruby's performance testing
+- Expand use cases for wasm language embedding in Ruby
+- Very portable implementation
+  - (works where Ruby works, or works with mruby)
+- Helps with Ruby's performance testing
+- But the real reason is...
+
 
 ----
 
-# The Real Reason
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
 
-- Just for fun
-- Learning about wasm
+# Just for Fun.
 
 ----
 
@@ -215,7 +280,8 @@ $ wasmtime --invoke add add.wasm 100 200
 
 # WebAssembly's Potential
 
-- I feel WebAssembly has great potential and want to increase access paths in Ruby
+- IMO: WebAssembly has great potential
+- And aim to increase access paths in Ruby
 
 ----
 
@@ -258,14 +324,31 @@ $ wasmtime --invoke add add.wasm 100 200
 
 - Pure Go plugin mechanism using wazero
   - wazero = Pure Go WebAssembly Runtime
-  - wasm is prepared with GOARCH=wasm32/tinygo
+  - wasm can be prepared with GOARCH=wasm32 or tinygo
 - Generally, direct C function usage from Go has many considerations and is difficult
   - Therefore, dlload() etc. is also difficult 
+
+----
+
+# [knqyf263/go-plugin](https://github.com/knqyf263/go-plugin)
+
+- Go Plugin System over WebAssembly
+- Dynamic loading of Go from Go
+
+----
 
 # Browser as an Embedded Environment
 
 - Browser execution can be better understood as "a wasm runtime embedded in the browser"
-- TBA: Diagram showing the embedded nature in browsers
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![w:600](image-11.png)
 
 ----
 
@@ -282,7 +365,9 @@ $ wasmtime --invoke add add.wasm 100 200
 
 # Conceptual Diagram from wasmCloud's Website
 
-![h:300](image-4.png)
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![h:300](image-4.png)
 
 <ul class="underpre">
 <li><a href="https://wasmcloud.com/">From wasmCloud official website</a></li>
@@ -290,19 +375,7 @@ $ wasmtime --invoke add add.wasm 100 200
 
 ----
 
-# Side Note: [wasmbots](https://shaneliesegang.com/projects/wasmbots/)
-
-- A roguelike-like game where you write dungeon-solving algorithms in wasm
-- Prepare a wasm binary that implements a specific interface
-  - You can write algorithms in any language and play!
-
-----
-
-![h:500](image-3.png)
-
-----
-
-# Personally Interesting Points
+# Personal Opinions
 
 - The Core spec is very small, allowing for various runtime implementations and easy embedding in different environments
   - There's a clear intention to keep wasm's core simple despite various extensions
@@ -311,7 +384,12 @@ $ wasmtime --invoke add add.wasm 100 200
 
 ----
 
-# How to Build Wardite
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
+
+# How to Develop Wardite
 
 ----
 
@@ -326,10 +404,10 @@ $ wasmtime --invoke add add.wasm 100 200
 
 ----
 
-# Porting the Gorilla Book
+# Port the "Implementing Wasm Runtime" Book
 
-- Goal: Make Hello, World work
-- Required implementation
+- Goal: Make "Hello, World" work
+- Required implementation...
   - Basic VM structure and instructions
     - Local variables, global variables (+ control structures)
     - Memory allocation and deallocation
@@ -338,12 +416,14 @@ $ wasmtime --invoke add add.wasm 100 200
 
 ----
 
-# What is the Gorilla Book?
+# What is "Implementing Wasm Runtime in Rust"?
 
-- A book for learning basic WebAssembly implementation in Rust
-- Got a chance to use paid leave
-- Thought "I want to study, so let's write it in Ruby"
-  - Since the original code was in Rust, using RBS throughout would make it easier
+- 『[RustでWasm Runtimeを実装する](https://zenn.dev/skanehira/books/writing-wasm-runtime-in-rust)』
+  -  "Gorilla Book" after the author's penname
+- A book for learning basic Wasm implementation in Rust
+- Got a chance to use paid leave...
+- Thought "So let's write it in Ruby"
+  - Rust -> Ruby with full RBS seemed like a great challenge
 
 ----
 
@@ -351,7 +431,7 @@ $ wasmtime --invoke add add.wasm 100 200
 
 - Although wasm is relatively simple, understanding the overall VM design philosophy is quite challenging
 - However, it's understandable with careful reading of the book and spec documentation
-- Having a Rust reference implementation was very helpful
+- Having a Rust reference implementation was very helpful!
 
 ----
 
@@ -364,9 +444,12 @@ $ wasmtime --invoke add add.wasm 100 200
 
 ----
 
-# Binary Format Diagram
+# Binary Format Overview
 
-- TBA
+<br>
+<br>
+
+![w:1000](image-12.png)
 
 ----
 
@@ -386,23 +469,27 @@ end
 ```
 
 <ul class="underpre">
-<li>This is basically how it works</li>
+<li>This is almost a real Wardite code!</li>
 </ul>
 
 ----
 
 # Actually, "Output" is Difficult
 
-- Is this a common issue in programming language implementation?
+- A common issue for programming language creator?
 - "Output" requires using OS functionality
-- In this case, we had to implement WASI's `fd_write()` just for "output"
+- Had to implement WASI's `fd_write()` just for "output"
   - Following the book was sufficient. Thank goodness
 
 ----
 
-# Hello World Worked
+# "Hello World" Worked
 
-- TBA: Find the tweet
+> @ 2024-10-28
+> Allowing `fib()` to work, I just completed "Gorilla Book" basic course for now!
+> All that's left is to thoroughly master Wasm...
+
+![bg right w:500](image-13.png)
 
 ----
 
@@ -420,15 +507,14 @@ end
 - There are basic and extended sets
 - Basic range is written in the Core Spec
 - About extended sets
-  - GC, atomic, reference types, simd, multi-value, exception handling...
-  - Will implement these gradually
+  - GC, atomic, reference types, simd, exception handling...
+  - Extentions are... future work!
 
 ----
 
-# Full Picture of Instructions
+![bg right:49% h:550](image-14.png)
 
-- TBA: Capture of opcode table website
-- Could use two screens if needed
+# [WebAssembly Opcodes](https://pengowray.github.io/wasm-ops/)
 
 ----
 
@@ -444,15 +530,10 @@ end
 # Wanting to Implement Numeric Operations Declaratively
 
 - Numeric operations are handled through file generation
-- Since there are 4 types, common ones follow the same pattern
+- Since there are 4 types, there're common ones
   - i32, i64, f32, f64
 - Created a generator with Rake task
-- Apparently, there are 167 automatically generated instructions
-
-```
-$ git grep 'when :' lib/*/*generated.rb | wc -l
-     167
-```
+- Apparently, there are 167 insns automatically generated
 
 ----
 
@@ -474,13 +555,14 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 
 - So started debugging this
   - TBA: Capture of the failure
-- ref: https://udzura.hatenablog.jp/entry/2024/11/24/210124
 
 ----
 
 # Overview of the Grayscale Program
 
-- TBA: Diagram
+<br>
+
+![w:950](image-15.png)
 
 ----
 
@@ -496,7 +578,7 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 
 # But It Still Didn't Work
 
-- Rust's panic was converted to `unreachable`, making it unclear
+- Rust's panic was converted to `unreachable`...
   - `unreachable` = a wasm instruction meaning "this point should never be reached, error if reached"
 - Modified it to return error strings instead of panicking
 
@@ -517,16 +599,17 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 
 # What It's Doing
 
-- Decoding PNG
+- On decoding PNG
 - Decompressing deflate compression
-- Getting an error in the process
+- Getting an error in this process
 
 ----
 
 # Correctly Handling Deflate...?
 
-- Looking at the deflate processing, it's clear that bit shift operations are heavily used
-- Maybe one of the related instructions isn't working correctly?
+- Looking at the inflate/deflate processing
+  - it's clear that **bit shift operations** are heavily used
+- Maybe one of the related insns isn't working correctly?
 
 ----
 
@@ -534,7 +617,7 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 
 - Let's run core spec tests
 - How to run:
-  - Official wasm core spec test cases are available
+  - [Official wasm core spec test cases](https://github.com/WebAssembly/spec/tree/main/test/core) are available
   - Generate wasm binaries and execution scenarios from them
   - Run them with Wardite
 
@@ -542,9 +625,8 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 
 # Reference: Example of Running Core Spec
 
-- Can generate test cases with wast2json
-- ref: https://zenn.dev/ri5255/articles/bac96cf74f82f0
-- Since we're using Ruby, automating these tedious tasks is easy
+- Can generate test cases with `wast2json`
+  - ref: [自作Wasmランタイムを公式のテストスイートを用いてテストする話](https://zenn.dev/ri5255/articles/bac96cf74f82f0)
 
 ----
 
@@ -553,6 +635,8 @@ $ git grep 'when :' lib/*/*generated.rb | wc -l
 - Generate test case files with wast2json
 - Iterate through those files and execute as Ruby test-unit tests
   - Call Wardite.load().call based on binary and parameters
+- Since I'm using Ruby
+  - automating these tedious tasks is easy
 
 ----
 
@@ -583,6 +667,7 @@ end
 - Indeed, bit shift instructions were failing, so fixed those
 - Normal cases now pass
 - Note: Temporarily omitted test cases with corrupted binary format, etc.
+- TBA: test pass capture
 
 ----
 
@@ -594,7 +679,7 @@ end
 ![w:500](image-1.png)
 
 <ul class="underpre">
-<li>Grayscale execution result</li>
+<li>Grayscale execution result looks OK</li>
 </ul>
 
 ----
@@ -605,9 +690,18 @@ end
 
 ----
 
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
+
 # Running ruby.wasm
 
-- Want to make it work by passing ruby.wasm to the wardite command
+----
+
+# Running ruby.wasm
+
+- Make it work by passing ruby.wasm to `wardite` command
 - Besides instruction coverage, what else is needed?
   - WASI support is needed for ruby.wasm to work
 
@@ -615,14 +709,15 @@ end
 
 # What WASI Functions Does ruby.wasm Need?
 
-- This time, 37 functions are needed. Can be checked with this command:
+- Can be checked with this command:
 
 ```
 $ wasm-objdump -x -j Import ./ruby-wasm32-wasi/usr/local/bin/ruby
 ```
 
-<ul class="underpre">
-<li>※ Varies depending on bundled gems in ruby.wasm</li>
+<ul class="underpre2">
+<li>This time, 37 functions are needed. </li>
+<li>※ Depending on bundled gems or build env</li>
 </ul>
 
 ----
@@ -672,7 +767,8 @@ Import[37]:
 
 # Wardite's WASI Implementation Strategy
 
-- Implement everything in a class called `Wardite::WasiSnapshotPreview1`
+- Implement everything in a class called
+  - `Wardite::WasiSnapshotPreview1`
 - This class is treated specially during import
 
 ----
@@ -706,7 +802,7 @@ end
 
 - `loop do`
   - Try to start ruby.wasm
-  - Get "**** function not found!" error
+  - Get "`**** function not found!`" error
   - Implement that function
 - `end`
 
@@ -714,23 +810,22 @@ end
 
 # Examples of Functions Implemented
 
-```
-- Getting argv
-- Getting environment variables
+- Getting argv, environment variables
 - Getting current time
 - Getting random numbers
 - prestat functions
-  - As mentioned later, this was implemented incorrectly. It's unrelated to `stat(2)`
-- read/write
-- Other functions to get various information from `fd` (filestat family)
-```
+  - As mentioned later, this was implemented incorrectly.
+- read/write, other functions to get various info from `fd`
+
+----
 
 # By the Way
 
 - Implemented the required WASI functions, but...
-- At the very end, got stuck because of a mistake in `if/block/loop` implementation
+- At the very end, got stuck because of a mistake
+  - in `if/block/loop` implementation
   - It wasn't working regardless of WASI
-  - Finally noticed after staring at the wat format with `wasm-tools print`...
+  - Finally noticed after staring format with `wasm-tools print`...
 
 ----
 
@@ -740,7 +835,7 @@ end
 
 ----
 
-# ruby.wasm's `--version` Now Works
+# ruby.wasm's `--version` Now Works!
 
 ```
 $ bundle exec wardite ./ruby -- --version        
@@ -749,15 +844,17 @@ ruby 3.4.2 (2025-02-15 revision d2930f8e7a) +PRISM [wasm32-wasi]
 
 ----
 
-# ruby.wasm's `--version` Now Works
+# Release information
 
-- Released as Wardite 0.6.0
+- Released this version as Wardite 0.6.0
 - [Code at that point](https://github.com/udzura/wardite/blob/7ef48389415df9e44784d515f3e0e96aa00f2ad2/lib/wardite/wasi.rb)
-- Worked with 12 functions
+- Worked with 12 WASI functions
 
 ----
 
 # Behavior at This Point
+
+<br>
 
 ```
 $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
@@ -780,6 +877,8 @@ $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
 
 # Behavior at This Point
 
+<br>
+
 ```
 $ bundle exec wardite ./ruby -- -e 'puts "Hello"'        
 `RubyGems' were not loaded.
@@ -791,12 +890,12 @@ Hello
 
 <ul class="underpre">
 <li>Cannot recognize file system</li>
-<li>Cannot require, of course/load warnings appear at startup</li>
+<li>Cannot require, of course - load warnings at startup</li>
 </ul>
 
 ----
 
-# Want to Make require Work
+# Want to Make `Kernel#require` Work
 
 - For that...
   - Need to make Wardite properly recognize the file system
@@ -816,7 +915,7 @@ Hello
 # WASI Has a Mechanism Called preopens
 
 - Refer to wasi-sdk's libc
-- https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L246-L276
+- [See codes in `libc-bottom-half/sources/preopens.c`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L246-L276)
 
 ----
 
@@ -854,21 +953,22 @@ Hello
 
 ----
 
-# File System Handling in WASI p1 Compatible Runtimes
+# File System Handling in WASI p1
 
-- In WASI p1 compatible WASM runtimes, by default, they cannot access the parent environment's file system at startup.
-- When starting a WASM runtime, you need to pass information about the file system you want to share with the parent environment at fd = 3 and beyond
-  - This is called preopens
+- In WASI p1 compatible WASM runtimes, by default, they **cannot** access the parent environment's file system at startup.
+- When starting a WASM runtime, you need to pass information about the file system you want to share with the parent environment at `fd = 3` and beyond
+  - This is called "preopens"
 
 ----
 
 # File System Sharing Initialization Process
 
 - (Based on wasi-sdk's assumptions)
-- File system registration is done in the `__wasilibc_populate_preopens(void)` function
+- File system registration is done 
+  - in the `__wasilibc_populate_preopens(void)` function
   - Checks preopens sequentially from fd = 3 using `fd_prestat_get()`
-  - Gets names with `fd_prestat_dir_name()` and registers them with the process
-  - Returns `EBADF` and exits when there's no registration
+  - Gets names with `fd_prestat_dir_name()` and register
+  - Returns `EBADF` and exits when there's no more preopens
 
 ----
 
@@ -876,7 +976,7 @@ Hello
 
 - Functions like `path_open()` aren't even called if the preopen environment isn't registered
 - See `__wasilibc_find_abspath()`:
-  - https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L190-L213
+  - [`libc-bottom-half/sources/preopens.c#L190-L213`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L190-L213)
 
 ----
 
@@ -904,8 +1004,9 @@ Hello
 
 # So Fixed the prestat Functions
 
-- Mostly correctly fixed `fd_prestat_get()` and `fd_prestat_dir_name()`
-- Thought it would work... but had to implement a few more things
+- Mostly correctly fixed
+  - `fd_prestat_get()` and `fd_prestat_dir_name()`
+- Moreover, had to implement a few more things
   - Especially `fd_readdir()` was tough...
 
 ----
@@ -930,7 +1031,7 @@ Hello
 
 # Let's Demo the Startup Here
 
-- Please let me use `--disable-gems` (makes about a minute difference...)
+- Please let me use `--disable-gems` for speed
 
 ```
 $ bundle exec wardite \
@@ -939,6 +1040,11 @@ $ bundle exec wardite \
 ```
 
 ----
+
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
 
 # Dealing with Performance Measurement
 
@@ -950,7 +1056,7 @@ $ bundle exec wardite \
   - Haven't been doing nothing
 - Let me talk about some implemented improvements
   - Block jump improvements
-  - Instance creation issues (TODO)
+  - Instance creation issues
   - YJIT effects
 
 ----
@@ -976,6 +1082,11 @@ $ bundle exec wardite \
 
 ----
 
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
+
 # Block Jump Improvements
 
 ----
@@ -989,9 +1100,12 @@ $ bundle exec wardite \
 
 ----
 
-# By the way, when measuring the initial implementation with ruby-prof
+# When measuring the first version with ruby-prof
 
 - Clearly, the `fetch_ops_while_end` method was at the top...
+
+<br>
+<br>
 
 ```
 -------------------------------------------------------------------------------------------------------------------------------------
@@ -1016,6 +1130,10 @@ $ bundle exec wardite \
 
 ----
 
+![alt text](image-16.png)
+
+----
+
 # Decided to Calculate in Advance
 
 - Under the assumption that instructions don't change dynamically, moved towards pre-calculating end positions
@@ -1027,7 +1145,7 @@ $ bundle exec wardite \
 
 - Once instructions are parsed, revisit the instruction sequence
   - When finding if/block/loop instructions, calculate their end positions on the spot
-- Decided to store end positions in instruction metadata and use that
+- Decided to **cache end positions** in instruction metadata and use that
 
 ----
 
@@ -1037,6 +1155,11 @@ $ bundle exec wardite \
 - TBA: Comparison capture or graph
 
 ----
+
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
 
 # Instance Creation Issues
 
@@ -1055,7 +1178,13 @@ $ bundle exec wardite \
 # In Other Words
 
 - Creating too many instances is slow
-- Wardite's internal Value implementation looks like this, so having values in instance variables also seems slow?
+- Wardite's internal Value implementation looks like this
+
+<br>
+<br>
+<br>
+<br>
+<br>
 
 ```ruby
 class I32
@@ -1069,7 +1198,12 @@ end
 
 # How Many Are Actually Being Created?
 
-- Wardite's internal Values are created through methods of the same name, so can be measured like this:
+- Measured Wardite's internal Value-making functions:
+
+<br>
+<br>
+<br>
+<br>
 
 ```ruby
 $COUNTER = {}
@@ -1093,14 +1227,15 @@ END {
 {:I32=>18845604, :I64=>1710552, :F32=>247500}
 ```
 
-In the case of I32, 18.8 million instances are being created...
+- In the case of I32, 18.8 million instances are being created...
 
 ----
 
 # Thoughts
 
-- Even though they're I32, there might be many instances of specific values?
-  - For example, -1, 0, 1, 2, 3, 4, 8, 16 ... ?
+- Even though they're I32
+  - there might be many instances of specific values?
+  - For example, `-1, 0, 1, 2, 3, 4, 8, 16` ... ?
 - Let's try memoization
 
 ----
@@ -1138,20 +1273,23 @@ end
 
 # Reference: Breakdown of ruby.wasm Startup Time
 
+- Want to measure:
+  - Time taken for binary parsing relative to total
+  - Comparison with and without `--disable-gems`
+  - Time taken for WASI function calls relative to total
+
+----
+
+
 ```
 TBA!!!1
 ```
-
-- Want to measure:
-  - Time taken for binary parsing relative to total
-  - Comparison with and without --disable-gems
-  - Time taken for WASI function calls relative to total
 
 ----
 
 # YJIT Effects
 
-- Of course, YJIT has a significant effect on Wardite's execution speed
+- YJIT has a significant effect on Wardite's execution speed
 - Just putting the results here for reference
   - All environments are aarch64
 
@@ -1178,11 +1316,10 @@ TBA!!!1
 
 ----
 
-# Reference Blog
-
-- https://udzura.hatenablog.jp/entry/2024/12/20/173728
-
-----
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
 
 # Conclusion
 
@@ -1205,4 +1342,19 @@ TBA!!!1
 
 ----
 
+<!--
+_class: hero0
+_backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
+-->
+
 # Thanks!
+
+<br>
+
+<blockquote>
+一枝の花おもさうや酒の酔<br />
+&nbsp;<small><small>... A Haiku from Shiki Masaoka</small></small>
+</blockquote>
+
+
+
