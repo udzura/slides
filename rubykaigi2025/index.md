@@ -65,7 +65,10 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Wardite?
 
-- A Pure Ruby WebAssembly Runtime
+<ul>
+<li style="margin-left: -2.2em !important;">A Pure Ruby<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WebAssembly Runtime</li>
+</ul>
 
 ![bg right](./image-wardite.png)
 
@@ -129,6 +132,10 @@ p ret
 - You can compile C code like this into wasm and run it
 
 <br>
+<br>
+<br>
+<br>
+<br>
 
 ```c
 int add(int a, int b) {
@@ -136,7 +143,20 @@ int add(int a, int b) {
 }
 ```
 
-// TBA: Browser console example
+```javascript
+WebAssembly.instantiateStreaming(fetch("./out.wasm"), {}).then(
+    (obj) => {
+        let answer = obj.instance.exports.add(100, 200);
+        console.log("debug: 100 + 200 = ", answer);
+    },
+);
+```
+
+----
+
+# Result
+
+![bg right:70% w:800](image-19.png)
 
 ----
 
@@ -527,9 +547,9 @@ end
 
 ----
 
-# Wanting to Implement Numeric Operations Declaratively
+# Implement Numeric Operations Declaratively
 
-- Numeric operations are handled through file generation
+- Numeric ops (a.k.a ALU) are handled through file generation
 - Since there are 4 types, there're common ones
   - i32, i64, f32, f64
 - Created a generator with Rake task
@@ -537,10 +557,50 @@ end
 
 ----
 
-# Even with Automatic Generation
+# Automatic Generation Templates
 
-- Still had to work hard on the templates...
-  - TBA: Code around the generator
+<br>
+<br>
+
+```ruby
+  DEFS = { #: Hash[Symbol, String]
+    # ...
+  
+    add: <<~RUBY,
+      when :${PREFIX}_add
+        right, left = runtime.stack.pop, runtime.stack.pop
+        if !right.is_a?(${CLASS}) || !left.is_a?(${CLASS})
+          raise EvalError, "maybe empty or invalid stack"
+        end
+        runtime.stack.push(${CLASS}(left.value + right.value))
+    RUBY
+    # ...
+```
+
+----
+
+# Generated Codes
+
+<br>
+<br>
+
+```ruby
+module Wardite
+  module Evaluator
+    # @rbs ...
+    def self.i32_eval_insn(runtime, frame, insn)
+      case insn.code
+      # ...
+      when :i32_add
+        right, left = runtime.stack.pop, runtime.stack.pop
+        if !right.is_a?(I32) || !left.is_a?(I32)
+          raise EvalError, "maybe empty or invalid stack"
+        end
+        runtime.stack.push(I32(left.value + right.value))
+
+      when :i32_sub
+      # ...
+```
 
 ----
 
@@ -553,8 +613,16 @@ end
 
 # It Didn't Work...
 
-- So started debugging this
-  - TBA: Capture of the failure
+![alt text](image-17.png)
+
+----
+
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
+
+# Let's start debugging
 
 ----
 
@@ -568,11 +636,15 @@ end
 
 # Fixing Memory Allocation (memory.grow)
 
-- Memory allocation wasn't working correctly, causing overflow
-- The fix was just one line, but
-  - It took quite some effort to identify the cause...
-    - Ran the wasm in a browser, set breakpoints where it crashed around memory to check variable changes
-    - Looking back, should have run core spec tests to verify if the instruction behavior was correct overall
+- Found memory allocation wasn't working correctly
+- The fix was [just one line](https://github.com/udzura/wardite/commit/ecd64f25856c99c12a644efac4becb2573021e45), but took quite some effort
+  - note: tracing wasm binary in browser debugger was efficient
+
+----
+
+# Fix Commit
+
+![alt text](image-18.png)
 
 ----
 
@@ -665,9 +737,24 @@ end
 # Then Fix One by One
 
 - Indeed, bit shift instructions were failing, so fixed those
-- Normal cases now pass
-- Note: Temporarily omitted test cases with corrupted binary format, etc.
-- TBA: test pass capture
+- Normal cases now pass (omitted some exeption tests)
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+```
+$ bundle exec ruby spec/runner.rb
+...
+Finished in 0.272498 seconds.
+-------------------------------------------------------------------------------------------
+442 tests, 368 assertions, 0 failures, 0 errors, 0 pendings, 83 omissions, 0 notifications
+100% passed
+-------------------------------------------------------------------------------------------
+1622.03 tests/s, 1350.47 assertions/s
+```
 
 ----
 
