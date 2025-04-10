@@ -1107,7 +1107,7 @@ Hello
 
 ----
 
-![w:800](image-7.png)
+![w:500](image-7.png)
 
 ----
 
@@ -1149,23 +1149,11 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# Measurement Assumptions (1)
-
-- For now, prepared benchmark programs for these use cases
-  - Grayscale processing (Rust)
-    - Internally does base64 encode/decode + PNG expansion (deflate)
-  - ruby.wasm version display
-  - ruby.wasm w/ RubyGems
-
-----
-
-# Measurement Assumptions (2)
+# Measurement Assumptions
 
 - Software versions etc.
   - macOS 14.0 / Apple M3 Pro
   - ruby 3.4.2 (2025-02-15 revision d2930f8e7a) +YJIT +PRISM [arm64-darwin24]
-    - Both Mac and wasm sides
-    - Mac side is YJIT enabled unless specified otherwise
   - Wardite 0.6.1
 
 ----
@@ -1222,35 +1210,19 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# Decided to Calculate in Advance
+# Cache the End Position in Advance
 
-- Under the assumption that instructions don't change dynamically, moved towards pre-calculating end positions
-  - Wardite doesn't do JIT, so...
-
-----
-
-# Specific Implementation of Pre-calculation
-
-- Once instructions are parsed, revisit the instruction sequence
-  - When finding if/block/loop instructions, calculate their end positions on the spot
-- Decided to **cache end positions** in instruction metadata and use that
+- Decided to **cache end positions** in instruction metadata and reuse that
+- Once instructions are parsed, revisit the instruction sequence, calc end positon, then cache it on-memory
 
 ----
 
-# This Alone Reduced Execution Time by 43%
+# Reduce Time by 43%
 
-- Improvement for now! (measured w/ grayscale processing)
-  - PR: [Cache end position #1](https://github.com/udzura/wardite/pull/1)
+![bg right:45% h:500](image-23.png)
 
-<br>
-<br>
-<br>
-
-```
-before: 14.43s
-after: 8.17s
-TBA: make graph
-```
+- PR: [Cache end position #1](https://github.com/udzura/wardite/pull/1)
+- Used grayscale program
 
 ----
 
@@ -1410,24 +1382,27 @@ end
 
 - Changed by about 1 second. [Commit `e5b8f3a`](https://github.com/udzura/wardite/commit/e5b8f3ada850791d2170823d8a33c73362b62ec2)
   - Also, quit to use tap on initialize... [Commit `16ef6b5`](https://github.com/udzura/wardite/commit/16ef6b5a7929f65abf961901b5af9cc591540f6e)
-
-<br>
-<br>
-<br>
-
-```
-before: 8.01s
-after: 6.98s
-TBA write graph
-```
+- Note: this result is from Ruby 3.3 with YJIT
 
 ----
 
-# Further Tuning?
+# Results
 
-- Could have more effect by not creating objects for I32 etc. (using Integer directly)
-- However, this would require major design changes...
-  - Left as a future task
+![bg right:45% h:500](image-22.png)
+
+- Good to some extent
+- TODO: Try eliminating whole instance creation in value assignment...
+
+
+
+----
+
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
+
+# Further Tuning?
 
 ----
 
@@ -1438,22 +1413,27 @@ TBA write graph
 
 ----
 
-# Time taken for binary parsing
+# Execution Overview
 
-- Sample: `ruby.wasm --version`
+- Over half is laoding
+- Sample:
+
+<br>
+<br>
+<br>
 
 ```
-total process done: 10.71s
-load_from_buffer: 5.61s
-TBA: graph
+$ ruby.wasm --version
 ```
+
+![bg right h:500](image-24.png)
 
 ----
 
-# Time taken for WASI function calls
+# BTW: WASI function calls
 
 - Sample: `ruby.wasm -e 'puts "Hello, World"'`
-- Seems to be less controlling?
+- Seems to be less controlling
 
 <br>
 <br>
@@ -1474,39 +1454,22 @@ external call elapsed: 0.0611s (0.087% ... )
 - YJIT has a significant effect on Wardite's execution speed
 - Just putting the results here for reference
   - All environments are aarch64
+- Sample: `ruby.wasm --version`
 
 ----
 
-# Results on Ruby 3.3
+# Results
 
+![bg right:60% w:700](image-21.png)
 
-```
-Off: 14.98s
-On: 7.09s
-TBA: graph
-```
+- 15.22s -> 6.57s<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Ruby 3.4)
 
-----
-
-# Results on Ruby 3.4
-
-
-```
-Off: 15.22s
-On: 6.57s
-TBA: graph
-As you can see, the effect is greater than in 3.3. Thanks as always!
-```
-
-----
-
-# Ruby 3.5-dev@2025-04-05T01:31:20Z
-
-```
-Off: 14.51s
-On: 6.64s
-TBA: graph
-```
+<!--
+# Ruby version, YJIT Off, YJIT On
+# 3.3,14.98,7.09
+# 3.4,15.22,6.57
+# 3.5-dev,14.51,6.6
+-->
 
 ----
 
@@ -1533,6 +1496,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 # Looking for People Interested in Wasm Runtime
 
 - First, please try using it, even just for fun
+- Thank you for your attention!
 
 ----
 
