@@ -1239,8 +1239,18 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # This Alone Reduced Execution Time by 43%
 
-- Improvement for now!
-- TBA: Comparison capture or graph
+- Improvement for now! (measured w/ grayscale processing)
+  - PR: [Cache end position #1](https://github.com/udzura/wardite/pull/1)
+
+<br>
+<br>
+<br>
+
+```
+before: 14.43s
+after: 8.17s
+TBA: make graph
+```
 
 ----
 
@@ -1255,11 +1265,58 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Instance Creation Issues
 
-- Next, measured Wardite's bottlenecks with perf, but...
+- Next, measured Wardite's bottlenecks with perf...
+
+----
+
+```
+# Children      Self  Command  Shared Object          Symbol 
+# ........  ........  .......  .....................  ....................................................
+#
+   100.00%     0.00%  ruby     ruby                   [.] _start
+            |
+            ---_start
+               __libc_start_main
+               0xffffbd7173fc
+               main
+               ruby_run_node
+               rb_ec_exec_node
+               rb_vm_exec
+               |          
+               |--98.93%--vm_exec_core
+               |          |          
+               |          |--9.67%--0xffffbe152a58
+               |          |          |          
+               |          |          |--7.26%--rb_vm_set_ivar_id
+               |          |          |          |          
+               |          |          |          |--2.86%--rb_shape_get_iv_index
+               |          |          |          |          | ....
+               |          |          
+               |          |--7.32%--0xffffbe1525cc
+               |          |          |          
+               |          |           --6.62%--rb_class_new_instance_pass_kw
+               |          |                     |          
+               |          |                     |--2.52%--vm_call0_cc
+               |          |                     |          |          
+               |          |                     |          | ....
+               |          |                     |          
+               |          |                     |--2.22%--rb_class_allocate_instance
+               |          |                     |          |          
+               |          |                     |           --2.15%--newobj_alloc
+               |          |                     |                     | ....
+               |          |          
+               |          |--5.78%--0xffffbe14a65c
+....
+```
+
+----
+
+# Examine Perf Results
+
 - Common occurrences were:
   - `rb_vm_set_ivar_id`
   - `rb_class_new_instance_pass_kw`
-- These appear at the top even with YJIT
+- These appear at the top even with YJIT enabled
 
 ----
 
@@ -1311,11 +1368,16 @@ END {
 
 # For Example, Grayscale Processing
 
+<br>
+<br>
+<br>
+
 ```
 {:I32=>18845604, :I64=>1710552, :F32=>247500}
 ```
 
-- In the case of I32, 18.8 million instances are being created...
+- In case of I32, 18.8 million instances are being created
+  - w/ grayscale processing
 
 ----
 
@@ -1346,8 +1408,18 @@ end
 
 # There Was Some Effect
 
-- Changed by about 1 second
-- TBA: Can't find measurement results. Will remeasure later and add graph
+- Changed by about 1 second. [Commit `e5b8f3a`](https://github.com/udzura/wardite/commit/e5b8f3ada850791d2170823d8a33c73362b62ec2)
+  - Also, quit to use tap on initialize... [Commit `16ef6b5`](https://github.com/udzura/wardite/commit/16ef6b5a7929f65abf961901b5af9cc591540f6e)
+
+<br>
+<br>
+<br>
+
+```
+before: 8.01s
+after: 6.98s
+TBA write graph
+```
 
 ----
 
@@ -1359,18 +1431,40 @@ end
 
 ----
 
-# Reference: Breakdown of ruby.wasm Startup Time
+# Inspection: Breakdown of ruby.wasm bootstrap
 
-- Want to measure:
-  - Time taken for binary parsing relative to total
-  - Comparison with and without `--disable-gems`
-  - Time taken for WASI function calls relative to total
+- Time taken for binary parsing
+- Time taken for WASI function calls
 
 ----
 
+# Time taken for binary parsing
+
+- Sample: `ruby.wasm --version`
 
 ```
-TBA!!!1
+total process done: 10.71s
+load_from_buffer: 5.61s
+TBA: graph
+```
+
+----
+
+# Time taken for WASI function calls
+
+- Sample: `ruby.wasm -e 'puts "Hello, World"'`
+- Seems to be less controlling?
+
+<br>
+<br>
+<br>
+<br>
+
+```
+total process done: 69.89s
+load_from_buffer: 6.05s
+external call count: 1049
+external call elapsed: 0.0611s (0.087% ... )
 ```
 
 ----
@@ -1383,24 +1477,36 @@ TBA!!!1
 
 ----
 
-# Results on Ruby 3.3 TBA
+# Results on Ruby 3.3
 
-- Default
-- `--yjit`
 
-----
-
-# Results on Ruby 3.4 TBA
-
-- Default
-- `--yjit`
-- As you can see, the effect is greater than in 3.3. Thanks as always!
+```
+Off: 14.98s
+On: 7.09s
+TBA: graph
+```
 
 ----
 
-# What About Ruby 3.5-dev@2025/04/0X...?
+# Results on Ruby 3.4
 
-- `# TODO TBA`
+
+```
+Off: 15.22s
+On: 6.57s
+TBA: graph
+As you can see, the effect is greater than in 3.3. Thanks as always!
+```
+
+----
+
+# Ruby 3.5-dev@2025-04-05T01:31:20Z
+
+```
+Off: 14.51s
+On: 6.64s
+TBA: graph
+```
 
 ----
 
