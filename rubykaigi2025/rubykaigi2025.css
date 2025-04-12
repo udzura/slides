@@ -196,12 +196,18 @@ section.normal img {
     margin-top: 5%;
 }
 
-section.profile img {
+section.profile img.me {
     position: absolute;
     top: 25%;
     left: 64%;
     overflow: hidden !important;
     border-radius: 50% !important;
+}
+
+section.profile img.shr {
+    vertical-align: top;
+    position: relative;
+    top: 6px;
 }
 
 section::after {

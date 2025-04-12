@@ -26,20 +26,20 @@ _class: hero0
 _backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
 -->
 
-# Hello from Matzyama!
+# Hello from Matz-yama!
 
 ----
 <!--
 _class: profile
 -->
 
-![w:360](./rk2024-me-2.png)
+<img class="me" width="300" src="./rk2024-me-2.png" />
 
 # self.introduce!
 
 - Uchio Kondo
   - from Fukuoka.rb
-- Affiliation: SmartHR, Inc.
+- Member of <img class="shr" alt="SmartHR, Inc." width="250" src="./image-25.png" />
   - Product Engineer
 - Translator of "Learning eBPF"
 
