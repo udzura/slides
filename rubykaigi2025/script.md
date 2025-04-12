@@ -3,31 +3,44 @@ Okay, I'd like to begin my presentation.
 My name is Kondo.
 I'm from Fukuoka, Japan and a Product Engineer at SmartHR, which is Ruby Kaigi plutinum sponsor.
 
-Today's topic is Wardite, a Wasm Gem written in pure Ruby.
-In other words: a WebAssembly runtime written entirely in pure Ruby.
+Today's topic is Wardite, a WebAssembly runtime written entirely in pure Ruby.
 Wardite is named after the real mineral Wardite, which starts with letters "W" and "A".
 
-So, what does that mean? Wardite allows you to execute WebAssembly (or Wasm) binaries directly within your Ruby applications.
-Because it's a standard Ruby Gem, you can simply gem install Wardite and start using it.
-You can run existing Wasm tools, or, more powerfully, load and interact with Wasm modules directly from your Ruby code, using Wardite as a library.
+What does that mean? Wardite allows you to execute WebAssembly (or Wasm) binaries directly within your Ruby applications.
+Because it's a standard Ruby Gem, you can simply run `gem install Wardite` and start using it.
+You can also load and interact with existing Wasm modules directly from your Ruby code, using Wardite as a library.
 
 Now, for a quick description: WebAssembly is a binary instruction format.
 Think of it as a portable compilation target of compilers, such as rustc or clang.
 
 Originally for browsers, Wasm is now designed to run anywhere – servers, edge devices, embedded systems, and yes, inside other applications.
-To execute these Wasm binaries, you need a Wasm runtime.
-Browsers have built-in runtimes, there are standalone ones like Wasmtime or WasmEdge, and importantly, runtimes can be embedded within specific programming language ecosystems. For example, WaZero is a Wasm runtime written in Go, and there are others for Swift.
 
-This is exactly where Wardite fits in. It's a Wasm runtime for the Ruby ecosystem, built in Ruby.
+Here's a simple WebAssembly example. This C code, as you can see, just performs addition. If we compile this code into a Wasm binary, and then write JavaScript like this in the browser...
+...we can verify that the addition function, originally written in C, is now running successfully within the browser.
+
+To execute Wasm binaries, you need a Wasm runtime.
+Browsers have built-in runtimes, and there are standalone ones like Wasmtime or WasmEdge.
+
+Here's the flow of how wasm program works:
+First, prepare source code such as C, C++, Rust...
+Then compile it into wasm binary,
+and finally, executing wasm binary via WebAssembly runtime
+
+Now, let's return to the topic of Wardite. It's a Wasm runtime for the Ruby ecosystem, built in Ruby.
+Since it's written in Ruby, you can run WebAssembly within Ruby.
+
 A key design principle is its purity and portability:
 Wardite depends only on Ruby's standard libraries. No external C dependencies or gems.
-This means if you have Ruby, you can run Wardite.
+This means if you have Ruby, you can run Wardite. Maybe even on mruby, JRuby or else... in the future.
+
 Currently, Wardite has a near-complete implementation of the WebAssembly Core Specification.
 WebAssembly Core Spec covers the fundamental instruction set, types, and memory model needed to execute compliant Wasm files.
 
 Crucially, Wardite also implements WASI – the WebAssembly System Interface, specifically the common Preview 1 version.
-The Core Wasm spec doesn't define how to interact with the outside world (like filesystems or clocks).
-WASI provides that standard interface. This support is vital, and it allows Wardite to run more complex applications compiled to Wasm, including, excitingly, Ruby itself compiled to Wasm.
+The Core Wasm spec doesn't define how to interact with the outside world, like filesystems or clocks.
+
+WASI provides that standard interface.
+It allows Wardite to run more complex applications compiled to Wasm, including, excitingly, Ruby itself compiled to Wasm.
 
 So, why I built this? There are several reasons:
 
@@ -35,9 +48,11 @@ First: Expand Ruby + Wasm Integration. The primary goal is to unlock the potenti
 
 Then: High Portability. We wanted a runtime that works wherever standard Ruby works, potentially even extending to environments like mruby in the future.
 
-Finally: Leverage Wasm's Strengths into Ruby ecosystem. Fundamentally, WebAssembly offers compelling advantages.
+And third one is: Leverage Wasm's Strengths into Ruby ecosystem. Fundamentally, WebAssembly offers compelling advantages.
 
-WebAssembly holds significant potential due to several key strengths. such as:
+But, the true reason is that I wanted to play a complicated problem with Ruby, just for fun.
+
+In my opinion, WebAssembly holds significant potential due to several key strengths. such as:
 
 Language-Agnostic: It serves as a compilation target for many languages like Rust, Go, and C++.
 And crucially, C support potentially allows C-based languages (like Ruby or Python) to run via Wasm as well.
@@ -50,13 +65,18 @@ And finally, it Enables Polyglot Systems in the future: Combining language agnos
 to build applications by components written in different languages,
 choosing the best tool for each specific job.
 
+The figure on WasmCloud's website does a really good job of showing this concept.
+
 In essence, Wasm's value extends well beyond just the browser, enabling flexible and powerful new ways to construct software across many environments.
+
+----
 
 Now that you understand the Wardite's background, Let's dive deeper.
 
 Let's look back at the development process of Wardite.
 
-There were several milestones during Wardite's development.
+There were several milestones during Wardite's development. I'm going to describe them in order.
+
 The first milestone was porting a work called GorillaBook and getting "Hello World" to run in Wardite.
 GorillaBook is a web book originally written for learning the basic implementation of WebAssembly using Rust.
 Since I happened to have an opportunity to study it, I tried writing it out, and that's how it started.

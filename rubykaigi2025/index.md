@@ -66,9 +66,14 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 # Wardite?
 
 <ul>
-<li style="margin-left: -2.2em !important;">A Pure Ruby<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WebAssembly Runtime</li>
+<li style="margin-left: -2.2em !important;">A Pure Ruby WebAssembly Runtime</li>
 </ul>
+
+----
+
+# Wardite?
+
+- Wardite is named<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;after the real mineral<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**WA**rdite.
 
 ![bg right](./image-wardite.png)
 
@@ -110,11 +115,12 @@ p ret
 
 ----
 
-# Revisiting: What is Wardite?
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
 
-- A Pure Ruby WebAssembly Runtime...
-- What is WebAssembly?
-- What is a WebAssembly Runtime?
+# What is WebAssembly?
 
 ----
 
@@ -160,27 +166,11 @@ WebAssembly.instantiateStreaming(fetch("./out.wasm"), {}).then(
 
 ----
 
-# WebAssembly Runs Anywhere
-
-- You can run wasm binaries as CLI commands
-
-```
-$ wasmtime --invoke add add.wasm 100 200
-300
-```
-
-<ul class="lowered">
-<li>As we'll discuss later, you can also run them within applications that have a Wasm execution environment</li>
-</ul>
-
-
-----
-
 # WebAssembly Execution Flow
 
 - First, prepare source code (in C, C++, Rust...)
 - Then compile it into wasm binary
-- Finally, executing wasm binary via runtime
+- Finally, executing wasm binary via WebAssembly runtime
 
 ----
 
@@ -190,75 +180,70 @@ $ wasmtime --invoke add add.wasm 100 200
 
 ----
 
-# What is a WebAssembly Runtime?
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
 
-- A WebAssembly Runtime...
-  - is an environment for executing WebAssembly
-- Browsers can also be considered as Runtimes
-- Notable implementations include wasmtime and wasmedge
-
-----
-
-# What is a WebAssembly Runtime?
-
-- Some implementations can be embedded within languages
-  - Embedded library implementations are sometimes written purely in that language
-  - Examples: Go = wazero, Swift = swiftwasm ...
+# So, What is Wardite?
 
 ----
 
 # So, What is Wardite?
 
 - A WebAssembly Runtime written in Pure Ruby
-- Since it's written in Ruby, you can run WebAssembly within Ruby
-- For quick try, we also provide a command-line tool
+- We can run WebAssembly within Ruby
 
 ----
 
 # Wardite's Design Principles
 
-- Depend only on Ruby's standard and bundled libraries
-  - Especially the core part (discussed later) is implemented using only Ruby's standard library
-- Fully adopt rbs-inline
+- Purity:
+  - Depend only on Ruby's standard and bundled libraries
+  - No external C dependencies or gems
+- Portability:
+  - Can be run on any Ruby environment
+  - Even on mruby (...future work!)
 
 ----
 
 # Wardite's Implementation Status
 
-- WebAssembly Core Spec implementation
-  - Basic parts are complete
-  - Sufficient testing is still pending
+- Support basic WebAssembly Core specifications
 - WASI preview1 (p1)
-  - Implemented some WASI p1 functions
-  - Implemented (roughly) everything needed to run ruby.wasm
 
 ----
 
-# What is WebAssembly Core Spec?
+# WebAssembly Core Spec is...
 
 - A set of basic WebAssembly specifications
-  - Defines WebAssembly's binary and text formats, instruction set, type system, memory model, etc.
-  - Runtimes can execute binaries by implementing these specifications
-- Specifications like WASI and Component Model
-  - Are built on top of the Core Spec
+  - Defines WebAssembly's...
+    - binary and text formats
+    - instruction set
+    - type system
+    - memory model, etc.
 
 ----
 
-# What is WASI?
+# And what is WASI?
 
-- WebAssembly System Interface
+- = WebAssembly System Interface
 - The Core Spec itself doesn't define OS interactions
-- WASI defines APIs for WebAssembly to interact with the OS
-- There are p1 and p2, currently implementing p1
+  - e.g. I/O, filesystem, clock, etc.
 
 ----
 
-# WASI
+# WASI picture
+
+- WASI defines APIs to interact with the OS
 
 <br>
 <br>
+<br>
+<br>
+<br>
 
-![w:950](image-10.png)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![w:800](image-10.png)
 
 ----
 
@@ -273,12 +258,25 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Wardite's Goals
 
-- Expand use cases for wasm language embedding in Ruby
-- Very portable implementation
-  - (works where Ruby works, or works with mruby)
-- Helps with Ruby's performance testing
-- But the real reason is...
+- #1
+  - Expand use cases for wasm language embedding in Ruby
 
+----
+
+# Wardite's Goals
+
+- #2
+  - Desire to make very portable implementation
+  - (works where Ruby works, or works with mruby)
+
+----
+
+# Wardite's Goals
+
+- #3
+  - Helps with Ruby's performance testing
+    - or complicated program usecase
+  - Like optcarrot?
 
 ----
 
@@ -287,79 +285,49 @@ _class: hero
 _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 -->
 
+# But the real reason is...
+
+----
+
+<!--
+_class: hero0
+_backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
+-->
+
 # Just for Fun.
 
 ----
 
-# Previous Implementation
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
 
-- https://github.com/technohippy/wasmrb
-- However, there were many unimplemented parts, so I decided to do it!
-
-----
-
-# WebAssembly's Potential
-
-- IMO: WebAssembly has great potential
-- And aim to increase access paths in Ruby
-
-----
-
-# WebAssembly's Potential
-
-- Expectations for language-agnostic aspects
-- Interest in the simplicity of the Core
-- Possibilities for application embedding
+# Bet WebAssembly's Potential!
 
 ----
 
 # Language-Agnostic Aspects
 
 - Many compiled languages support wasm targets
-  - Rust, Go, C/C++, Swift, Zig, Dart, Scala...
-  - LLVM backend
-- Many assets can be converted to wasm via C...
-  - Some languages are written in C. Ruby, Python, Lua, Perl...
-
-----
-
-# Interest in the Simple Core
-
-- The WebAssembly Core Spec seems to maintain simplicity and rationality
-  - Therefore, implementation is relatively easy
-  - The runtime itself is easy to embed in various places
-- About extension specifications... there are various opinions...
+  - Rust, Go, C/C++, Swift, Scala...
+  - LLVM supporting wasm
+  - And Some languages are written in C.
+    - Ruby, Python, Lua, Perl...
 
 ----
 
 # Possibilities for Application Embedding
 
+- The WebAssembly Core Spec seems to maintain simplicity
 - Suitability for embedded execution in applications
-  - Runtimes can often be made small, making them easy to embed in various environments
-  - Runtime implementations are actually emerging in various languages
-
-----
-
-# Example: Using Embedded wasm in Go
-
-- Pure Go plugin mechanism using wazero
-  - wazero = Pure Go WebAssembly Runtime
-  - wasm can be prepared with GOARCH=wasm32 or tinygo
-- Generally, direct C function usage from Go has many considerations and is difficult
-  - Therefore, dlload() etc. is also difficult 
-
-----
-
-# [knqyf263/go-plugin](https://github.com/knqyf263/go-plugin)
-
-- Go Plugin System over WebAssembly
-- Dynamic loading of Go from Go
 
 ----
 
 # Browser as an Embedded Environment
 
-- Browser execution can be better understood as "a wasm runtime embedded in the browser"
+- Browser execution can be better understood...
+  - As "a wasm runtime embedded in the browser"
 
 <br>
 <br>
@@ -372,19 +340,19 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# Exploring the Possibilities
+# Polyglot Systems
 
-- High affinity for embedded execution
-  - Converting various application parts to wasm
-    - As configuration languages e.g. envoy, fluent-bit,...
-  - Could potentially replace intended uses of mruby and Lua
-- Since wasm can be written in any language...
-  - It hints at a future where various languages can be combined
+- Language agnosticism + Embeddability
+  - Write (wasm) component in any language
+  - Combine them into an application in another language!
+
+<!-- TBA: 図？ -->
 
 ----
 
-# Conceptual Diagram from wasmCloud's Website
+# Conceptual Figure
 
+<br>
 <br>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![h:300](image-4.png)
@@ -395,12 +363,19 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# Personal Opinions
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)-->
 
-- The Core spec is very small, allowing for various runtime implementations and easy embedding in different environments
-  - There's a clear intention to keep wasm's core simple despite various extensions
-  - This design philosophy feels different from JVM (personal opinion)
-  - Limiting the value to just "running in browsers" might be too narrow-minded
+# Wasm is Going Beyond the Browser
+
+----
+
+<!--
+_class: hero0
+_backgroundImage: url(./rubykaigi2025_bg.005.jpeg)-->
+
+# How to Develop Wardite
 
 ----
 
@@ -409,18 +384,17 @@ _class: hero
 _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 -->
 
-# How to Develop Wardite
+# Past Development Milestones
 
 ----
 
-# Wardite's Development History
+# Wardite's Development Milestones
 
-- Several milestones were achieved
-  - Porting the Gorilla Book (Hello, World)
-  - Covering basic Core Spec instructions
-  - Running the grayscale sample program
-  - Starting ruby.wasm
-  - Making require work in ruby.wasm
+- Porting the Gorilla Book (Hello, World)
+- Covering basic Core Spec instructions
+- Running the grayscale sample program
+- Starting ruby.wasm
+- Making require work in ruby.wasm
 
 ----
 
@@ -695,20 +669,9 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# Reference: Example of Running Core Spec
+# TBA:
 
-- Can generate test cases with `wast2json`
-  - ref: [自作Wasmランタイムを公式のテストスイートを用いてテストする話](https://zenn.dev/ri5255/articles/bac96cf74f82f0)
-
-----
-
-# Created a Tester Like This
-
-- Generate test case files with wast2json
-- Iterate through those files and execute as Ruby test-unit tests
-  - Call Wardite.load().call based on binary and parameters
-- Since I'm using Ruby
-  - automating these tedious tasks is easy
+- スクリプトに合わせて書き直すこと
 
 ----
 
@@ -906,22 +869,6 @@ end
 
 ----
 
-# By the Way
-
-- Implemented the required WASI functions, but...
-- At the very end, got stuck because of a mistake
-  - in `if/block/loop` implementation
-  - It wasn't working regardless of WASI
-  - Finally noticed after staring format with `wasm-tools print`...
-
-----
-
-# [The Fix Commit](https://github.com/udzura/wardite/commit/605dd7cb6db1ddfd3b84078d733400d56f400f3c#diff-bff9b2bd05ba0d106ae6c1e3e5a1b41c41aff0e0e6e245aa123bf6589627a711)
-
-![w:800](image-2.png)
-
-----
-
 # ruby.wasm's `--version` Now Works!
 
 ```
@@ -1094,8 +1041,6 @@ Hello
 
 - Mostly correctly fixed
   - `fd_prestat_get()` and `fd_prestat_dir_name()`
-- Moreover, had to implement a few more things
-  - Especially `fd_readdir()` was tough...
 
 ----
 
