@@ -390,23 +390,30 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Wardite's Development Milestones
 
-- Porting the Gorilla Book (Hello, World)
-- Covering basic Core Spec instructions
-- Running the grayscale sample program
+- Gorilla Book (Hello, World)
+- Core instructions
+- Running Grayscale
 - Starting ruby.wasm
-- Making require work in ruby.wasm
+- Letting ruby.wasm Require
+
+----
+
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)-->
+
+# Gorilla Book
 
 ----
 
 # Port the "Implementing Wasm Runtime" Book
 
 - Goal: Make "Hello, World" work
-- Required implementation...
+- Required implementation:
   - Basic VM structure and instructions
-    - Local variables, global variables (+ control structures)
-    - Memory allocation and deallocation
-    - Function import/export sections
-    - Only supporting WASI's fd_write()
+  - Memory initialization
+  - Function call/import/export
+  - Some support of WASI
 
 ----
 
@@ -415,21 +422,18 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 - 『[RustでWasm Runtimeを実装する](https://zenn.dev/skanehira/books/writing-wasm-runtime-in-rust)』
   -  "Gorilla Book" after the author's penname
 - A book for learning basic Wasm implementation in Rust
-- Got a chance to use paid leave...
-- Thought "So let's write it in Ruby"
-  - Rust -> Ruby with full RBS seemed like a great challenge
 
 ----
 
 # Book Impressions
 
-- Although wasm is relatively simple, understanding the overall VM design philosophy is quite challenging
-- However, it's understandable with careful reading of the book and spec documentation
+- Understanding the overall VM design is quite challenging
+  - However, it's understandable with careful reading of the book and spec documentation
 - Having a Rust reference implementation was very helpful!
 
 ----
 
-# Binary Format
+# Task #1: Binary Format
 
 - Implemented straightforwardly following the Gorilla Book
   - Section format
@@ -447,7 +451,9 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# Basic VM Code
+# Task #2: VM Implementation
+
+<br>
 
 ```ruby
 def execute!
@@ -468,7 +474,7 @@ end
 
 ----
 
-# Actually, "Output" is Difficult
+# Task #3: "Output"
 
 - A common issue for programming language creator?
 - "Output" requires using OS functionality
@@ -487,12 +493,20 @@ end
 
 ----
 
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)-->
+
+# Core Instructions
+
+----
+
 # Covering Basic Core Spec Instructions
 
 - After Hello World worked, wanted to implement more
 - Goals
   - Cover basic Core Spec instructions
-  - At this point, had the desire to "make ruby.wasm work", so investigated which instructions were used
+  - At this point, had the desire to "make ruby.wasm work"
 
 ----
 
@@ -501,33 +515,32 @@ end
 - There are basic and extended sets
 - Basic range is written in the Core Spec
 - About extended sets
-  - GC, atomic, reference types, simd, exception handling...
-  - Extentions are... future work!
+  - GC, atomic, reference types, simd...
+  - Supporting extentions are... future work!
 
 ----
 
-![bg right:49% h:550](image-14.png)
+![bg right:55% h:580](image-14.png)
 
-# [WebAssembly Opcodes](https://pengowray.github.io/wasm-ops/)
+# [Opcodes Table](https://pengowray.github.io/wasm-ops/)
 
 ----
 
 # Challenges
 
-- Wow, there are so many... (or maybe not that many?)
-- Implemented 192 instructions in total
+- Implemented **192** instructions in total
   - Doesn't seem that many...
 - Just kept working diligently
 
 ----
 
-# Implement Numeric Operations Declaratively
+# Implement Numeric Operations
 
-- Numeric ops (a.k.a ALU) are handled through file generation
 - Since there are 4 types, there're common ones
-  - i32, i64, f32, f64
-- Created a generator with Rake task
-- Apparently, there are 167 insns automatically generated
+  - `i32, i64, f32, f64`
+- Created a generator using `rake` task
+- There are **167** insns automatically generated
+  - Note: this includes converting insns
 
 ----
 
@@ -572,16 +585,24 @@ module Wardite
         end
         runtime.stack.push(I32(left.value + right.value))
 
-      when :i32_sub
       # ...
 ```
+
+----
+
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)-->
+
+# Grayscale Journey
 
 ----
 
 # Running Sample Programs
 
 - With instructions implemented, moved to practical testing
-- Tried running a grayscale processing program made in Rust from another project
+- Tried running a grayscale processing program
+  - Made in Rust from another personal project
 
 ----
 
@@ -612,7 +633,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 - Found memory allocation wasn't working correctly
 - The fix was [just one line](https://github.com/udzura/wardite/commit/ecd64f25856c99c12a644efac4becb2573021e45), but took quite some effort
-  - note: tracing wasm binary in browser debugger was efficient
+  - Note: tracing wasm binary in browser debugger was efficient
 
 ----
 
@@ -647,7 +668,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 - On decoding PNG
 - Decompressing deflate compression
-- Getting an error in this process
+- Have to study the deflate algorithm from scratch? 😵‍💫
 
 ----
 
@@ -661,17 +682,22 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Verifying i32 Instruction Correctness
 
-- Let's run core spec tests
-- How to run:
-  - [Official wasm core spec test cases](https://github.com/WebAssembly/spec/tree/main/test/core) are available
-  - Generate wasm binaries and execution scenarios from them
-  - Run them with Wardite
+- There're [Official wasm core spec test cases](https://github.com/WebAssembly/spec/tree/main/test/core) !
+
+----
+
+# Running the Test Cases
+
+- The official test suite provides `wast` format files
+- Using a command called `wast2json`
+  - Can generate JSON files and Wasm binaries
+  - Run tests from these testcase files
 
 ----
 
 # TBA:
 
-- スクリプトに合わせて書き直すこと
+- スクリプトに合わせてテストケース実行の流れを作図する
 
 ----
 
@@ -723,6 +749,8 @@ Finished in 0.272498 seconds.
 
 # Grayscale Worked!
 
+<!-- TBA: ワイの像ではなくエンジニアカフェの外観の例に変更 -->
+
 &nbsp;
 &nbsp;
 
@@ -751,24 +779,29 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Running ruby.wasm
 
-- Make it work by passing ruby.wasm to `wardite` command
-- Besides instruction coverage, what else is needed?
+- Passing ruby.wasm to `wardite` command successfully
+- Besides instruction coverage:
   - WASI support is needed for ruby.wasm to work
 
 ----
 
 # What WASI Functions Does ruby.wasm Need?
 
-- Can be checked with this command:
+- This time, <strong>37</strong> functions are needed. 
+  -  Depending on bundled gems or build env
+- Note: Checked with this command:
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 ```
 $ wasm-objdump -x -j Import ./ruby-wasm32-wasi/usr/local/bin/ruby
 ```
 
-<ul class="underpre2">
-<li>This time, 37 functions are needed. </li>
-<li>※ Depending on bundled gems or build env</li>
-</ul>
 
 ----
 
@@ -815,7 +848,7 @@ Import[37]:
 
 ----
 
-# Wardite's WASI Implementation Strategy
+# Inrtrocuse `Wardite::WasiSnapshotPreview1`
 
 - Implement everything in a class called
   - `Wardite::WasiSnapshotPreview1`
@@ -860,7 +893,7 @@ end
 
 # Examples of Functions Implemented
 
-- Getting argv, environment variables
+- Getting `ARGV`, environment variables
 - Getting current time
 - Getting random numbers
 - prestat functions
@@ -871,18 +904,20 @@ end
 
 # ruby.wasm's `--version` Now Works!
 
+<br>
+
 ```
 $ bundle exec wardite ./ruby -- --version        
 ruby 3.4.2 (2025-02-15 revision d2930f8e7a) +PRISM [wasm32-wasi]
 ```
 
-----
+<br>
 
-# Release information
+<ul class="underpre">
+<li>Released this version as Wardite 0.6.0</li>
+<li><a href="https://github.com/udzura/wardite/blob/7ef48389415df9e44784d515f3e0e96aa00f2ad2/lib/wardite/wasi.rb">Code at that point</a></li>
+</ul>
 
-- Released this version as Wardite 0.6.0
-- [Code at that point](https://github.com/udzura/wardite/blob/7ef48389415df9e44784d515f3e0e96aa00f2ad2/lib/wardite/wasi.rb)
-- Worked with 12 WASI functions
 
 ----
 
@@ -909,7 +944,8 @@ $ bundle exec wardite ./ruby -- -e '5.times { p "hello: #{_1}" }'
 
 ----
 
-# Behavior at This Point
+
+# Behavior at This Point #2
 
 <br>
 
@@ -929,7 +965,16 @@ Hello
 
 ----
 
-# Want to Make `Kernel#require` Work
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
+
+# Required to solve<br>`require` issues
+
+----
+
+# How to Make `Kernel#require` Work
 
 - For that...
   - Need to make Wardite properly recognize the file system
@@ -939,17 +984,39 @@ Hello
 # Initial File System Implementation
 
 - Start with opening files
-  - Tried implementing `path_open` function roughly, but
-  - Doesn't work properly...
-  - Not even being called?
+  - Tried implementing `path_open` function roughly.
+  - But not even being called?
 - Why?
+
+----
+
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
+
+# "Preopens" Mechanism
 
 ----
 
 # WASI Has a Mechanism Called preopens
 
-- Refer to wasi-sdk's libc
-- [See codes in `libc-bottom-half/sources/preopens.c`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L246-L276)
+- Many WASI runtimes, by default:
+  - They **cannot** access the host's file system at all.
+- We have to pre-open host directries to share
+  - And register them to the process on startup
+
+----
+
+# Preopens diagram
+
+- TBA: Preopens diagram
+
+----
+
+# Implementation
+
+- See codes in wasi-sdk's [`libc-bottom-half/sources/preopens.c`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L246-L276)
 
 ----
 
@@ -987,60 +1054,56 @@ Hello
 
 ----
 
-# File System Handling in WASI p1
-
-- In WASI p1 compatible WASM runtimes, by default, they **cannot** access the parent environment's file system at startup.
-- When starting a WASM runtime, you need to pass information about the file system you want to share with the parent environment at `fd = 3` and beyond
-  - This is called "preopens"
-
-----
-
-# File System Sharing Initialization Process
-
-- (Based on wasi-sdk's assumptions)
-- File system registration is done 
-  - in the `__wasilibc_populate_preopens(void)` function
-  - Checks preopens sequentially using `fd_prestat_get()`
-  - Gets names with `fd_prestat_dir_name()` and register
-  - Returns `EBADF` and exits when there's no more preopens
-
-----
-
-# Why Couldn't We Access Files?
-
-- Functions like `path_open()` aren't even called
-  - if the preopen environment isn't registered
-- See `__wasilibc_find_abspath()`:
-  - [`libc-bottom-half/sources/preopens.c#L190-L213`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L190-L213)
-
-----
+<!-- TBA: コードに丸をつけたり簡単に作図する -->
 
 ```c
-    // by udzura: Process to find matching path from preopens
-    for (size_t i = num_preopens; i > 0; --i) {
-        const preopen *pre = &preopens[i - 1];
-        const char *prefix = pre->prefix;
-        size_t len = strlen(prefix);
+    for (__wasi_fd_t fd = 3; fd != 0; ++fd) {
+        __wasi_prestat_t prestat;
+        __wasi_errno_t ret = __wasi_fd_prestat_get(fd, &prestat);
+        if (ret == __WASI_ERRNO_BADF)
+            break;
+        if (ret != __WASI_ERRNO_SUCCESS)
+            goto oserr;
+        switch (prestat.tag) {
+        case __WASI_PREOPENTYPE_DIR: {
+            char *prefix = malloc(prestat.u.dir.pr_name_len + 1);
+            if (prefix == NULL)
+                goto software;
 
-        // If we haven't had a match yet, or the candidate path is longer than
-        // our current best match's path, and the candidate path is a prefix of
-        // the requested path, take that as the new best path.
-        if ((fd == -1 || len > match_len) &&
-            prefix_matches(prefix, len, path))
-        {
-            fd = pre->fd;
-            match_len = len;
-            *abs_prefix = prefix;
+            ret = __wasi_fd_prestat_dir_name(fd, (uint8_t *)prefix,
+                                             prestat.u.dir.pr_name_len);
+            if (ret != __WASI_ERRNO_SUCCESS)
+                goto oserr;
+            prefix[prestat.u.dir.pr_name_len] = '\0';
+
+            if (internal_register_preopened_fd_unlocked(fd, prefix) != 0)
+                goto software;
+            free(prefix);
+
+            break;
+        }
+        default:
+            break;
         }
     }
 ```
 
 ----
 
+# Why Couldn't We Access Files?
+
+- Functions like `path_open()` aren't even called...
+  - if the preopen environment isn't registered
+- See `__wasilibc_find_abspath()`:
+  - [`libc-bottom-half/sources/preopens.c#L190-L213`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L190-L213)
+
+----
+
 # So Fixed the prestat Functions
 
-- Mostly correctly fixed
-  - `fd_prestat_get()` and `fd_prestat_dir_name()`
+- Implemented properly:
+  - `fd_prestat_get()`
+  - `fd_prestat_dir_name()`
 
 ----
 
@@ -1050,36 +1113,29 @@ Hello
 
 ![alt text](image.png)
 
+<!-- TBA: 見やすい画像にする -->
+
 ----
 
 ![w:500](image-7.png)
+
+<!-- TBA: 上が撮り直しならこれも作り直し -->
 
 ----
 
 # ...It's Taking Quite Some Time...
 
+- Initializing all of RubyGems takes 68 seconds
 - Let's talk about performance at the end
 
 ----
 
-# Let's Demo the Startup Here
-
-- Please let me use `--disable-gems` for speed
-
-```
-$ bundle exec wardite \
-    --mapdir ./ruby-wasm32-wasi/:/ ./ruby -- \
-    --disable-gems -e '5.times { p "hello: #{_1}" }'
-```
-
-----
-
 <!--
-_class: hero
-_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+_class: hero0
+_backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
 -->
 
-# Dealing with Performance Measurement
+# Performance + Measurement
 
 ----
 
@@ -1088,17 +1144,23 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 - Still halfway there!
   - Haven't been doing nothing
 - Let me talk about some implemented improvements
-  - Block jump improvements
-  - Instance creation issues
-  - YJIT effects
+
+----
+
+# Topics
+
+- Block jump improvements
+- Instance creation issues
+- YJIT effects
 
 ----
 
 # Measurement Assumptions
 
+- Use grayscale wasm program (basically)
 - Software versions etc.
-  - macOS 14.0 / Apple M3 Pro
-  - ruby 3.4.2 (2025-02-15 revision d2930f8e7a) +YJIT +PRISM [arm64-darwin24]
+  - macOS 15.3.2 / Apple M3 Pro
+  - ruby 3.4.2 +YJIT +PRISM [arm64-darwin24]
   - Wardite 0.6.1
 
 ----
@@ -1114,19 +1176,25 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Background: About Jump Instructions
 
-- WebAssembly's jump instructions
-  - There are if, block, and loop
-  - These instructions need to know the position of their corresponding end
-    - Unlike common jump instructions, they don't hold offsets
+- WebAssembly's jump insns: `if, block, loop`
+  - Unlike common jump instructions, they don't hold offsets themselves as an operand
+  - These instructions need to pick the position of their corresponding end
+  - This was done in `fetch_ops_while_end`
+
+----
+
+![alt text](image-16.png)
 
 ----
 
 # When measuring the first version with ruby-prof
 
-- Clearly, the `fetch_ops_while_end` method was at the top...
+- Clearly, the `fetch_ops_while_end` method took some time
 
 <br>
 <br>
+
+<!-- TBA: 図に丸つけをする -->
 
 ```
 -------------------------------------------------------------------------------------------------------------------------------------
@@ -1143,22 +1211,33 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# Initial Naive Implementation
+# Use the Cache
 
-- Every time an if/block/loop instruction was encountered:
-  - Looked ahead in the current code to calculate the position of the corresponding end
-- Therefore, when looping many times or calling functions containing if statements repeatedly, it had to fetch and calculate each time...
-
-----
-
-![alt text](image-16.png)
+- **Cache end positions** in instruction metadata
+- Once instructions are parsed:
+  - revisit the instruction sequence
+  - calc end positon
+  - then cache it on-memory
 
 ----
 
-# Cache the End Position in Advance
-
-- Decided to **cache end positions** in instruction metadata and reuse that
-- Once instructions are parsed, revisit the instruction sequence, calc end positon, then cache it on-memory
+```ruby
+    def revisit!
+      @ops.each_with_index do |op, idx|
+        case op.code
+        when :block, :loop
+          next_pc = fetch_ops_while_end(idx)
+          op.meta[:end_pos] = next_pc
+  
+        when :if
+          next_pc = fetch_ops_while_end(idx)
+          else_pc = fetch_ops_while_else_or_end(idx)
+          op.meta[:end_pos] = next_pc
+          op.meta[:else_pos] = else_pc
+        end
+      end
+    end
+```
 
 ----
 
@@ -1183,6 +1262,15 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 # Instance Creation Issues
 
 - Next, measured Wardite's bottlenecks with perf...
+
+----
+
+# Examine Perf Results
+
+- Common occurrences were:
+  - `rb_vm_set_ivar_id`
+  - `rb_class_new_instance_pass_kw`
+- Note: These appear at the top even with YJIT enabled
 
 ----
 
@@ -1225,15 +1313,6 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
                |          |--5.78%--0xffffbe14a65c
 ....
 ```
-
-----
-
-# Examine Perf Results
-
-- Common occurrences were:
-  - `rb_vm_set_ivar_id`
-  - `rb_class_new_instance_pass_kw`
-- These appear at the top even with YJIT enabled
 
 ----
 
@@ -1300,7 +1379,7 @@ END {
 
 # Thoughts
 
-- Even though they're I32
+- Hypothesis:
   - there might be many instances of specific values?
   - For example, `-1, 0, 1, 2, 3, 4, 8, 16` ... ?
 - Let's try memoization
@@ -1323,21 +1402,22 @@ end
 
 ----
 
-# There Was Some Effect
-
-- Changed by about 1 second. [Commit `e5b8f3a`](https://github.com/udzura/wardite/commit/e5b8f3ada850791d2170823d8a33c73362b62ec2)
-  - Also, quit to use tap on initialize... [Commit `16ef6b5`](https://github.com/udzura/wardite/commit/16ef6b5a7929f65abf961901b5af9cc591540f6e)
-- Note: this result is from Ruby 3.3 with YJIT
-
-----
-
 # Results
 
 ![bg right:45% h:500](image-22.png)
 
 - Good to some extent
-- TODO: Try eliminating whole instance creation in value assignment...
+- [Commit `e5b8f3a`](https://github.com/udzura/wardite/commit/e5b8f3ada850791d2170823d8a33c73362b62ec2)
+  - [With remove tap `16ef6b5`](https://github.com/udzura/wardite/commit/)
+- Note: Ruby 3.3 w/YJIT
 
+----
+
+# Future Challenges
+
+- TODO:
+  - Try eliminating whole instance creation in value assignment...
+  - This requires a fundamental change in the design
 
 
 ----
@@ -1351,10 +1431,9 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# Inspection: Breakdown of ruby.wasm bootstrap
+# Inspection
 
-- Time taken for binary parsing
-- Time taken for WASI function calls
+- Breakdown of ruby.wasm bootstrap via Wardite
 
 ----
 
@@ -1375,7 +1454,7 @@ $ ruby.wasm --version
 
 ----
 
-# BTW: WASI function calls
+# BTW: Measured WASI function calls
 
 - Sample: `ruby.wasm -e 'puts "Hello, World"'`
 - Seems to be less controlling
@@ -1394,6 +1473,15 @@ external call elapsed: 0.0611s (0.087% ... )
 
 ----
 
+<!--
+_class: hero
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+-->
+
+# YJIT, YJIT, YJIT!
+
+----
+
 # YJIT Effects
 
 - YJIT has a significant effect on Wardite's execution speed
@@ -1405,23 +1493,45 @@ external call elapsed: 0.0611s (0.087% ... )
 
 # Results
 
-![bg right:60% w:700](image-21.png)
-
-- 15.22s -> 6.57s<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Ruby 3.4)
+![bg right:80% w:900](image-21.png)
 
 <!--
 # Ruby version, YJIT Off, YJIT On
 # 3.3,14.98,7.09
 # 3.4,15.22,6.57
 # 3.5-dev,14.51,6.6
+
+(15.22-6.57)/15.22 => 0.5683311432325887
 -->
 
 ----
 
 <!--
-_class: hero
-_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
+_class: hero0
+_backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
 -->
+
+# Demonstration
+
+----
+
+# Let's Demo the Startup Here
+
+- Please let me use `--disable-gems` for speed
+
+```
+$ bundle exec wardite \
+    --mapdir ./ruby-wasm32-wasi/:/ ./ruby -- \
+    --disable-gems -e '5.times { p "hello: #{_1}" }'
+```
+
+----
+
+<!--
+_class: hero0
+_backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
+-->
+
 
 # Conclusion
 
@@ -1429,12 +1539,21 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Wardite's Future
 
-- Still need more implementation
-  - Improve Core Spec coverage
-  - Overall refactoring
-  - Performance improvements
-  - Improve WASI coverage
-  - Component model support ...
+- Improve Core Spec coverage
+- Overall refactoring
+- Performance improvements
+- Improve WASI coverage
+- Component model support ...
+
+----
+
+# Wardite's Future
+
+- Improve Core Spec coverage
+- Overall refactoring
+- Performance improvements
+- Improve WASI coverage
+- **Component model support ...**
 
 ----
 
@@ -1446,14 +1565,12 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 ----
 
 <!--
-_class: hero1
-_backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
+_class: fin
+_backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 -->
 
-# Thanks!
-
-
 <!--
+候補
 - 人を見ん桜は酒の肴なり
 - 一枝の花おもさうや酒の酔
 - 花に酔ふた頭重たし春の雨
@@ -1464,6 +1581,10 @@ _backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
 花に酔ふた頭重たし春の風<br />
 &nbsp;<small><small>... A Haiku from Masaoka Shiki</small></small>
 </blockquote>
+
+<address>
+<small>See you in last day drinkups!</small>
+</address>
 
 ----
 

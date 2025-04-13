@@ -76,23 +76,30 @@ section.hero h1 {
     text-align: center;
 }
 
-section.hero1 blockquote {
+section.fin blockquote {
     position: relative;
-    top: -3%;
+    top: -1%;
     font-family: "Hina Mincho", serif;
     font-weight: 300;
     font-size: 50px;
     margin-left: 19%;
     border: none;
-    color: white;
 }
 
-section.hero1 blockquote small {
+section.fin blockquote small {
     font-family: "Lexend", sans-serif;
+    line-height: 1;
     font-size: 25px;
     padding-left: 14.5%;
 }
 
+section.fin address {
+    font-family: "Lexend", sans-serif;
+    font-size: 25px;
+    position: absolute;
+    top: 80%;
+    left: 72%;
+}
 
 section:not(.title):not(.hero):not(.hero0):not(.hero1) h1, section.normal2 h1 {
     position: absolute;
