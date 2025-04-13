@@ -3,10 +3,10 @@ Okay, I'd like to begin my presentation.
 My name is Kondo.
 I'm from Fukuoka, Japan and a Product Engineer at SmartHR, which is a Ruby Kaigi platinum sponsor.
 
-Today's topic is Wardite, a WebAssembly runtime written entirely in pure Ruby.
+Today's topic is Wardite - What is Wardite? It is a WebAssembly or Wasm runtime written entirely in pure Ruby.
 Wardite is named after the real mineral Wardite, which starts with letters "W" and "A".
 
-Wardite allows you to execute WebAssembly (or Wasm) binaries directly within your Ruby applications.
+Wardite allows you to execute Wasm binaries directly within your Ruby applications.
 Because it's a standard Ruby Gem, you can simply run `gem install Wardite` and start using it.
 You can also use Wardite as a library to load and interact with existing Wasm modules directly from your Ruby code.
 
@@ -18,13 +18,13 @@ Originally for browsers, Wasm is now designed to run anywhere – servers, edge 
 Here's a simple WebAssembly example. This C code, as you can see, just performs addition. If we compile this code into a Wasm binary, and then write JavaScript like this in the browser...
 ...we can verify that the addition function, originally written in C, is now running successfully within the browser.
 
-To execute Wasm binaries, you need a Wasm runtime.
-Browsers have built-in runtimes, and there are standalone ones like Wasmtime or WasmEdge.
-
 Here's the flow of how a wasm program works:
 First, prepare source code such as C, C++, Rust...
 Then compile it into a wasm binary,
 and finally, execute the wasm binary via a WebAssembly runtime
+
+To execute Wasm binaries, you need a Wasm runtime.
+Browsers have built-in runtimes, and there are standalone ones like Wasmtime or WasmEdge.
 
 Now, let's return to the topic of Wardite. It's a Wasm runtime for the Ruby ecosystem, built in Ruby.
 Since it's written in Ruby, you can run WebAssembly within Ruby.
@@ -320,5 +320,5 @@ Thank you very much for listening.
 
 And a final digression: this is a haiku about Sakura and a hangover.
 It's by the founder of modern haiku-style poetry, Masaoka Shiki, who was from Matsuyama.
-Feel free to talk to me, either around the venue or later at the drink up!
+Let's enjoy the final day's drink ups, for those who love drinks!
 

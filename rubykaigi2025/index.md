@@ -346,11 +346,15 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
   - Write (wasm) component in any language
   - Combine them into an application in another language!
 
-<!-- TBA: 図？ -->
+----
+
+# Conceptual Diagram
+
+<!-- TBA: 図？ dekireba -->
 
 ----
 
-# Conceptual Figure
+# FYI: wasmCloud Concept
 
 <br>
 <br>
