@@ -6,7 +6,7 @@ I'm from Fukuoka, Japan and a Product Engineer at SmartHR, which is Ruby Kaigi p
 Today's topic is Wardite, a WebAssembly runtime written entirely in pure Ruby.
 Wardite is named after the real mineral Wardite, which starts with letters "W" and "A".
 
-What does that mean? Wardite allows you to execute WebAssembly (or Wasm) binaries directly within your Ruby applications.
+Wardite allows you to execute WebAssembly (or Wasm) binaries directly within your Ruby applications.
 Because it's a standard Ruby Gem, you can simply run `gem install Wardite` and start using it.
 You can also load and interact with existing Wasm modules directly from your Ruby code, using Wardite as a library.
 
