@@ -1111,15 +1111,15 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 - All's well that ends well
 
-![alt text](image.png)
+<br>
+<br>
+<br>
 
-<!-- TBA: 見やすい画像にする -->
+![alt text](./image-27.png)
 
 ----
 
-![w:500](image-7.png)
-
-<!-- TBA: 上が撮り直しならこれも作り直し -->
+![alt text](./image-28.png)
 
 ----
 

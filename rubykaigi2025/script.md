@@ -233,8 +233,8 @@ For reference, see the function used internally by `path_open`
 to resolve full paths based on these preopens:
 
 So, I implemented the necessary functions related to Preopens.
-After all, standard Ruby started without any loading warnings.
-No warnings appeared, and `defined?` correctly resolved to a loaded constant.
+After all, standard Ruby started
+without any loading warnings, right?
 
 So, all's well that ends well. However...
 In my environment, initializing all of RubyGems takes 68 seconds.
