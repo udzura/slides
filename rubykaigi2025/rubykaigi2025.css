@@ -226,7 +226,7 @@ section::after {
 
 button { font-size: 30pt; }
 
-marp-pre:has(code.language-ruby) {
+/* marp-pre:has(code.language-ruby) {
     background-color: #faf4f4;
 }
 
@@ -256,7 +256,7 @@ marp-pre:has(code.language-go) {
 
 marp-pre:has(code.language-lua) {
     background-color: #f0ffee;
-}
+} */
 
 section.pre-top75 pre {
     margin-top: 40%;

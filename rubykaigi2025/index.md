@@ -384,17 +384,17 @@ _class: hero
 _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 -->
 
-# Past Development Milestones
+# Retrospective of Past Development Milestones
 
 ----
 
 # Wardite's Development Milestones
 
-- Gorilla Book (Hello, World)
+- "Gorilla Book" (Hello, World)
 - Core instructions
-- Running Grayscale
-- Starting ruby.wasm
-- Letting ruby.wasm Require
+- Running grayscale
+- Starting up ruby.wasm
+- Letting ruby.wasm require
 
 ----
 
@@ -421,7 +421,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)-->
 
 - 『[RustでWasm Runtimeを実装する](https://zenn.dev/skanehira/books/writing-wasm-runtime-in-rust)』
   -  "Gorilla Book" after the author's penname
-- A book for learning basic Wasm implementation in Rust
+- A book for learning basic wasm implementation in Rust
 
 ----
 
@@ -435,14 +435,16 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)-->
 
 # Task #1: Binary Format
 
-- Implemented straightforwardly following the Gorilla Book
-  - Section format
-    - Header and content size at the beginning
-    - Simple structure with section-specific content following
+- A wasm binary has a specific size of sections
+- Section format:
+  - Header, including content size at the beginning
+  - Simple structure with section-specific content following
 
 ----
 
 # Binary Format Overview
+
+<!-- TBA preamble が図に反映されていない！ -->
 
 <br>
 <br>
@@ -764,7 +766,7 @@ Finished in 0.272498 seconds.
 
 # Want to Run Something More (?) Practical
 
-- Finally, the challenge of running ruby.wasm
+- Finally, started the challenge of running ruby.wasm
 
 ----
 
@@ -896,8 +898,6 @@ end
 - Getting `ARGV`, environment variables
 - Getting current time
 - Getting random numbers
-- prestat functions
-  - As mentioned later, this was implemented incorrectly.
 - read/write, other functions to get various info from `fd`
 
 ----

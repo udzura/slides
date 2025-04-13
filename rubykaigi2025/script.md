@@ -1,17 +1,17 @@
 Okay, I'd like to begin my presentation.
 
 My name is Kondo.
-I'm from Fukuoka, Japan and a Product Engineer at SmartHR, which is Ruby Kaigi plutinum sponsor.
+I'm from Fukuoka, Japan and a Product Engineer at SmartHR, which is a Ruby Kaigi platinum sponsor.
 
 Today's topic is Wardite, a WebAssembly runtime written entirely in pure Ruby.
 Wardite is named after the real mineral Wardite, which starts with letters "W" and "A".
 
 Wardite allows you to execute WebAssembly (or Wasm) binaries directly within your Ruby applications.
 Because it's a standard Ruby Gem, you can simply run `gem install Wardite` and start using it.
-You can also load and interact with existing Wasm modules directly from your Ruby code, using Wardite as a library.
+You can also use Wardite as a library to load and interact with existing Wasm modules directly from your Ruby code.
 
 Now, for a quick description: WebAssembly is a binary instruction format.
-Think of it as a portable compilation target of compilers, such as rustc or clang.
+Think of it as a portable compilation target for compilers, such as rustc or clang.
 
 Originally for browsers, Wasm is now designed to run anywhere – servers, edge devices, embedded systems, and yes, inside other applications.
 
@@ -21,17 +21,17 @@ Here's a simple WebAssembly example. This C code, as you can see, just performs 
 To execute Wasm binaries, you need a Wasm runtime.
 Browsers have built-in runtimes, and there are standalone ones like Wasmtime or WasmEdge.
 
-Here's the flow of how wasm program works:
+Here's the flow of how a wasm program works:
 First, prepare source code such as C, C++, Rust...
-Then compile it into wasm binary,
-and finally, executing wasm binary via WebAssembly runtime
+Then compile it into a wasm binary,
+and finally, execute the wasm binary via a WebAssembly runtime
 
 Now, let's return to the topic of Wardite. It's a Wasm runtime for the Ruby ecosystem, built in Ruby.
 Since it's written in Ruby, you can run WebAssembly within Ruby.
 
 A key design principle is its purity and portability:
 Wardite depends only on Ruby's standard libraries. No external C dependencies or gems.
-This means if you have Ruby, you can run Wardite. Maybe even on mruby, JRuby or else... in the future.
+This means if you have Ruby, you can run Wardite. Maybe even on mruby, JRuby or others... in the future.
 
 Currently, Wardite has a near-complete implementation of the WebAssembly Core Specification.
 WebAssembly Core Spec covers the fundamental instruction set, types, and memory model needed to execute compliant Wasm files.
@@ -42,15 +42,15 @@ The Core Wasm spec doesn't define how to interact with the outside world, like f
 WASI provides that standard interface.
 It allows Wardite to run more complex applications compiled to Wasm, including, excitingly, Ruby itself compiled to Wasm.
 
-So, why I built this? There are several reasons:
+So, why dis I build this? There are several reasons:
 
-First: Expand Ruby + Wasm Integration. The primary goal is to unlock the potential of WebAssembly's power within Ruby applications.
+First is to expand Ruby + Wasm Integration. The primary goal is to unlock the potential of WebAssembly's power within Ruby applications.
 
 Then: High Portability. We wanted a runtime that works wherever standard Ruby works, potentially even extending to environments like mruby in the future.
 
 And third one is: Leverage Wasm's Strengths into Ruby ecosystem. Fundamentally, WebAssembly offers compelling advantages.
 
-But, the true reason is that I wanted to play a complicated problem with Ruby, just for fun.
+But, honestly, the main reason was that I wanted to play with a complicated problem with Ruby, just for fun.
 
 In my opinion, WebAssembly holds significant potential due to several key strengths. such as:
 
@@ -61,28 +61,27 @@ Also it's Embeddable & Portable: Its relatively simple core specification leads 
 This makes Wasm easy to embed securely within diverse applications
 it's helpful to view the browser itself as just one prominent example of an environment embedding a Wasm runtime.
 
-And finally, it Enables Polyglot Systems in the future: Combining language agnosticism with embeddability allows developers
-to build applications by components written in different languages,
+And finally, it enables Polyglot Systems in the future: Combining language agnosticism with embeddability allows developers
+to build applications by combining components written in different languages,
 choosing the best tool for each specific job.
 
-The figure on WasmCloud's website does a really good job of showing this concept.
+The diagram on WasmCloud's website does a really good job of showing this concept.
 
 In essence, Wasm's value extends well beyond just the browser, enabling flexible and powerful new ways to construct software across many environments.
 
 ----
 
-Now that you understand the Wardite's background, Let's dive deeper.
+Now that you understand Wardite's background, let's dive deeper.
 
 Let's look back at the development process of Wardite.
 
 There were several milestones during Wardite's development. I'm going to describe them in order.
 
-The first milestone was porting a work called GorillaBook and getting "Hello World" to run in Wardite.
-GorillaBook is a web book originally written for learning the basic implementation of WebAssembly using Rust.
-It is called "Gorilla Book" after the author's penname
-Since I happened to have an opportunity to study it, I tried writing it out, aiming to port it into Ruby, and that's how it started.
+The first milestone was porting a concepts from a resource called GorillaBook and getting "Hello World" to run in Wardite.
+GorillaBook, so named after the author's pen name, is a web book originally written for learning the basic implementation of WebAssembly using Rust.
+Since I happened to have an opportunity to study it, I decided to implement a Ruby version, and that's how it started.
 
-In my impression it's an excellent book, but understanding the overall design philosophy of the VM was quite challenging.
+My impression was that it's an excellent book, but understanding the overall design philosophy of the VM was quite challenging.
 However, the book itself includes Rust reference implementations, which was extremely helpful.
 
 Let me briefly explain the internals of Wasm.
@@ -97,9 +96,9 @@ Repeating this loop is the basic VM implementation.
 This snippet is almost a real Wardite code.
 
 Conversely, while the VM is simple, interacting with the outside world, like handling output, is a bit more difficult.
-To produce output, you must implement at least the WASI function `FD_write`. So, I implemented this as well, having the book made it manageable.
+To produce output, you must implement at least the WASI function `fd_write`. So, I implemented this as well, having the book made it manageable.
 
-Afrer all of the coding, "Hello World" worked!
+Afrer all that coding, "Hello World" worked!
 "Hello World" is always a great thing, isn't it?
 
 Next, I decided to cover the basic instructions of the Wasm Core Spec.
@@ -118,12 +117,12 @@ However, each VM instruction is relatively small, so it felt like doing many sma
 By the way Wasm has four numeric types: integer32, integer64, float32, float64.
 Often, similar instructions exist for each of these types, like Add or Sub.
 For these common instructions, I created a generator to produce them collectively.
-Surprisingly, there were apparently about 167 such generated instructions.
+Surprisingly, it turned out there were apparently about 167 such generated instructions.
 
 I created a very simple template like this.
 And here's the generated code.
 
-Okay. With the basic instructions covered, I thought about running a more practical program. Named grayscale journey.
+Okay. With the basic instructions covered, I thought about running a more practical program. This led to the 'grayscale journey'.
 I tried running a Rust program for grayscale conversion
 that I had created for another project.
 
@@ -135,14 +134,14 @@ Briefly, the grayscale program takes Base64 encoded data, like a data URL, decod
 
 The first issue I encountered was that
 the memory allocation process wasn't working correctly.
-The fix was just one line, but it took some hard efforts.
+The fix was just one line, but it took some hard effort.
 
 Memory issues were fixed, but it still didn't work.
 The problem was that Rust panics are translated into the Wasm `Unreachable` instruction.
 `Unreachable` simply means "make error if reached," which wasn't very helpful for debugging.
 So, instead of letting it panic, I modified it to return the error string directly.
 This revealed the error message: "Corrupted deflate stream."
-Now I had an error ID. I looked at the Rust code.
+Now I had an error ID and message. I looked at the Rust code.
 
 "I see... I'm not sure."
 
@@ -165,23 +164,23 @@ Testing then simply involves executing the Wasm binaries according to these JSON
 I found examples where this process was automated using Python. For us, doing this with Ruby is straightforward.
 
 When I first ran the test cases related to i32 operations, several tests failed,
-including bitshift instructions, as somewhat expected.
+including bitshift instructions, as I somewhat expected.
 After fixing all of those failures, I was able to get the grayscale example program to run successfully to completion.
 
 It's working correctly, right? Looks like the examples.
 
-This raised the momentum to run something even more practical:
+This gave me the momentum to run something even more practical:
 Ruby dot Wasm.
 
 Running Ruby dot Wasm requires proper WASI support in addition to the instructions.
 
-Building Ruby dot Wasm in default options requires 37 WASI functions.
+Building Ruby dot Wasm with default options requires 37 WASI functions.
 
 I started to implement these 37 functions,
 grouping them into a single class for easy importing.
 
-As an example, implementing `ClockTime.get` essentially just wraps Ruby's `Time.now`.
-It might look a bit odd, since it's just bridging the Wasm world and the OS world using Ruby, but it is a essential process.
+As an example, implementing `clock_time_get` essentially just wraps Ruby's `Time.now`.
+It might look a bit odd, since it's just bridging the Wasm world and the OS world using Ruby, but it is an essential process.
 
 Thus, the task became diligently implementing these WASI functions one by one.
 My strategy was simple:
@@ -191,11 +190,11 @@ My strategy was simple:
 
 The functions implemented were truly basic system interactions: getting arguments, current time, random numbers, environment variables, file descriptor operations etc.
 
-After some of functionalities are implemented, the Ruby Wasm version started working. Booyah!
+After some of these functionalities were implemented, the Ruby dot Wasm version option started working. Booyah!
 
-At this stage, Ruby's embedded core libraries worked, so things like `Integer#times` ran somehow.
+At this stage, Ruby's embedded core libraries worked, so things like `Integer#times` ran correctly.
 
-However, even it can handle basic standerd i/o, the file system wasn't recognized yet.
+However, even though it could handle basic standard i/o, the file system wasn't recognized yet.
 This meant `require` didn't work correctly, and loading warnings appeared.
 
 So, the next step was to make `require` work correctly.
@@ -203,17 +202,17 @@ So, the next step was to make `require` work correctly.
 To do this, Wardite needed to recognize the file system collectively.
 
 So, I tried implementing the file system handling functions.
-Initially, I crudely tried to make `Path_open` work, assuming it would be called.
+Initially, I crudely tried to make `path_open` work, assuming it would be called.
 But that function wasn't even being called.
 Why?
 
 Because I needed to correctly implement the Preopens mechanism first.
 
-First, I'm trying to describe overview of preopens in English:
+Now I'll try to describe overview of preopens:
 - By default, a Wasm runtime, even with WASI enabled, cannot access the host environment's file system at all,
 for security reasons.
 - When launching the Wasm runtime, information about the host file systems to be shared
-must be passed via pre-registerd file descriptors.
+must be passed via pre-registered file descriptors.
 This mechanism is often referred to as Preopens.
 
 Looking at the WASI SDK's Lib C implementation, you can see a specific process.
@@ -223,7 +222,7 @@ Within that function, it iterates through file descriptors starting from number 
 attempting to retrieve information about pre-registered host filesystem entries.
 If it successfully retrieves information for a file descriptor,
 it registers the mapping between the guest path and the corresponding host path within the current process's state.
-It continues this process for the next file descriptor until it encounters error.
+It continues this process for the next file descriptor until it encounters an error.
 
 Actually, functions like `path_open` are implemented such that
 if no relevant preopen information has been registered, they won't even attempt to call
@@ -233,14 +232,14 @@ For reference, see the function used internally by `path_open`
 to resolve full paths based on these preopens:
 
 So, I implemented the necessary functions related to Preopens.
-After all, standard Ruby started
+After all that, standard Ruby command started
 without any loading warnings, right?
 
 So, all's well that ends well. However...
 In my environment, initializing all of RubyGems takes 68 seconds.
 This leads into the final topic: performance.
 
-Now that we see ruby.wasm is working, let's talk about performance measurement.
+Now that we saw ruby.wasm working, let's talk about performance measurement.
 This is still ongoing work, but I hope it's informative.
 Here are the benchmark topics:
 
@@ -248,13 +247,13 @@ Additionally, the measurement premise is primarily based on the grayscale proces
 so it's heavily skewed towards numerical calculations.
 Unless otherwise noted, I'm using grayscale benchmark. The software versions are as listed. I'm using an M3 Mac.
 
-Let's start with improvements to block jumps. WebAssembly's jump instructions (like If, Block, Loop) are a bit unusual. Instead of instructions holding fixed offsets, the target 'End' position is calculated dynamically when the instruction is encountered.
+Let's start with improvements to block jumps. WebAssembly's jump instructions (like `if, block, loop`) are a bit unusual. Instead of instructions holding fixed offsets, the target 'End' position is calculated dynamically when the instruction is encountered.
 This was done in a method called `fetch_ops_while_end`.
 This method was dynamically calculating the corresponding 'End' position
-every time an If, Block, or Loop instruction was encounteredby peeking ahead at subsequent instructions.
+every time an If, Block, or Loop instruction was encountered by peeking ahead at subsequent instructions.
 
 When I profiled the very first implementation with RubyProf,  `fetch_ops_while_end` was consuming a lot of time.
-Because the calculation happened inside functions called repeatedly, it would naturally be slow.
+Since the calculation happened inside functions called repeatedly, it would naturally be slow.
 
 So, assuming that the instructions aren't dynamically rewritten, I pre-calculated the 'End' positions.
 After parsing the instructions once, I iterate through them again, calculate the 'End' positions, and cache them.
@@ -264,12 +263,12 @@ This change reduced execution time by 43% for the grayscale benchmark. This is W
 
 Next is instance creation, which is something I'm currently struggling with.
 
-Profiling Wardite using perf identified bottlenecks in C functions
+Profiling Wardite using `perf` identified bottlenecks in C functions
 like `rb_vm_set_ivar_id` and `rb_class_new_instance_pass_kw`.
 Here's an excerpt from the perf results.
 
 The problem is that it's creating way too many object instances, which is slow.
-Wardite's internal representation for types like integer32 or integeer64 uses a simple class,
+Wardite's internal representation for types like integer32 or integer64 uses a simple class,
 but creating these repeatedly is slow.
 
 How many? Using tracepoints on the grayscale benchmark,
@@ -277,38 +276,38 @@ How many? Using tracepoints on the grayscale benchmark,
 I found it creates about 18.8 million integer32 objects.
 Even if creating each object took only a tiny fraction of time, this adds up significantly.
 
-I tried a simple experiment: memoizing frequently used integer instances. I memoized values from 0 to 64 and -1 for hypothesis.
+I tried a simple experiment: memoizing frequently used integer instances. I memoized values from 0 to 64 and -1 as a hypothesis.
 
 This did result in a speedup of about 1 second in the measurement.
-Note that this result includes commit that eliminates some Object#tap calls.
+Note that this result includes a commit that eliminates some Object#tap calls.
 
-So, I've kept this optimization. However, ideally, immediate values should be used for integers or floats. But this requires significant design changes, so it's marked as a ToDo.
+So, I've kept this optimization. However, ideally, immediate values should be used for integers and floats. But this requires significant design changes, so it's marked as a ToDo.
 
 There are some more TODOs:
 
-for example, Breaking Ruby Wasm startup time:
+for example, addressing Ruby dot Wasm startup time:
 Parsing the binary file accounts for over half of the startup time.
-There might be room for optimization in the binary parsing phase, perhaps by using something like StringScanner to speed it up.
+There might be room for optimization in the binary parsing phase, perhaps by using something like `StringScanner` to speed it up.
 
 On the other hand, the impact of interactions with WASI functions appears to be relatively minimal.
 
 Last topic: Does YJIT help?
 
 Yes, it's extremely effective. All the benchmarks previously shown were run with YJIT enabled.
-How effective? On my Arm environment, compared to no YJIT: Ruby 3.3 showed this much improvement, 3.4 showed even more. 3.4 bench resulted in roughly a 57% reduction in execution time.
+How effective? On my Arm environment, compared to running without YJIT: Ruby 3.3 showed about 52% improvement, and 3.4 showed even more. 3.4 benchmark resulted in roughly a 57% reduction in execution time.
 YJIT provides a significant boost. Thank you always (to the YJIT team)!
 
-To conclude the talk, I would like to present a startup demonstration.
-Note I run it with `disable-gems`, then it should start up in about 10 seconds.
+Before I conclude, I would like to present a startup demonstration.
+Note I run it with `disable-gems`, so it should start up in about 10 seconds.
 
 (Waiting for startup)
 
 Okay, thank you.
 
 Now I've covered a lot, and I think I've said most of what I wanted to say.
-To conclude again, while summarizing, let me mention one more thing. There's a next-generation Wasm format called the Component Model.
+To conclude, while summarizing, let me mention one more thing. There's a next-generation Wasm format called the Component Model.
 I would like to support it eventually. That's just my intention for now, but I'm aware of it, want to do it.
-Because I believe the Component Model will further enhance Wasm's language-agnostic nature, which I initially discussed in today's talk.
+Because I believe the Component Model will further enhance Wasm's language-agnostic nature, which I discussed earlier in today's talk.
 
 And I would likely accept contributions if pull requests come in.
 Otherwise, I plan to continue making steady improvements, especially focusing on compatibility and performance.
@@ -319,5 +318,7 @@ But even just playing around with it might spark ideas for various interesting u
 
 Thank you very much for listening.
 
-And final digression: this is a haiku about Sakura and a hangover.
-It's by the founder of modern haiku-style poem, Masaoka Shiki, who was from Matsuyama. See you in drinkup!
+And a final digression: this is a haiku about Sakura and a hangover.
+It's by the founder of modern haiku-style poetry, Masaoka Shiki, who was from Matsuyama.
+Feel free to talk to me, either around the venue or later at the drink up!
+
