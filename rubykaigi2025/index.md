@@ -154,7 +154,7 @@ WebAssembly.instantiateStreaming(fetch("./out.wasm"), {}).then(
     (obj) => {
         let answer = obj.instance.exports.add(100, 200);
         console.log("debug: 100 + 200 = ", answer);
-    },
+    }
 );
 ```
 
@@ -199,18 +199,18 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 # Wardite's Design Principles
 
 - Purity:
-  - Depend only on Ruby's standard and bundled libraries
-  - No external C dependencies or gems
+  - Depends only on Ruby's standard and bundled libraries
+  - No external C dependencies or third-party Ruby gems
 - Portability:
-  - Can be run on any Ruby environment
-  - Even on mruby (...future work!)
+  - Can run on any Ruby environment
+  - Even on mruby (planned for future versions)
 
 ----
 
 # Wardite's Implementation Status
 
-- Support basic WebAssembly Core specifications
-- WASI preview1 (p1)
+- Supports basic WebAssembly Core specifications
+- WASI Preview 1
 
 ----
 
@@ -537,14 +537,13 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)-->
 # Challenges
 
 - Implemented **192** instructions in total
-  - Doesn't seem that many...
 - Just kept working diligently
 
 ----
 
 # Implement Numeric Operations
 
-- Since there are 4 types, there're common ones
+- Since there're 4 types, there're common ones
   - `i32, i64, f32, f64`
 - Created a generator using `rake` task
 - There are **167** insns automatically generated
@@ -857,7 +856,7 @@ Import[37]:
 
 ----
 
-# Inrtrocuse `Wardite::WasiSnapshotPreview1`
+# Introduce `Wardite::WasiSnapshotPreview1`
 
 - Implement everything in a class called
   - `Wardite::WasiSnapshotPreview1`
@@ -977,7 +976,7 @@ _class: hero
 _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 -->
 
-# Required to solve<br>`require` issues
+# Required Work to Solve<br>`require` Issues
 
 ----
 
@@ -1002,11 +1001,11 @@ _class: hero
 _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 -->
 
-# "Preopens" Mechanism
+# "Pre-opens" Mechanism
 
 ----
 
-# WASI Has a Mechanism Called preopens
+# WASI Has a Mechanism Called pre-opens
 
 - Many WASI runtimes, by default:
   - They **cannot** access the host's file system at all.
@@ -1023,7 +1022,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 # Why Couldn't We Access Files?
 
 - Functions like `path_open()` aren't even called...
-  - if the preopen environment isn't registered
+  - if the pre-open environment isn't registered
 - See `__wasilibc_find_abspath()`:
   - [`libc-bottom-half/sources/preopens.c#L190-L213`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L190-L213)
 
@@ -1051,7 +1050,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# Normal Ruby Started Without load Warnings
+# Ruby Started Without Load Warnings
 
 - All's well that ends well
 
@@ -1069,7 +1068,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # ...It's Taking Quite Some Time...
 
-- Initializing all of RubyGems takes 68 seconds
+- Initializing all of RubyGems takes 60 ~ 70 seconds
 - Let's talk about performance at the end
 
 ----
@@ -1079,15 +1078,15 @@ _class: hero0
 _backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
 -->
 
-# Performance + Measurement
+# Performance and Measurement
 
 ----
 
 # Dealing with Performance Measurement
 
 - Still halfway there!
-  - Haven't been doing nothing
 - Let me talk about some implemented improvements
+  - or future plans.
 
 ----
 
@@ -1333,7 +1332,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Execution Overview
 
-- Over half is laoding
+- Over half is loading
 - Sample:
 
 <br>
