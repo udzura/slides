@@ -350,7 +350,11 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Conceptual Diagram
 
-<!-- TBA: 図？ dekireba -->
+<br>
+<br>
+<br>
+
+![w:980](./image-36.png)
 
 ----
 
@@ -448,12 +452,10 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)-->
 
 # Binary Format Overview
 
-<!-- TBA preamble が図に反映されていない！ -->
-
 <br>
 <br>
 
-![w:1000](image-12.png)
+![w:1020](./image-29.png)
 
 ----
 
@@ -701,9 +703,9 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# TBA:
+# Flow Diagram:
 
-- スクリプトに合わせてテストケース実行の流れを作図する
+&nbsp;&nbsp;&nbsp;&nbsp;![h:520](./image-37.png)
 
 ----
 
@@ -755,16 +757,15 @@ Finished in 0.272498 seconds.
 
 # Grayscale Worked!
 
-<!-- TBA: ワイの像ではなくエンジニアカフェの外観の例に変更 -->
+- Grayscale execution result looks OK
 
-&nbsp;
-&nbsp;
+<br>
+<br>
+<br>
+<br>
+<br>
 
-![w:500](image-1.png)
-
-<ul class="underpre">
-<li>Grayscale execution result looks OK</li>
-</ul>
+![h:400](image-30.png)
 
 ----
 
@@ -810,6 +811,8 @@ $ wasm-objdump -x -j Import ./ruby-wasm32-wasi/usr/local/bin/ruby
 
 
 ----
+
+# WASI Functions Imported...
 
 ```
 Import[37]:
@@ -1012,85 +1015,8 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# Preopens diagram
 
-- TBA: Preopens diagram
-
-----
-
-# Implementation
-
-- See codes in wasi-sdk's [`libc-bottom-half/sources/preopens.c`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L246-L276)
-
-----
-
-```c
-    for (__wasi_fd_t fd = 3; fd != 0; ++fd) {
-        __wasi_prestat_t prestat;
-        __wasi_errno_t ret = __wasi_fd_prestat_get(fd, &prestat);
-        if (ret == __WASI_ERRNO_BADF)
-            break;
-        if (ret != __WASI_ERRNO_SUCCESS)
-            goto oserr;
-        switch (prestat.tag) {
-        case __WASI_PREOPENTYPE_DIR: {
-            char *prefix = malloc(prestat.u.dir.pr_name_len + 1);
-            if (prefix == NULL)
-                goto software;
-
-            ret = __wasi_fd_prestat_dir_name(fd, (uint8_t *)prefix,
-                                             prestat.u.dir.pr_name_len);
-            if (ret != __WASI_ERRNO_SUCCESS)
-                goto oserr;
-            prefix[prestat.u.dir.pr_name_len] = '\0';
-
-            if (internal_register_preopened_fd_unlocked(fd, prefix) != 0)
-                goto software;
-            free(prefix);
-
-            break;
-        }
-        default:
-            break;
-        }
-    }
-```
-
-----
-
-<!-- TBA: コードに丸をつけたり簡単に作図する -->
-
-```c
-    for (__wasi_fd_t fd = 3; fd != 0; ++fd) {
-        __wasi_prestat_t prestat;
-        __wasi_errno_t ret = __wasi_fd_prestat_get(fd, &prestat);
-        if (ret == __WASI_ERRNO_BADF)
-            break;
-        if (ret != __WASI_ERRNO_SUCCESS)
-            goto oserr;
-        switch (prestat.tag) {
-        case __WASI_PREOPENTYPE_DIR: {
-            char *prefix = malloc(prestat.u.dir.pr_name_len + 1);
-            if (prefix == NULL)
-                goto software;
-
-            ret = __wasi_fd_prestat_dir_name(fd, (uint8_t *)prefix,
-                                             prestat.u.dir.pr_name_len);
-            if (ret != __WASI_ERRNO_SUCCESS)
-                goto oserr;
-            prefix[prestat.u.dir.pr_name_len] = '\0';
-
-            if (internal_register_preopened_fd_unlocked(fd, prefix) != 0)
-                goto software;
-            free(prefix);
-
-            break;
-        }
-        default:
-            break;
-        }
-    }
-```
+![bg w:1240](./image-39.png)
 
 ----
 
@@ -1100,6 +1026,20 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
   - if the preopen environment isn't registered
 - See `__wasilibc_find_abspath()`:
   - [`libc-bottom-half/sources/preopens.c#L190-L213`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L190-L213)
+
+----
+
+# Implementation
+
+- Let's inspect codes in wasi-sdk's<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[`libc-bottom-half/sources/preopens.c`](https://github.com/WebAssembly/wasi-libc/blob/e9524a0980b9bb6bb92e87a41ed1055bdda5bb86/libc-bottom-half/sources/preopens.c#L246-L276)
+
+----
+
+![alt text](image-31.png)
+
+----
+
+![alt text](image-32.png)
 
 ----
 
@@ -1197,21 +1137,9 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 <br>
 <br>
+<br>
 
-<!-- TBA: 図に丸つけをする -->
-
-```
--------------------------------------------------------------------------------------------------------------------------------------
-                     54.539      9.845      0.000     44.69413069318/13069318     Kernel#loop
-  73.63%  13.29%     54.539      9.845      0.000     44.694         13069318     Wardite::Runtime#eval_insn     /.../lib/wardite.rb:420
-                     19.493      0.024      0.000     19.469      95886/95886     Wardite::Runtime#fetch_ops_while_end
-                     15.638      6.483      0.000      9.156  5225913/5225913     <Module::Wardite::Evaluator>#i32_eval_insn
-                      3.330      1.238      0.000      2.093  1155055/1155055     Wardite::Runtime#do_branch
-                      0.773      0.773      0.000      0.00013069318/13069318     Wardite::Op#namespace
-                      0.757      0.757      0.000      0.00012631671/73174992     Array#[]
-                      0.749      0.749      0.000      0.00015275900/53340046     BasicObject#!
-                      0.542      0.542      0.000      0.00010109073/23362733     Wardite::Runtime#stack
-```
+![alt text](image-33.png)
 
 ----
 
@@ -1278,45 +1206,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-```
-# Children      Self  Command  Shared Object          Symbol 
-# ........  ........  .......  .....................  ....................................................
-#
-   100.00%     0.00%  ruby     ruby                   [.] _start
-            |
-            ---_start
-               __libc_start_main
-               0xffffbd7173fc
-               main
-               ruby_run_node
-               rb_ec_exec_node
-               rb_vm_exec
-               |          
-               |--98.93%--vm_exec_core
-               |          |          
-               |          |--9.67%--0xffffbe152a58
-               |          |          |          
-               |          |          |--7.26%--rb_vm_set_ivar_id
-               |          |          |          |          
-               |          |          |          |--2.86%--rb_shape_get_iv_index
-               |          |          |          |          | ....
-               |          |          
-               |          |--7.32%--0xffffbe1525cc
-               |          |          |          
-               |          |           --6.62%--rb_class_new_instance_pass_kw
-               |          |                     |          
-               |          |                     |--2.52%--vm_call0_cc
-               |          |                     |          |          
-               |          |                     |          | ....
-               |          |                     |          
-               |          |                     |--2.22%--rb_class_allocate_instance
-               |          |                     |          |          
-               |          |                     |           --2.15%--newobj_alloc
-               |          |                     |                     | ....
-               |          |          
-               |          |--5.78%--0xffffbe14a65c
-....
-```
+![alt](./image-34.png)
 
 ----
 

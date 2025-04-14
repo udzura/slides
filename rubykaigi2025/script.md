@@ -88,7 +88,7 @@ Let me briefly explain the internals of Wasm.
 First, you must parse the Wasm binary format.
 However, the binary format is quite simple. Here's a diagram illustrating it.
 
-It starts with a header, which contains the type and size, followed by the content of various sections. It's a simple combination of sections.
+It starts with some preamble, then hits a header, which contains the type and size, followed by the content of various sections. It's a simple combination of sections.
 
 Once the binary is parsed, the next step is just running the VM. The VM implementation is also fundamentally a loop:
 fetch the current frame and an instruction, execute it, then fetch the next one.
