@@ -26,7 +26,8 @@ and finally, execute the wasm binary via a WebAssembly runtime
 To execute Wasm binaries, you need a Wasm runtime.
 Browsers have built-in runtimes, and there are standalone ones like Wasmtime or WasmEdge.
 
-Now, let's return to the topic of Wardite. It's a Wasm runtime for the Ruby ecosystem, built in Ruby.
+Now, let's return to the topic of Wardite.
+It's a Wasm runtime for the Ruby ecosystem, built in Ruby.
 Since it's written in Ruby, you can run WebAssembly within Ruby.
 
 A key design principle is its purity and portability:
@@ -42,19 +43,19 @@ The Core Wasm spec doesn't define how to interact with the outside world, like f
 WASI provides that standard interface.
 It allows Wardite to run more complex applications compiled to Wasm, including, excitingly, Ruby itself compiled to Wasm.
 
-So, why dis I build this? There are several reasons:
+So, why did I build this? There are several reasons:
 
-First is to expand Ruby + Wasm Integration. The primary goal is to unlock the potential of WebAssembly's power within Ruby applications.
+First is to expand integration between Ruby and Wasm. The primary goal is to unlock the potential of WebAssembly's power within Ruby applications.
 
-Then: High Portability. We wanted a runtime that works wherever standard Ruby works, potentially even extending to environments like mruby in the future.
+Then I required: High Portability. We wanted a runtime that works wherever standard Ruby works, potentially even extending to environments like mruby in the future.
 
-And third one is: Leverage Wasm's Strengths into Ruby ecosystem. Fundamentally, WebAssembly offers compelling advantages.
+And third one: Leverage Wasm's Strengths into Ruby ecosystem. Fundamentally, WebAssembly offers compelling advantages.
 
 But, honestly, the main reason was that I wanted to play with a complicated problem with Ruby, just for fun.
 
 In my opinion, WebAssembly holds significant potential due to several key strengths. such as:
 
-Language-Agnostic: It serves as a compilation target for many languages like Rust, Go, and C++.
+Language-Agnostic nature: It serves as a compilation target for many languages like Rust, Go, and C++.
 And crucially, C support potentially allows C-based languages (like Ruby or Python) to run via Wasm as well.
 
 Also it's Embeddable & Portable: Its relatively simple core specification leads to small, efficient runtimes.
@@ -65,7 +66,7 @@ And finally, it enables Polyglot Systems in the future: Combining language agnos
 to build applications by combining components written in different languages,
 choosing the best tool for each specific job.
 
-The diagram on WasmCloud's website does a really good job of showing this concept.
+The diagram on the website of WasmCloud, which is an open source wasm apps orchestrator, does a really good job of showing this concept.
 
 In essence, Wasm's value extends well beyond just the browser, enabling flexible and powerful new ways to construct software across many environments.
 
@@ -139,9 +140,9 @@ The fix was just one line, but it took some hard effort.
 Memory issues were fixed, but it still didn't work.
 The problem was that Rust panics are translated into the Wasm `Unreachable` instruction.
 `Unreachable` simply means "make error if reached," which wasn't very helpful for debugging.
-So, instead of letting it panic, I modified it to return the error string directly.
+So, instead of letting it panic, I modified it to return the error string directly from target wasm function.
 This revealed the error message: "Corrupted deflate stream."
-Now I had an error ID and message. I looked at the Rust code.
+Now I had an error ID and a message. I looked at the Rust code.
 
 "I see... I'm not sure."
 
@@ -153,6 +154,7 @@ bitshift operations were heavily used.
 So, I decided to first verify if the bitshift and other numeric instructions were correct.
 
 The correctness of numeric instructions like i32 operations can be verified using the official Wasm test suite.
+Here are the testing processes.
 
 The official WebAssembly test suite is provided in a format called Wast.
 Using a command called `wast2json`, you can generate JSON files describing the test cases,
@@ -167,7 +169,7 @@ When I first ran the test cases related to i32 operations, several tests failed,
 including bitshift instructions, as I somewhat expected.
 After fixing all of those failures, I was able to get the grayscale example program to run successfully to completion.
 
-It's working correctly, right? Looks like the examples.
+It's working correctly, right? Looks like the expected examples.
 
 This gave me the momentum to run something even more practical:
 Ruby dot Wasm.
@@ -180,7 +182,7 @@ I started to implement these 37 functions,
 grouping them into a single class for easy importing.
 
 As an example, implementing `clock_time_get` essentially just wraps Ruby's `Time.now`.
-It might look a bit odd, since it's just bridging the Wasm world and the OS world using Ruby, but it is an essential process.
+It might look a bit odd, since it's just bridging the Wasm world and the OS world using Ruby, but it is an essential process for a runtime.
 
 Thus, the task became diligently implementing these WASI functions one by one.
 My strategy was simple:
@@ -206,13 +208,15 @@ Initially, I crudely tried to make `path_open` work, assuming it would be called
 But that function wasn't even being called.
 Why?
 
-Because I needed to correctly implement the Preopens mechanism first.
+Because I needed to correctly implement the Pre-opens mechanism first.
 
 Now I'll try to describe overview of preopens:
 - By default, a Wasm runtime, even with WASI enabled, cannot access the host environment's file system at all,
 for security reasons.
 - When launching the Wasm runtime, information about the host file systems to be shared
 must be passed via pre-registered file descriptors.
+- After initialization, when Runtime is goning to access the file system, it must check these pre-registered file descriptors first.
+
 This mechanism is often referred to as Preopens.
 
 Looking at the WASI SDK's Lib C implementation, you can see a specific process.
@@ -228,15 +232,13 @@ Actually, functions like `path_open` are implemented such that
 if no relevant preopen information has been registered, they won't even attempt to call
 the underlying internal WASI function.
 This appears to be a design choice focused on safety.
-For reference, see the function used internally by `path_open`
-to resolve full paths based on these preopens:
 
 So, I implemented the necessary functions related to Preopens.
 After all that, standard Ruby command started
 without any loading warnings, right?
 
 So, all's well that ends well. However...
-In my environment, initializing all of RubyGems takes 68 seconds.
+In my environment, initializing all of RubyGems takes about 70 seconds.
 This leads into the final topic: performance.
 
 Now that we saw ruby.wasm working, let's talk about performance measurement.
@@ -247,7 +249,8 @@ Additionally, the measurement premise is primarily based on the grayscale proces
 so it's heavily skewed towards numerical calculations.
 Unless otherwise noted, I'm using grayscale benchmark. The software versions are as listed. I'm using an M3 Mac.
 
-Let's start with improvements to block jumps. WebAssembly's jump instructions (like `if, block, loop`) are a bit unusual. Instead of instructions holding fixed offsets, the target 'End' position is calculated dynamically when the instruction is encountered.
+Let's start with improvements to block jumps. WebAssembly's jump instructions (like `if, block, loop`) are a bit unusual.
+Instead of instructions holding fixed offsets, the target 'End' position is calculated dynamically when the instruction is encountered.
 This was done in a method called `fetch_ops_while_end`.
 This method was dynamically calculating the corresponding 'End' position
 every time an If, Block, or Loop instruction was encountered by peeking ahead at subsequent instructions.
@@ -257,7 +260,7 @@ Since the calculation happened inside functions called repeatedly, it would natu
 
 So, assuming that the instructions aren't dynamically rewritten, I pre-calculated the 'End' positions.
 After parsing the instructions once, I iterate through them again, calculate the 'End' positions, and cache them.
-And this is the code.
+This is the implementation.
 
 This change reduced execution time by 43% for the grayscale benchmark. This is Wardite's first speed improvement.
 
@@ -319,6 +322,6 @@ But even just playing around with it might spark ideas for various interesting u
 Thank you very much for listening.
 
 And a final digression: this is a haiku about Sakura and a hangover.
-It's by the founder of modern haiku-style poetry, Masaoka Shiki, who was from Matsuyama.
-Let's enjoy the final day's drink ups, for those who love drinks!
+It's a work by the founder of modern haiku-style poetry, Masaoka Shiki, who was from Matsuyama.
+Let's enjoy the final day's drink ups, for those who love drinks, with respect to Shiki!
 
