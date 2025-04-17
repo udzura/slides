@@ -3,9 +3,9 @@ marp: true
 theme: rubykaigi2025
 paginate: true
 backgroundImage: url(./rubykaigi2025_bg.004.jpeg)
-title: Running ruby.wasm on Pure Ruby WASM Runtime
-description: On RubyKaigi 2025 Matzyama / Running ruby.wasm on Pure Ruby WASM Runtime
-# header: "Running ruby.wasm on Pure Ruby WASM Runtime"
+title: Running ruby.wasm on Pure Ruby Wasm Runtime
+description: On RubyKaigi 2025 Matzyama / Running ruby.wasm on Pure Ruby Wasm Runtime
+# header: "Running ruby.wasm on Pure Ruby Wasm Runtime"
 image: https://udzura.jp/slides/2025/rubykaigi/ogp.png
 size: 16:9
 ----
@@ -15,7 +15,7 @@ _class: title
 _backgroundImage: url(./rubykaigi2025_bg.002.jpeg)
 -->
 
-# Running ruby.wasm<br>On Pure Ruby WASM Runtime
+# Running ruby.wasm<br>On Pure Ruby Wasm Runtime
 
 ## Presentation by Uchio Kondo
 
@@ -29,7 +29,7 @@ _backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
 # Hello from Matz-yama!
 
 <!--
-This is a first time for me to visit Matsuyama!
+This is a first time for me to visit Matsuyama! I'm really excited to be here.
 -->
 
 ----
@@ -50,6 +50,34 @@ _class: profile
 <!--
 I'm Uchio Kondo.
 I'm from Fukuoka, Japan and a Product Engineer at SmartHR, which is a Ruby Kaigi platinum sponsor.
+I have 2 things to advertise:
+-->
+
+----
+
+# Translator of "Learning eBPF"
+
+- It's on sale! <strong>Visit @. bookstore!</strong>
+- If you're interested in Ivo's talk,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BPF's also helpful (?)
+
+![bg right:35% w:300](image-5.png)
+<!--
+One is about Satoru and my book. If you're interested in Ivo's talk, I believe BPF's also helpful! Give it a shot at this lunch time!
+-->
+
+----
+
+# SmartHR's Hiring!
+
+<br>
+<br>
+
+![qrcode](image-2.png)
+
+![bg right:70% h:600](./image-3.png)
+
+<!--
+And our company, SmartHR is hiring product engineers who love Ruby, around Japan!
 -->
 
 ----
@@ -62,7 +90,7 @@ _backgroundImage: url(./rubykaigi2025_bg.005.jpeg)
 # Today's Theme: Wardite
 
 <!--
-Today's topic is Wardite -
+Ok, Today's topic is Wardite -
 -->
 
 ----
@@ -375,6 +403,24 @@ First is to expand integration between Ruby and Wasm. The primary goal is to unl
 
 <!--
 Then I required High Portability. We wanted a runtime that works wherever standard Ruby works, potentially even extending to environments like mruby in the future.
+-->
+
+----
+
+# c.f. Using wasmtime-rb
+
+- Or other native-based solutions...
+- On install, they require:
+  - Native compilation or pre-compiled fat gem
+  - Separate approaches for CRuby/mruby/...
+- Wasm engine in pure Ruby provides greater maintainability
+
+<!--
+For comparison, consider other solutions such as wasmtime-rb.
+During installation, these gems require either building native libraries or using pre-compiled artifacts called "Fat Gems".
+These requirements can potentially increase operational overhead depending on the environment.
+Furthermore, separate approaches are needed for different Ruby implementations like CRuby and mruby.
+Writing Wasm engine in pure Ruby provides greater maintainability and compatibility.
 -->
 
 ----
@@ -1009,7 +1055,7 @@ So, I decided to first verify if the bitshift and other numeric instructions wer
 
 # Verifying i32 Instruction Correctness
 
-- There're [Official wasm core spec test cases](https://github.com/WebAssembly/spec/tree/main/test/core) !
+- There're [official wasm core spec test cases](https://github.com/WebAssembly/spec/tree/main/test/core) !
 
 <!--
 The correctness of numeric instructions like i32 operations can be verified using the official Wasm test suite.
@@ -1946,7 +1992,7 @@ $ ruby.wasm --version
 
 <!--
 Parsing the binary file accounts for over half of the startup time.
-There might be room for optimization in the binary parsing phase, perhaps by using something like `StringScanner` to speed it up.
+There might be room for optimization in the binary parsing phase.Replacing it with StringScanner might be worth a try. I'm also looking into alternative methods.
 -->
 
 ----
@@ -2099,6 +2145,19 @@ Running a Wasm runtime purely in Ruby still feels quite like "bold" adventure in
 I'm going bold.
 But even just playing around with it might spark ideas for various interesting use cases, so please give Wardite a try.
 Thank you very much for listening.
+-->
+
+----
+
+# Acknowledgements
+
+- [@kateinoigakukun](https://x.com/kateinoigakukun) for general advice
+- Colleagues at SmartHR for support
+- Fukuoka.rb
+- My Family
+
+<!--
+Acknowledgements: Yuta Sato for general advice, and my colleagues at SmartHR and Fukuoka.rb members for their support. Thank you my children Kaz & Kei!
 -->
 
 ----
