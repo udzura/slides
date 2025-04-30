@@ -8,6 +8,7 @@
 
 @import 'default';
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hina+Mincho&display=swap');
 
 /* .hero1 {
     background-image: url(./rubykaigi2025_bg.003.jpeg);
@@ -62,28 +63,76 @@ section.hero0 h1 {
     text-align: center;
 }
 
+section.hero1 h1 {
+    color: white;
+    font-size: 40px;
+    position: absolute;
+    top: 81%;
+    left: 86%;
+}
+
 section.hero h1 {
     font-size: 66px;
     text-align: center;
 }
 
-section.normal h1, section.normal2 h1 {
+section.fin blockquote {
+    position: relative;
+    top: -1%;
+    font-family: "Hina Mincho", serif;
+    font-weight: 300;
+    font-size: 50px;
+    margin-left: 19%;
+    border: none;
+}
+
+section.fin blockquote small {
+    font-family: "Lexend", sans-serif;
+    line-height: 1;
+    font-size: 25px;
+    padding-left: 14.5%;
+}
+
+section.fin address {
+    font-family: "Lexend", sans-serif;
+    font-size: 25px;
+    position: absolute;
+    top: 80%;
+    left: 72%;
+}
+
+section:not(.title):not(.hero):not(.hero0):not(.hero1) h1, section.normal2 h1 {
     position: absolute;
     top: 13%;
 }
 
 section p, section ul {
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-style: normal;  
+    font-family: "Lexend", sans-serif;
+    font-weight: 300;
+    font-style: normal;
 }
 
-section.normal ul, section.normal2 ul{
+section ul.lowered {
     position: absolute;
-    top: 30.5%;
+    top: 65% !important;
 }
 
-section.normal ul ul {
+section:not(.title):not(.hero):not(.hero0) ul{
+    position: absolute;
+    top: 28.5%;
+}
+
+ul.underpre {
+    position: relative !important;
+    top: 2.5% !important;
+}
+
+ul.underpre2 {
+    position: absolute;
+    top: 60% !important;
+}
+
+section:not(.title):not(.hero):not(.hero0) ul ul {
     position: relative;
 }
 
@@ -107,10 +156,10 @@ section li {
 section li::before {
     content: "__";
     color: transparent;
-    font-size: 45pt;
+    font-size: 37pt;
     width: 45pt;
     position: relative;
-    top: 5pt;
+    top: 4.5pt;
     border-color: transparent;
     border-width: 0 0 0 45.8pt;
     border-style: solid;
@@ -140,18 +189,32 @@ section li ul li{
     font-size: 90%;
 }
 
+section li ul li ul li{
+    list-style-image: none;
+    list-style-type: "\2726";
+    margin-left: 0.1em;
+    padding-top: 0.15em;
+    font-size: 90%;
+}
+
 section.normal img {
     float: right;
     background-color: transparent;
     margin-top: 5%;
 }
 
-section.profile img {
+section.profile img.me {
     position: absolute;
     top: 25%;
     left: 64%;
     overflow: hidden !important;
     border-radius: 50% !important;
+}
+
+section.profile img.shr {
+    vertical-align: top;
+    position: relative;
+    top: 6px;
 }
 
 section::after {
@@ -163,8 +226,12 @@ section::after {
 
 button { font-size: 30pt; }
 
-marp-pre:has(code.language-ruby) {
-    background-color: #ffe8e8;
+/* marp-pre:has(code.language-ruby) {
+    background-color: #faf4f4;
+}
+
+marp-pre:has(code.language-c) {
+    background-color: #f0f8f8;
 }
 
 marp-pre:has(code.language-javascript) {
@@ -189,7 +256,7 @@ marp-pre:has(code.language-go) {
 
 marp-pre:has(code.language-lua) {
     background-color: #f0ffee;
-}
+} */
 
 section.pre-top75 pre {
     margin-top: 40%;
