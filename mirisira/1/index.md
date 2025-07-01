@@ -1,15 +1,41 @@
 ----
 marp: true
-header: "mruby/edge 超入門"
+header: "ミリしらAI勉強会 #1"
 footer: "presentation by Uchio Kondo"
 theme: default
 paginate: true
-style: section pre { font-size: 1.1em; }
+style: |
+  h1 { color: #0f7f85; }
+  h2 { color: #0f7f85; }
+  section.profile img {
+    position: absolute;
+    top: 25%;
+    left: 65%;
+    overflow: hidden !important;
+    border-radius: 50% !important;
+  }
 ----
 
 # ミリしらAI勉強会へようこそ！
 
 ![alt text](image.png)
+
+----
+
+<!--
+class: profile
+_style: img {}
+-->
+
+# 自己紹介
+
+- 近藤うちお (@udzura)
+- エンジニアカフェ ハッカーサポーター
+- 所属: 株式会社SmartHR プロダクトエンジニア
+- 『入門eBPF』（オライリージャパン）という
+本を共同翻訳しました
+
+![w:370](image-1.png)
 
 ----
 
@@ -40,6 +66,12 @@ style: section pre { font-size: 1.1em; }
 # 主催者について
 
 * 主催者の @udzura も完全にAIに乗り遅れてます！一緒にキャッチアップしましょう！  
+
+----
+
+# Discordについて
+
+* エンジニアカフェのDiscord `#ミリしらai勉強会` チャンネルをやり取りにお使いください！  
 
 ----
 
