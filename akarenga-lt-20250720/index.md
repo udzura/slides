@@ -19,7 +19,7 @@ style: |
 _class: hero
 -->
 
-# WasmでAI Agentを作ってみた
+# WebAssembly AI Agentを作ってみた
 
 ### 赤煉瓦LT大会 @エンジニアカフェ
 
@@ -27,7 +27,6 @@ _class: hero
 
 <!--
 _class: profile
-_style: img {}
 -->
 
 # 自己紹介
@@ -46,14 +45,19 @@ _style: img {}
 _class: hero
 -->
 
-# WasmでAI Agentを？
+## [PR]こういう勉強会をしています。
+
+![alt text](image-2.png)
+
+- https://engineercafe.connpass.com/event/359625/
+- 次回開催は未定ですが... (8 ~ 9月頃？)
 
 ----
 <!--
 _class: hero
 -->
 
-# できらぁっ！
+# 世は大 AI Agent 時代
 
 ---
 
@@ -66,20 +70,24 @@ _class: hero
 
 ## AIは `rm -rf /` されるので危険
   - コンテナ使え？それはそう
-  - でもMacでコンテナちょっとだるくない？
+
+----
+
+## Macでコンテナな〜
+  - でもちょっとだるくない？
 
 ----
 <!--
 _class: hero
 -->
 
-# Wasm + WASIでできるはず？
+# そこで WebAssembly + WASI ですよ？
 
 ---
 
 ## 大前提
 
-- Wasmはブラウザだけじゃなくて、普通のPCでも動く
+- WebAssembly(Wasm)はブラウザだけじゃなくて、普通のPCでも動く
 
 ```
 $ wasmtime hello-world.wasm
@@ -90,19 +98,52 @@ Hello, world!
 
 ## WASIって？
   - WebAssembly System Interface
-    - WebAssemblyのシステムコールのようなもの
-  - Wasmからファイルシステムやネットワークにアクセスするための規格
+    - Wasmのシステムコールのようなもの
+    - 普通のPCの上で動かす上で考慮しないといけない
+  - たとえば、Wasmからファイルシステムやネットワークにアクセスするための規格
     - WASIの実装上、自由なホストシステムへのアクセスは制限される
     - **明示的に許可されたものだけアクセスできる**
 
 ### → なので不用意な `rm -rf /` を防止できそう
 
+----
+<!--
+_class: hero
+-->
+
+# Wasm + WASIでAI Agentを<br>実装すれば安全になりそう
+
+----
+<!--
+_class: hero
+-->
+
+# WasmでAI Agentを？
+
+----
+<!--
+_class: hero
+-->
+
+# できらぁっ！
+
+
 ---
 
 ## で、Wasmでエージェントって作れるの？
   - 言語は Rust それでシュッとWasmをビルド(rhyme)
+```
+$ cargo build --target=wasm32-wasip2
+```
   - 基本的にはAPIを叩くだけのはず...
-  - Claudeにががっと作らせて手直しでなんとか
+
+---
+
+## Claudeにがっと作らせみた
+  - その手直しでなんとか
+  - なりませんか
+
+![bg right w:600](image-3.png)
 
 ---
 <!--
@@ -121,16 +162,20 @@ called `Result::unwrap()` on an `Err` value: NetworkError>
 ("Read failed: Connection reset by peer (os error 54)")
 ```
 
-  - ... TLSじゃないじゃん！
-    - 「なるべく外部ライブラリ使わないでね」と言ったら443ポートに平文でアクセスしてた
+---
+
+## ... 実装がTLSじゃないじゃん！
+  - 「なるべく外部ライブラリ使わないでね」と言ったら
+  - 443ポートに平文でアクセスしてた
 
 ---
 
 ## そもそもWasmでTLSってどうやるの？
-  - opensslをwasm上で！？でry
+  - opensslをwasm上で！？できry
   - Claudeに相談したら [ureq](https://github.com/algesten/ureq) というやつを使い出した
   - ureq の依存
-    - rustls = pure rust tls を使えそう
+    - rustls = pure rust tls を使うことができる
+      - 全部RustならWasmにコンパイルも容易なはず
       - これならいける？
     - → 依存関係のビルドにwasi-sdkは必要だったがコンパイルできた
 
@@ -144,6 +189,7 @@ called `Result::unwrap()` on an `Err` value: NetworkError
 ("Request failed: io: operation not supported on this platform")
 ```
 
+  - 何言ってるかよくわかんないっピ...
   - → 雰囲気でこのオプションにしたら動いた
 
 ```
@@ -153,7 +199,7 @@ $ wasmtime -S cli=y -S allow-ip-name-lookup=y -S inherit-network=y
 ----
 
 ## 証明書が...
-  - root CAがないせい？ `invalid peer certificate`
+  - root 証明書がないせい？ `invalid peer certificate`
   - ここはnon verify mode (TODO)
 
 ```rust
@@ -162,7 +208,7 @@ let skip_verify = ureq::tls::TlsConfig::builder()
     .build();
 ```
 
-  - 多分root CAをWASI環境に送り込めばverify peerしてもいける
+  - 多分root 証明書などをWASI環境に送り込めばverify peerしてもいける
 
 ---
 
@@ -170,7 +216,16 @@ let skip_verify = ureq::tls::TlsConfig::builder()
 
 - あとはひたすらプロンプトとツールを作ればOK
 
-![alt text](image.png)
+---
+
+![bg w:1250](image.png)
+
+---
+<!--
+_class: hero
+-->
+
+# demo (できれば)
 
 ---
 
@@ -215,7 +270,7 @@ Response: `/etc/hosts` ファイルの内容は以下の通りです:
 
 ## wasmtime + ホストファイルシステム共有なしで実行
 
-- ビルドと実行のコマンド:
+- 前提: ビルドと実行のコマンド:
 
 ```
 $ cargo build --target=wasm32-wasip2
@@ -239,7 +294,7 @@ Response: 申し訳ありませんが、`/etc/hosts`ファイルにアクセス�
 エラーメッセージによると、ファイルを開くための適切なファイル記述子がありませんでした。
 ```
 
-- アクセス制御できた！
+- アクセス制御できたのを確認できる
 
 ---
 
@@ -255,3 +310,10 @@ Response: 申し訳ありませんが、`/etc/hosts`ファイルにアクセス�
     - Coreutilsとかそういうのも全部Wasmってことね
     - 作るの大変だけど... 僕はちょっと...
     - 何でもかんでもRustに移植されてるし、いつかは？
+
+---
+
+## 今回実装したコード
+
+- https://github.com/udzura/wasm-gemini-agent
+- 実行は自己責任だっピ！  
