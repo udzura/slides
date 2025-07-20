@@ -63,8 +63,7 @@ _class: hero
 
 ## きっかけ
   - `rm -rf /` するエージェントの話題があった
-
-<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ん？え？は？何してるの？ <a href="https://t.co/QaDkToek4P">pic.twitter.com/QaDkToek4P</a></p>&mdash; /mugisus/g (@mugisus) <a href="https://twitter.com/mugisus/status/1940127947962396815?ref_src=twsrc%5Etfw">July 1, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  - https://twitter.com/mugisus/status/1940127947962396815
 
 ---
 
