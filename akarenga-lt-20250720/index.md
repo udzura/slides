@@ -2,6 +2,8 @@
 marp: true
 theme: default
 paginate: true
+title: "WebAssembly AI Agentを作ってみた"
+description: "赤煉瓦LT大会 @エンジニアカフェ での発表資料"
 image: https://udzura.jp/slides/2025/akarenga-lt-20250720/ogp.png
 style: |
   h1 { color: #c00000; }
