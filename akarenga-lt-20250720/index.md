@@ -2,6 +2,7 @@
 marp: true
 theme: default
 paginate: true
+image: https://udzura.jp/slides/2025/akarenga-lt-20250720/ogp.png
 style: |
   h1 { color: #c00000; }
   h2 { color: #c00000; }
