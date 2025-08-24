@@ -1,0 +1,369 @@
+/* 
+ * @theme rubykaigi2025
+ * @auto-scaling true
+ * @size 16:9 1280px 720px
+ * @size 4:3 960px 720px
+ * @size 16:10 1280px 800px
+ */
+
+@import 'default';
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hina+Mincho&display=swap');
+
+/* .hero1 {
+    background-image: url(./rubykaigi2025_bg.003.jpeg);
+}
+
+.hero2 {
+    background-image: url(./rubykaigi2025_bg.005.jpeg);
+} */
+
+section {
+    background-image: url(./rubykaigi2025_bg.004.jpeg);
+}
+
+section figure {
+    background-image: url(./rubykaigi2025_bg.004.jpeg);
+}
+
+section h1 {
+    color:black;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    font-style: normal;  
+}
+
+section h2 {
+    color:black;
+    margin-top: 4em;
+    text-indent: 0.3em;
+    font-family: "Lexend", sans-serif;
+    font-weight: 800;
+    font-style: bold;
+}
+
+section.title h1 {
+    color: white;
+    font-size: 66px;
+    text-align: center;
+}
+
+section.title h2 {
+    color: white;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    font-size: 32pt;
+    text-align: center;
+    margin-top: 1em;
+}
+
+section.hero0 h1 {
+    color: white;
+    font-size: 66px;
+    text-align: center;
+}
+
+section.hero1 h1 {
+    color: white;
+    font-size: 40px;
+    position: absolute;
+    top: 81%;
+    left: 86%;
+}
+
+section.hero h1 {
+    font-size: 66px;
+    text-align: center;
+}
+
+section.fin blockquote {
+    position: relative;
+    top: -1%;
+    font-family: "Hina Mincho", serif;
+    font-weight: 300;
+    font-size: 50px;
+    margin-left: 19%;
+    border: none;
+}
+
+section.fin blockquote small {
+    font-family: "Lexend", sans-serif;
+    line-height: 1;
+    font-size: 25px;
+    padding-left: 14.5%;
+}
+
+section.fin address {
+    font-family: "Lexend", sans-serif;
+    font-size: 25px;
+    position: absolute;
+    top: 80%;
+    left: 72%;
+}
+
+section:not(.title):not(.hero):not(.hero0):not(.hero1) h1, section.normal2 h1 {
+    position: absolute;
+    top: 13%;
+}
+
+section p, section ul {
+    font-family: "Lexend", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+section ul.lowered {
+    position: absolute;
+    top: 65% !important;
+}
+
+section:not(.title):not(.hero):not(.hero0) ul{
+    position: absolute;
+    top: 28.5%;
+}
+
+ul.underpre {
+    position: relative !important;
+    top: 2.5% !important;
+}
+
+ul.underpre2 {
+    position: absolute;
+    top: 60% !important;
+}
+
+section:not(.title):not(.hero):not(.hero0) ul ul {
+    position: relative;
+}
+
+section.sample2 pre {
+    position: relative;
+    top: 20%;
+}
+
+section.pre-with-desc pre {
+    position: relative;
+    top: 20%;
+}
+
+section li {
+    list-style-type: none;
+    font-size: 125%;
+    margin-left: -1em;
+    line-height: 185%;
+}
+
+section li::before {
+    content: "__";
+    color: transparent;
+    font-size: 37pt;
+    width: 45pt;
+    position: relative;
+    top: 4.5pt;
+    border-color: transparent;
+    border-width: 0 0 0 45.8pt;
+    border-style: solid;
+    margin-right: 0.25em;
+    background-color: transparent;
+    background-image: url("./icon1-1750.png");
+    background-size: 45pt;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
+
+section ul li li::marker {
+    font-size: 110%;
+}
+
+section li ul li::before {
+    content: "";
+    border: none;
+    background-image: none;
+}
+
+section li ul li{
+    list-style-image: none;
+    list-style-type: "\2726";
+    margin-left: 3em;
+    padding-top: 0.15em;
+    font-size: 90%;
+}
+
+section li ul li ul li{
+    list-style-image: none;
+    list-style-type: "\2726";
+    margin-left: 0.1em;
+    padding-top: 0.15em;
+    font-size: 90%;
+}
+
+section.normal img {
+    float: right;
+    background-color: transparent;
+    margin-top: 5%;
+}
+
+section.profile img.me {
+    position: absolute;
+    top: 25%;
+    left: 64%;
+    overflow: hidden !important;
+    border-radius: 50% !important;
+}
+
+section.profile img.shr {
+    vertical-align: top;
+    position: relative;
+    top: 6px;
+}
+
+section::after {
+    font-size: 14pt;
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
+    font-style: normal;  
+}
+
+button { font-size: 30pt; }
+
+/* marp-pre:has(code.language-ruby) {
+    background-color: #faf4f4;
+}
+
+marp-pre:has(code.language-c) {
+    background-color: #f0f8f8;
+}
+
+marp-pre:has(code.language-javascript) {
+    background-color: #f8ffdd;
+}
+
+marp-pre:has(code.language-typescript) {
+    background-color: #f8ffdd;
+}
+
+marp-pre:has(code.language-html) {
+    background-color: #f8ffdd;
+}
+
+marp-pre:has(code.language-rust) {
+    background-color: #f8eeff;
+}
+
+marp-pre:has(code.language-go) {
+    background-color: #f0ffee;
+}
+
+marp-pre:has(code.language-lua) {
+    background-color: #f0ffee;
+} */
+
+section.pre-top75 pre {
+    margin-top: 40%;
+}
+
+section.pre-top80 pre {
+    margin-top: 45%;
+}
+
+section.pre-top5 pre {
+    margin-top: 5%;
+}
+
+section.pre-top9 pre {
+    margin-top: 9%;
+}
+
+section.pre-top20 pre {
+    position: relative;
+    margin-top: 22%;
+}
+
+section.pre-top30 pre {
+    position: relative;
+    margin-top: 32%;
+}
+
+section.pre-top5-2 + h1 + pre {
+    margin-top: 15%;
+}
+
+section.pre-ruby-top5 marp-pre:has(code.language-ruby) {
+    margin-top: 5%;
+}
+
+section.pre-code-top10 marp-pre:has(code.language-lua) {
+    margin-top: 13%;
+}
+
+section.img-front img {
+    float: none;
+    text-align: center;
+}
+
+section.two-samples table {
+    font-size: 22pt;
+    position: relative;
+    top: 22%;
+}
+
+section.two-samples img {
+    float: left;
+    margin-top: 0.2em;
+}
+
+section.img-top5 img {
+    position: relative;
+    top: 8%;
+    right: 3em;
+}
+
+section.img-top6 img {
+    position: relative;
+    top: 6%;
+}
+
+section.img-top20 img {
+    position: relative;
+    top: 20%;
+}
+
+section.img-top-minus img {
+    position: relative;
+    top: -50%;
+    right: 2.5em;
+}
+
+table {
+    margin-top: 5%;
+    font-size: 28pt;
+}
+
+section.table-top5 table {
+    font-size: 28pt;
+}
+
+section.table-top9 table {
+    margin-top: 12%;
+    font-size: 28pt;
+}
+
+section.table-top15 table {
+    margin-top: 17%;
+    font-size: 24pt;
+}
+
+section.vm-example-desc ul {
+    font-size: 22pt;
+}
+
+section.logos img {
+    top: 1em;
+    position: relative;
+    float: right;
+}
+
+section.logos img + img {
+    position: relative;
+    float: right;
+}
