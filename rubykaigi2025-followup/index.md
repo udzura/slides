@@ -58,7 +58,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">RubyKaigi follow upの準備が… <a href="https://t.co/A7nNAUhtym">pic.twitter.com/A7nNAUhtym</a></p>&mdash; Uchio Kondo💥 (@udzura) <a href="https://twitter.com/udzura/status/1954094966831001886?ref_src=twsrc%5Etfw">August 9, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+![bg w:780](image-9.png)
 
 ----
 
@@ -66,7 +66,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 - メイントピック
   - バイナリのパース処理を高速化しました
-  - 大体 7.5 秒 → 1.5 秒 (ruby.wasm)
+  - 大体 6.6 秒 → 1.6 秒 (ruby.wasm)
 - 進捗がないこと
   - VM自体の高速化
 
@@ -81,15 +81,35 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 ----
 
-# ruby.wasm での分析
+# 環境
+
+- Apple M3 Pro (2023) / 12 Core / メモリ 36 GB
+- Ruby 3.4.5 +PRISM +YJIT (ruby.wasm は 3.4.2)
 
 ----
 
-# vernier で可視化した結果
+# ruby.wasm の実行
+
+```
+$ time bundle exec wardite ./tmp/ruby.wasm -- --version
+Activated Vernier profiling
+ruby 3.4.2 (2025-02-15 revision d2930f8e7a) +PRISM [wasm32-wasi]
+bundle exec wardite ./tmp/ruby.wasm -- --version 
+    21.40s user 2.84s system 100% cpu 24.126 total
+```
 
 ----
 
-# vernier で可視化した結果
+# vernier のflame graph
+
+<br>
+<br>
+
+![h:500](image-2.png)
+
+----
+
+# vernier のflame graph
 
 - バイナリ解析に、処理本体と同じぐらい時間がかかっている
 
@@ -97,11 +117,37 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # バイナリ解析のみのベンチプログラム
 
-- スーパー簡易版
+```ruby
+f = File.open($options.wasm_file)
+Vernier.profile(out: "./tmp/load_perf.json") do
+  start = Time.now
+  _instance = Wardite::BinaryLoader::load_from_buffer(f);
+  puts "Profile saved to ./tmp/load_perf.json"
+  puts "Load time: #{Time.now.to_f - start.to_f} seconds"
+end
+```
 
 ----
 
 # 今のmainでの結果
+
+```
+YJIT enabled: true
+Profile saved to ./tmp/load_perf.json
+Load time: 6.609860897064209 seconds
+OK
+
+# 12秒、というレベルではなかったが十分高速化の余地がありそう
+```
+
+----
+
+# flame graph
+
+<br>
+<br>
+
+![alt text](image-1.png)
 
 ----
 
@@ -116,50 +162,151 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # `Op.to_sym`, `Op.operand_of` 最適化
 
-- バイナリ表現からOpcodeやオペランド情報を取得
-- 元のコード
+- バイナリ表現からOpcodeやオペランド情報を取得しているだけ
+- たくさん命令があるので...
+
+----
+
+```ruby
+    # @rbs chr: String
+    # @rbs return: [Symbol, Symbol]
+    def self.to_sym(chr)
+      if chr.ord == 0xfc
+        return [:fc, :fc]
+      end
+
+      code = table[chr.ord]
+      if ! code
+        raise "found unknown code 0x#{chr.ord.to_s(16)}"
+      end
+      # opcodes equal to or larger than are "convert" ops
+      if chr.ord >= 0xa7
+        return [:convert, code]
+      end
+
+      prefix = code.to_s.split("_")[0]
+      case prefix
+      when "i32", "i64", "f32", "f64"
+        [prefix.to_sym, code]
+      else
+        [:default, code]
+      end
+    end
+```
+
+----
+
+```ruby
+    # @rbs code: Symbol
+    # @rbs return: Array[Symbol]
+    def self.operand_of(code)
+      case code
+      when /load/, /store/
+        [:u32, :u32]
+      when :local_get, :local_set, :local_tee, :global_get, :global_set, :call, :br, :br_if
+        [:u32]
+      when :memory_init, :memory_copy
+        [:u32, :u32]
+      when :memory_size, :memory_grow, :memory_fill
+        [:u32]
+      when :call_indirect
+        [:u32, :u32]
+      when :br_table
+        [:u32_vec, :u32]
+      when :i32_const
+        [:i32]
+      when :i64_const
+        [:i64]
+      when :f32_const
+        [:f32]
+      when :f64_const
+        [:f64]
+      when :if, :block, :loop
+        [:u8_block]
+      else
+        []
+      end
+    end
+```
 
 ----
 
 # 重そうな処理を削る
 
-- 見えてるのは String#split, 正規表現
+- 見えてるのは String#split, 正規表現あたり
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+![h:360](image-10.png)
 
 ----
 
-# 削った結果
+# さらにシンボルテーブル探索の最適化
+
+- メソッドを毎回呼んでそう
+- 別に定数から直接取得できるのでは...
+
+<br>
+<br>
+<br>
+<br>
+
+```ruby
+    SYMS = %i[
+      unreachable nop block loop if else try catch
+      throw rethrow throw_ref end br br_if br_table return ...
+    ]
+```
 
 ----
 
-# シンボルテーブル探索の最適化
+# これだけで割と改善
 
-- メソッドを毎回読んでいたが、別に定数から直接取得できるのでは...
-
-----
-
-# これだけで改善
+```
+# Before: 6.6 seconds
+YJIT enabled: true
+Profile saved to ./tmp/load_perf.json
+Load time: 4.619668006896973 seconds
+OK
+```
 
 ----
 
 # `fetch_ops_while_end` の最適化
 
 - どう言う処理？
-  - if, block, loop 命令で、対応する end の位置を事前に取得する必要がある
-  - なのでOpのパースが終わった段階で一度計算してキャッシュしている
-  - なんだか素朴な実装になってて無駄が多い
+  - if, block, loop 命令で、対応する end の位置を事前に取得する必要
+  - Opのパースが終わった段階で一度計算してキャッシュしている
+  - なんだか素朴な実装になってて無駄が多い感じ...
 
 ----
 
 # そもそも
 
 - Opをパースしながらendの位置を計算できるんでは...
-- 書き換えた
+- そういうふうに書き換えた
+  - スタックを操作する感じでやれば素直
 
+----
+
+![h:550](image-3.png)
 
 ----
 
 # 結果
 
+```
+# Before: 4.6 seconds
+YJIT enabled: true
+Profile saved to ./tmp/load_perf.json
+Load time: 3.4930167198181152 seconds
+OK
+```
 
 ----
 
@@ -168,48 +315,69 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 - ruby.wasm に存在する命令数
 - この数だけ Op.new してるということだ
 
+<br>
+<br>
+
+```
+Total opcodes: 3314498
+```
+
+
 ----
 
 # Opインスタンス→配列
 
 - 可読性が犠牲になるが...。
-- RBSレベルでエイリアスをつければマシになるかも
+- TODO: RBSレベルでエイリアスをつければマシになるかも
+
+----
+
+![alt text](image-4.png)
+
+----
+
+# ポイント
+
+- 始め、meta情報の格納先として素直にHashを作った
+- 今、2つしかキーがないので、それぞれ要素をバラしたら
+  - それで割と高速になった（0.2~0.3秒）
 
 ----
 
 # 結果は？
 
-
-
-----
-
-# もうちょっと速く出来ない？
-
-- meta情報で配列を作っているけど...
-  - 今、2つしかキーがないので、バラしたらどうなる？
-
-----
-
-# バラすコード
-
-----
-
-# バラした結果
-
-- Hashをそもそも作らないのは割と効く
+```
+# Defore: 3.5 seconds
+YJIT enabled: true
+Profile saved to ./tmp/load_perf.json
+Load time: 2.267056941986084 seconds
+OK
+```
 
 ----
 
 # さらに高速化の余地は？
 
-- Opの配列の要素数がもっと小さいといいのかな？
-  - namespace の情報を削る？
+- 今、命令ごとのざっくり分類をnamespaceとして計算している
+  - そういえばこれって本当に必要？
+  - namespace の情報を削るとどう？
 - OpインスタンスやめてるのでどうせVMを改修しなきゃだもんなあ
 
 ----
 
-# やめてみた結果 
+# namespace の算出をやめてみた結果 
 
+- 2秒切った！嬉しい！
+
+<br>
+
+```
+# Before: 2.26 seconds
+YJIT enabled: true
+Profile saved to ./tmp/load_perf.json
+Load time: 1.9164891242980957 seconds
+OK
+```
 
 ----
 
@@ -222,15 +390,34 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # operand情報解決テーブルの事前作成
 
-- `operand_of` 内でcase文でマッチしていたが、code -> operand のHashを事前に作れるのでそれを使った
+- code -> operand のHashを事前に作ってcase文をやめる
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+![h:380](image-6.png)
 
 ----
 
 # leb128 の処理の高速化
 
-- leb128 符号化形式とは
-- https://claude.ai/public/artifacts/a1144bc7-0799-499c-be34-0820caa4631d
-- WebAssemblyのバイナリでは、数値は基本的に leb128 になっている
+- leb128 符号化形式とは...
+- [Claude Sonnet 4が解説してくれたんで...](https://claude.ai/public/artifacts/a1144bc7-0799-499c-be34-0820caa4631d) それを見てね
+
+----
+
+![w:800](image-5.png)
+
+----
+
+# leb128 がなぜ大事か
+
+- WebAssemblyのバイナリでは、数値は基本的に leb128 でエンコードされている
+- leb128 をパースする箇所が非常に多い
 
 ----
 
@@ -239,20 +426,64 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 - 可変長の符号化形式とはいえ、1バイトで収まる数値がほとんど
 - 127以下の数値だと分かったら early return した
 
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+```ruby
+    def fetch_uleb128(buf, max_level: 8)
+      dest = 0; level = 0
+      while b = buf.read(1)
+        c = b.ord
+        # 127以下ならもうここで抜ける
+        return c if c < 0x80 && level.zero?
+        # ....
+```
+
 ----
 
 # この辺を適用した結果
 
+- ＋あとはできるところでメソッド呼び出しの削減もした
+
+```
+# Before: 1.9 seconds
+YJIT enabled: true
+Profile saved to ./tmp/load_perf.json
+Load time: 1.6453030109405518 seconds
+OK
+```
 
 ----
 
-# 最終的ghqなflame graph
+# 最終的なflame graph
+
+<br>
+<br>
+
+<!-- ![最終](image.png) -->
+
+![alt text](image-7.png)
+
+----
+
+# 変化のまとめ
+
+- 6.61s -> 1.65s
+- おおよそ4x faster
+- <s>マリカワのせいで成果なしとならなくてよかった</s>
+
+![bg right w:550](image-8.png)
 
 ----
 
 # 今後のアクション
 
-- バイナリパーサが作るデータ構造が変わったので
+- バイナリパーサが作るデータ構造が変わったので全体が動かなくなってるなう
   - VM側の処理を直さなきゃ...
   - （まだやってないんかい）
 
@@ -269,19 +500,31 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # VM処理側も高速にしたいね
 
-- 
-- 
+- 何かやれることある？
+  - 値をIntegerだけで表現する？
 
 ----
 
 # 値をIntegerだけで表現する
 
 - 今、値を素直にオブジェクトで表現している
+- だいたいこういうコード
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 ```ruby
 class I32
   attr_reader :value
 end
+
+class I64
+  attr_reader :value
+end #...
 ```
 
 ----
@@ -308,38 +551,9 @@ end
 
 # 結果はまだまだ
 
-- 小さな四則演算だけをひたすらループするするプログラムで置き換えて比較
-  - とはいえ効果が今ひとつ見えない
+- 小さな四則演算だけをひたすらループするするプログラムで置き換えて比較してみた
+  - とはいえ効果が今ひとつ見えない...
 - 一通り置き換えたうえで実際的なプログラムで比較しないと効果が見えづらいかも
-
-----
-
-# case文の最適化
-
-- VMの中で巨大なcase文がある
-- 一方、使われる命令数には偏りがある
-
-```
-命令数の図
-```
-
-----
-
-# よく使う命令はFast pathを設けては？
-
-- 例えば i32.add, i32.const, local.get, local.set など
-- 小さな四則演算だけをするプログラムで、local.get/local.setのFast pathを設けてみた結果を掲載する
-- とはいえ...
-  - 命令の偏りってワークロードにより変わるしなあ
-  - `local.*` 等はどのプログラムでも多いとは思う
-
-----
-
-# Fast pathの結果
-
-```
-結果
-```
 
 ----
 
@@ -354,7 +568,7 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # Warditeのバイナリパーサを高速化した
 
-- ruby.wasm のサイズのバイナリで7.5秒から1.5秒に短縮した
+- ruby.wasm のサイズのバイナリで6.6秒から1.6秒に短縮した
 - VMの処理自体の高速化もしたいが、効果が見えづらそう
 - 他にもやることたくさん
   - specのカバー率も上げたいな...
