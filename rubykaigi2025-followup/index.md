@@ -3,7 +3,7 @@ marp: true
 theme: rubykaigi2025
 paginate: true
 backgroundImage: url(./rubykaigi2025_bg.004.jpeg)
-title: Wardite 高速化 どうやって
+title: Wardite 速くなったよ よかったね
 description: RubyKaigi 2025 follow up / Wardite の高速化について
 # header: "Running ruby.wasm on Pure Ruby Wasm Runtime"
 image: https://udzura.jp/slides/2025/rubykaigi-followup/#TODO
@@ -15,7 +15,7 @@ _class: title
 _backgroundImage: url(./rubykaigi2025_bg.002.jpeg)
 -->
 
-# Wardite 高速化 どうやって
+# Wardite 速くなったよ よかったね
 
 ## Presentation by Uchio Kondo
 
@@ -100,7 +100,7 @@ bundle exec wardite ./tmp/ruby.wasm -- --version
 
 ----
 
-# vernier のflame graph
+# vernier でのflame graph
 
 <br>
 <br>
@@ -109,7 +109,7 @@ bundle exec wardite ./tmp/ruby.wasm -- --version
 
 ----
 
-# vernier のflame graph
+# vernier のflame graph 所感
 
 - バイナリ解析に、処理本体と同じぐらい時間がかかっている
 
@@ -162,8 +162,10 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 
 # `Op.to_sym`, `Op.operand_of` 最適化
 
-- バイナリ表現からOpcodeやオペランド情報を取得しているだけ
+- バイナリ表現からOpcodeやオペランド情報を取得している処理
 - たくさん命令があるので...
+  - 命令の数だけ実行される
+  - ちなみに ruby.wasm には `3314498` 命令あるらしい
 
 ----
 
@@ -312,16 +314,8 @@ OK
 
 # Opインスタンスを作るのをやめる
 
-- ruby.wasm に存在する命令数
-- この数だけ Op.new してるということだ
-
-<br>
-<br>
-
-```
-Total opcodes: 3314498
-```
-
+- ruby.wasm に存在する命令数は `3314498` （再掲）
+- この数だけ Op.new してるということ
 
 ----
 
@@ -340,14 +334,15 @@ Total opcodes: 3314498
 
 - 始め、meta情報の格納先として素直にHashを作った
 - 今、2つしかキーがないので、それぞれ要素をバラしたら
-  - それで割と高速になった（0.2~0.3秒）
+  - それだけで速度改善した（0.2~0.3秒）
+  - Hashをそもそも作らないというのが大事っぽい
 
 ----
 
 # 結果は？
 
 ```
-# Defore: 3.5 seconds
+# Before: 3.5 seconds
 YJIT enabled: true
 Profile saved to ./tmp/load_perf.json
 Load time: 2.267056941986084 seconds
@@ -406,6 +401,8 @@ OK
 # leb128 の処理の高速化
 
 - leb128 符号化形式とは...
+  - 各バイトを最上位ビットとそれ以下に分けて表現する方式
+  - 小さな数値は1バイトで、大きな数値は複数バイトで表現できる
 - [Claude Sonnet 4が解説してくれたんで...](https://claude.ai/public/artifacts/a1144bc7-0799-499c-be34-0820caa4631d) それを見てね
 
 ----
@@ -460,6 +457,26 @@ OK
 
 ----
 
+# と思ったが...
+
+- namespaceでcase文を分割しないとVMが動かない...
+- code -> namespace のHashで解決、計算するよう再変更
+- そんなに変わらないので許容
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+```
+Load time: 1.6500530433654785 seconds
+OK
+```
+
+----
+
 # 最終的なflame graph
 
 <br>
@@ -467,7 +484,7 @@ OK
 
 <!-- ![最終](image.png) -->
 
-![alt text](image-7.png)
+![alt text](image-12.png)
 
 ----
 
@@ -475,17 +492,40 @@ OK
 
 - 6.61s -> 1.65s
 - おおよそ4x faster
-- <s>マリカワのせいで成果なしとならなくてよかった</s>
 
 ![bg right w:550](image-8.png)
 
 ----
 
-# 今後のアクション
+# ruby --version 現状の所要時間
 
-- バイナリパーサが作るデータ構造が変わったので全体が動かなくなってるなう
-  - VM側の処理を直さなきゃ...
-  - （まだやってないんかい）
+- VM側も新データ構造に対応し既存テストを通した
+- `ruby --version` も元のように動く
+- 21.4s -> 14.5s
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+```
+$ time bundle exec wardite tmp/ruby.wasm -- --version
+ruby 3.4.2 (2025-02-15 revision d2930f8e7a) +PRISM [wasm32-wasi]
+bundle exec wardite tmp/ruby.wasm -- --version
+  14.51s user 0.74s system 98% cpu 15.554 total
+```
+
+----
+
+# リリース済み
+
+- wardite `0.9.0`
+
+![bg right:60% w:700](image-13.png)
 
 ----
 
@@ -551,9 +591,18 @@ end #...
 
 # 結果はまだまだ
 
-- 小さな四則演算だけをひたすらループするするプログラムで置き換えて比較してみた
+- 小さな四則演算だけをひたすらループするプログラムを用意
+- 一部命令を置き換えてそのパフォーマンスを比較してみた
   - とはいえ効果が今ひとつ見えない...
-- 一通り置き換えたうえで実際的なプログラムで比較しないと効果が見えづらいかも
+
+----
+
+# 今後はこうしていこうと思っています
+
+- 一通り置き換えたうえで
+  - 実際的なプログラムで比較しないと効果が見えづらいかも
+  - なのでえいやと置き換え頑張る
+- <s>マリオカートワールドで忙しいので</s>もうちょっとだけ待って...
 
 ----
 
@@ -569,6 +618,5 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 # Warditeのバイナリパーサを高速化した
 
 - ruby.wasm のサイズのバイナリで6.6秒から1.6秒に短縮した
-- VMの処理自体の高速化もしたいが、効果が見えづらそう
-- 他にもやることたくさん
-  - specのカバー率も上げたいな...
+- VM処理自体の高速化もしたいが、効果がまだ確信できず
+- 今後もいい感じにしていこうと思っています
