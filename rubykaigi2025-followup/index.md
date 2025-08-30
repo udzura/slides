@@ -3,7 +3,7 @@ marp: true
 theme: rubykaigi2025
 paginate: true
 backgroundImage: url(./rubykaigi2025_bg.004.jpeg)
-title: Wardite 速くなったよ よかったね
+title: 今後は Wardite の高速化をしたいと思います
 description: RubyKaigi 2025 follow up / Wardite の高速化について
 # header: "Running ruby.wasm on Pure Ruby Wasm Runtime"
 image: https://udzura.jp/slides/2025/rubykaigi-followup/#TODO
@@ -15,7 +15,7 @@ _class: title
 _backgroundImage: url(./rubykaigi2025_bg.002.jpeg)
 -->
 
-# Wardite 速くなったよ よかったね
+# 今後は Wardite の高速化をしたいと思います
 
 ## Presentation by Uchio Kondo
 
@@ -59,6 +59,10 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 ----
 
 ![bg w:780](image-9.png)
+
+----
+
+![bg w:880](image-14.png)
 
 ----
 
@@ -243,8 +247,11 @@ _backgroundImage: url(./rubykaigi2025_bg.003.jpeg)
 <br>
 <br>
 
+![alt text](image-15.png)
 
-![h:360](image-10.png)
+----
+
+![h:460](image-10.png)
 
 ----
 
@@ -276,6 +283,15 @@ Profile saved to ./tmp/load_perf.json
 Load time: 4.619668006896973 seconds
 OK
 ```
+
+----
+
+# `fetch_ops_while_end` の最適化
+
+<br>
+<br>
+
+![alt text](image-16.png)
 
 ----
 
@@ -314,6 +330,15 @@ OK
 
 # Opインスタンスを作るのをやめる
 
+<br>
+<br>
+
+![alt text](image-17.png)
+
+----
+
+# Opインスタンスを作るのをやめる
+
 - ruby.wasm に存在する命令数は `3314498` （再掲）
 - この数だけ Op.new してるということ
 
@@ -321,12 +346,18 @@ OK
 
 # Opインスタンス→配列
 
-- 可読性が犠牲になるが...。
-- TODO: RBSレベルでエイリアスをつければマシになるかも
+<br>
+<br>
+<br>
+
+![h:400](image-4.png)
 
 ----
 
-![alt text](image-4.png)
+# Opインスタンス→配列
+
+- 可読性が犠牲になるが...。
+- TODO: RBSレベルでエイリアスをつければマシになるかも
 
 ----
 
