@@ -6,7 +6,7 @@ backgroundImage: url(./rubykaigi2025_bg.004.jpeg)
 title: 今後は Wardite の高速化をしたいと思います
 description: RubyKaigi 2025 follow up / Wardite の高速化について
 # header: "Running ruby.wasm on Pure Ruby Wasm Runtime"
-image: https://udzura.jp/slides/2025/rubykaigi-followup/#TODO
+image: https://udzura.jp/slides/2025/rubykaigi-followup/ogp.png
 size: 16:9
 ----
 
