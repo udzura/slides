@@ -85,6 +85,12 @@ user.save!
 
 ---
 
+# 全体像
+
+![全体](./2025-09-26-130013.svg)
+
+---
+
 # ファイルオブジェクトがアサインされてからの流れ
 
 - `user.avatar = params[:file]` アサインが走る
@@ -113,8 +119,14 @@ user.save!
 ---
 
 ```ruby
-def generate_cache_id
-  # TBA
+module CarrierWave
+  def self.generate_cache_id
+    [Time.now.utc.to_i,
+      Process.pid,
+      '%04d' % (CarrierWave::CacheCounter.increment % 1000),
+      '%04d' % rand(9999)
+    ].map(&:to_s).join('-')
+  end
 end
 ```
 
