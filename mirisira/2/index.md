@@ -124,6 +124,7 @@ _class: profile
 
 - Claude Code
 - Codex
+- Gemini CLI
 - GitHub Copilot Agent...
 
 ----
@@ -164,23 +165,25 @@ _class: profile
 
 ----
 
-# main.go から
+# 初手はやっぱり...
 
-- `cmd/rigel/main.go` から
-
-```go
-func main() {
-  if err := rootCmd.Execute(); err != nil {
-    log.Fatal(err)
-  }
-}
-```
-
-- cobra CLIのエントリーポイント `rootCmd.Execute()` を呼び出し
+- Copilot Agentに雑に読ませてまとめさせてみた
+- [./ARCHITECTURE.md](./ARCHITECTURE.md)
+  - 果たしてどこまで真実か...
 
 ----
 
+# main.go から
 
+- 実際その通りかコードをリアタイで眺めてみましょう
+
+----
+
+# まとめ
+
+- AI時代でも、やっぱりコードを眺める力は大事
+- 自作コーディングエージェントは普通にコーディングエージェントを使う上でも参考になりそう
+  - トラブルシュートとか
 
 ----
 
