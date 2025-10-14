@@ -1,27 +1,52 @@
 ---
-presentationID: 16Tdwq7U51gGbDvRF2qXOUNrxM2-SgSciwU6L5iiAhUc
+presentationID: 1HaZNqfPLeg438uxUkuZNS8zaNTPu_e4ZkC_q2T863vo
 title: PHPで“本気で”WebAssemblyを動かす方法
-codeBlockToImageCommand: "freeze --theme dracula --language {{lang}} -o {{output}} -r 5 --window"
+codeBlockToImageCommand: "freeze --theme friendly --language {{lang}} -o {{output}} -r 5 --window"
 defaults:
   - if: page == 1
-    layout: "タイトル スライド"
+    layout: "タイトル_SmartBasic"
+  - if: speakerNote.contains("HERO")
+    layout: "チャプタータイトル_Friendly"
+  - if: speakerNote.contains("SKIP_UPDATE")
+    skip: true
+  - if: speakerNote.contains("QUOTE")
+    layout: "引用"
   - if: speakerNote.contains("IMAGE_ONLY")
-    layout: "空白"
+    layout: "白紙"
+  - if: speakerNote.contains("GOODBYE")
+    layout: "見出しと本文_画像50%"
   - if: true
-    layout: "タイトルと本文"
+    layout: "見出しと本文"  
 ---
 
 # PHPでWebAssemblyを動かす
 
-## @ PHPカンファレンス福岡2025
+## PHPカンファレンス福岡2025 @ 2025.11.8
 
 -----
 
-# PHPでWebAssemblyを動かす
+# 自己紹介
 
   - 発表者: 近藤
   - 普段はRubyを書いています
   - 所属: SmartHR (タレントマネジメント、人事労務系サービスを提供)
+
+-----
+
+# 宣伝
+
+- 福岡Rubyist会議05 (2026.2.28 @ 博多)
+- CfP is open!!!!!!!!!
+- 来年も福岡でワイワイやりましょう！
+- Rubyistでなくても、"""やってる人"""はしゃべってほしい！
+
+-----
+
+# 今日のテーマは WebAssembly
+
+<!--
+  HERO
+-->
 
 -----
 
@@ -32,40 +57,62 @@ defaults:
   - **仕組み:**
     1.  各言語のコードをWasm形式のバイナリーにコンパイル
     2.  そのバイナリーをブラウザ内で実行
+
+-----
+
+![alt text](image-4.png)
+
+> https://udzura.jp/slides/2025/rubykaigi/#16
+
+<!--
+  IMAGE_ONLY
+-->
+
+-----
+
+# Why WebAssembly?
+
   - **メリット:**
       - JavaScript以外の言語をブラウザで利用可能
       - コンパイルによる**高速化や最適化**が期待できる
-
-![alt text](image.png)
 
 -----
 
 # Wasmの実行環境はブラウザだけではない
 
-  - Wasmバイナリーの形式にしてしまえば、どこでも動かせる
-  - **実行環境の多様性:**
+  - Wasmバイナリーの形式にしてしまえば、どこでも動かせる:
       - ブラウザ内
       - ターミナル (CLI)
       - 組み込み環境
-      - **ミドルウェア内** (例: ロードバランサー)
+      - ミドルウェア内 (例: Envoy)
   - **コンセプト:** 「どんな言語でも書けるし、どんな場所でも動かせる」
 
 -----
 
 ![alt text](image-1.png)
 
+<!--
+  IMAGE_ONLY
+-->
+
 -----
 
 # Wasmの様々な実行環境の実装例
 
   - Wasmは**他の言語のVM内に組み込んで動かす**使い方ができる
+  - **一般的な実装:**
+      - CやRustで書かれたランタイムを使う
+      - ネイティブライブラリやFFI (外部関数インターフェース) を使って組み込むパターンが多い
+
+-----
+
+# 純粋に特定の言語で書かれたWasmランタイムの例
+
   - **Go言語 (Wazero):**
       - 純粋なGoだけで組まれたWasmランタイム
       - Cコードを使わず、Goから動的にWasmプラグインを読み込ませることが可能
   - **Ruby (Wasmtimeなど):**
       - WasmtimeはRubyで書かれたWasmランタイムがある
-  - **一般的な実装:**
-      - CやRustで書かれたランタイムを、FFI (外部関数インターフェース) を使って組み込むパターンが多い
 
 -----
 
@@ -73,6 +120,7 @@ defaults:
 
   - **方法1: C拡張もしくはFFIを使う**
       - Cで書かれたWasmランタイムをPHPから呼び出す
+          - ネイティブ拡張が必須になる
       - 技術的には可能だが、運用や実装が面倒になることが多い
 
 -----
@@ -80,8 +128,24 @@ defaults:
 # PHPでWasmを動かすには？
 
   - **方法2: PHPで純粋なVMを実装する**
-      - PHPだけでWasmバイナリーをパースし、実行するVM（仮想マシン）を実装する
-      - **本発表のゴール:** PHPでWasm VMを実装し、WasmをPHP上で動かす！
+      - PHPだけでWasmバイナリーをパースし、実行するVM（仮想マシン）を実装する...
+      - できらぁ！（画像略）
+
+-----
+
+# 本発表のゴール: PHPでWasm VMを実装し、WasmをPHP上で動かす！
+
+<!--
+  HERO
+-->
+
+-----
+
+# Wasm VM実装に必要な知識
+
+<!--
+  HERO
+-->
 
 -----
 
@@ -99,11 +163,14 @@ defaults:
 
 -----
 
-# VM ってなんだろう より引用
+# 『VM ってなんだろう』 より引用
 
-> で、なんで仮想化するかということですが、まぁ、ぶっちゃけ便利になるからですね。<br />
-> ...
-> 具体的な何かに依存するよりは、中間層を設けることによって別々のものを扱いやすくしましょう、というのが仮想化です。中間層により、上層で利用することのできるインターフェースを共通化することで利用しやすくしましょうね、ということです。
+で、なんで仮想化するかということですが、まぁ、ぶっちゃけ便利になるからですね。<br />
+... 具体的な何かに依存するよりは、中間層を設けることによって別々のものを扱いやすくしましょう、というのが仮想化です。中間層により、上層で利用することのできるインターフェースを共通化することで利用しやすくしましょうね、ということです。
+
+<!--
+  QUOTE
+-->
 
 -----
 
@@ -118,41 +185,48 @@ defaults:
 # Wasm VMは「スタックマシン」
 
   - WasmのVMは**スタックマシン**を採用している
-  - **スタックマシンとは？**
-      - 演算の対象となる値を **スタック（LIFO構造）** で管理するVM
-      - **命令の実行プロセス:**
-        1.  `Const 10` → スタックに10を積む
-        2.  `Const 20` → スタックに20を積む
-        3.  `Add` → スタックから20と10を取り出す (Pop)
-        4.  計算 ($20 + 10 = 30$)
-        5.  結果30をスタックに戻す (Push)
-  - 多くのVM (PHP Zend VM, Java, Ruby) がスタックマシンを採用
+  - 多くのVM (PHP Zend VM, Java, Ruby) もスタックマシンを採用
+
+-----
+
+# スタックマシンとは？
+
+  - 演算の対象となる値を **スタック（LIFO構造）** で管理するVM
+  - **命令の実行プロセス例:**
+    1.  `Const 10` → スタックに10を積む
+    2.  `Const 20` → スタックに20を積む
+    3.  `Add` → スタックから20と10を取り出す (Pop)
+    4.  計算 (`20 + 10 = 30`)
+    5.  結果30をスタックに戻す (Push)
 
 -----
 
 ![alt text](image-3.png)
 
+> https://docs.google.com/presentation/d/1W5H9NkaF6rDWWF387XXHMMMTs9GU1dDcCCCC1n5aaDs/edit?usp=sharing
+
+<!--
+  IMAGE_ONLY
+-->
+
 -----
 
-# PHPでWasm風の命令を動かすデモ (概念)
+# PHPでWasm風の命令を動かす概念プログラム
 
-  - **命令をPHPの配列で表現:**
-    `$instructions = ['i32.const 10', 'i32.const 20', 'i32.add'];`
-  - **スタックをPHPの配列で表現:**
+  - **命令をPHPの文字列の配列で表現:**
+  - **スタックもPHPの配列で表現:**
     1.  `i32.const 10` 実行後: `[10]`
     2.  `i32.const 20` 実行後: `[10, 20]`
     3.  `i32.add` 実行後: `10, 20` を取り出し、計算し、 `30` をスタックに戻す: `[30]`
-  - 最終的なスタックのトップ（30）が返り値となる
+  - 最終的なスタックのトップ（30）が返り値となればOK
 
 -----
 
-# 実装コード
-
-- スタックの定義
+# 実装コード: スタック等の定義
 
 ```php
 class VM {
-    private $stack = []; // 
+    private $stack = [];
     private $instructions = [];
     private $pc = 0; // program counter
 
@@ -161,12 +235,11 @@ class VM {
     }
 
     public function run(): void {
-        // instructions を順に評価
+        // instruction loop:
         while ($this->pc < count($this->instructions)) {
             $this->evaluate($this->instructions[$this->pc]);
             $this->pc++;
         }
-
         print("Final Stack: [" . implode(', ', $this->stack) . "]\n");
     }
     // ...
@@ -175,11 +248,10 @@ class VM {
 
 -----
 
-- 命令を評価する本体
+# 実装コード: 命令を評価する本体
 
 ```php
 class VM {
-    // ...
     private function evaluate($instruction): void {
         list($op, $arg) = explode(' ', $instruction . ' ', 2);
         switch ($op) {
@@ -200,6 +272,8 @@ class VM {
 
 ----
 
+# このVMを動かしてみる
+
 ```php
 $vm = new VM();
 $vm->load([
@@ -212,10 +286,20 @@ $vm->run();
 
 ---
 
+# 結果
+
 ```php
 $ php ./samplevm/main.php
 Final Stack: [30]
 ```
+
+-----
+
+# Wasm VMを学ぶ
+
+<!--
+  HERO
+-->
 
 -----
 
@@ -253,22 +337,112 @@ Final Stack: [30]
 
 -----
 
+# 実際に作ってみた
+
+<!--
+  HERO
+-->
+
+-----
+
+# リポジトリは以下です
+
+- [GitHub - udzura/phpconvm](https://github.com/udzura/phpconvm)
+
+-----
+
 # PHPによるWasm VMの実装 (デモ)
 
   - **実装:** Gorilla本の設計をベースに、過去にRubyで実装した経験を活かし、**PHPに移植**した
-  - **デモ環境:** Wasmtime (標準的なWasmランタイム) と自作PHP VMで同じWasmバイナリー (Hello World) を実行
-  - **結果:** PHPで実装したWasm VMでも、正しく"Hello World"のWasmバイナリーが実行できた
+  - **デモ内容:** 自作PHP VM/Ruby製VMでWasmバイナリー (Hello World, fib) を実行
+
+-----
+
+```console
+$ php src/main.php examples/helloworld.wasm 
+[debug] VM initialized.
+warning: unimplemented section: 0x0
+Hello, World!
+```
+
+<!--
+  IMAGE_ONLY
+-->
+
+-----
+
+```console
+$ time php src/main.php examples/fib.wasm fib 30
+[debug] VM initialized.
+warning: unimplemented section: 0x0
+Return value: 1346269
+php src/main.php ...  6.60s user 0.03s system 99% cpu 6.640 total
+```
+
+<!--
+  IMAGE_ONLY
+-->
+
+-----
+
+```console
+## JIT enabled:
+$ time php src/main.php examples/fib.wasm fib 30
+[debug] VM initialized.
+warning: unimplemented section: 0x0
+Return value: 1346269
+php src/main.php ...  4.29s user 0.04s system 99% cpu 4.334 total
+```
+
+<!--
+  IMAGE_ONLY
+-->
+
+-----
+
+# ちなみに元のRuby実装
+
+```console
+$ time bundle exec ruby exe/wardite ../../examples/fib.wasm fib 30
+warning: unimplemented section: 0x00
+return value: 1346269
+bundle exec ruby ...  7.90s user 0.07s system 99% cpu 8.019 total
+```
+
+-----
+
+# ちなみに元のRuby実装(YJIT enabled)
+
+```console
+$ time bundle exec ruby --yjit exe/wardite ../../examples/fib.wasm fib 30
+warning: unimplemented section: 0x00
+return value: 1346269
+bundle exec ruby --yjit ...  3.44s user 0.06s system 98% cpu 3.549 total
+```
+
+-----
+
+# PHPによるWasm VMの実装の感想
+
+  - **学び:**
+      - PHP、豊富な文字列操作関数があるので結構サクサク作れた...
+      - オンメモリバッファの作り方知らなかった。 `fopen('php://memory', 'r+b')`
+  - あと正直、AIありがとう...
 
 -----
 
 # まとめと今後
 
-  - **本日の発表:** PHPによるWasm VMの最小限の実装を紹介しました
-  - **実装の感想:** PHPのバイナリー操作関数が豊富で、実装は比較的容易に感じた
+  - **本日の発表:**
+      - PHPによるWasm VMの最小限の実装を紹介
   - **今後の展望:**
-      - 命令をさらに追加することで、本格的に動作するVMになる
+      - 命令をさらに追加することで、本格的に動作するVMになるはず
       - 興味がある方は、ぜひプルリクエストをお待ちしています
 
 -----
 
-# ご清聴ありがとうございました
+# ご清聴ありがとう<br />ございました！！
+
+<!--
+  GOODBYE
+-->
