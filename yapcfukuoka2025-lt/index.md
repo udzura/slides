@@ -249,7 +249,7 @@ struct RString {
     struct RBasic basic;
     long len;
     union {
-        struct { ... 省略 } heap;
+        struct { ...snip... } heap;
         struct { char ary[]; } embed;
     } as;
 };
