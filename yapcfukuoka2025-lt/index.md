@@ -256,7 +256,7 @@ struct RString {
 struct RBasic {
     VALUE flags;
     const VALUE klass;
-    // #if ... 省略
+    // #if ... snip...
 };
 ```
 
