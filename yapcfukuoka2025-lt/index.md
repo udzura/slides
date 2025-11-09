@@ -277,7 +277,7 @@ struct RString_ {
 
 # Rubyのメモリ上の文字列を取り出す
 
-- Perlから直接確認してみよう
+- Perlから直接メモリを確認してみよう
 - ライブデモします！！
 
 ----
@@ -298,6 +298,7 @@ puts str.inspect_with_address
 #<String:0x0000fe263bd10528>
 p $$
 #=> 17855
+sleep # keep process alive
 ```
 
 ---
