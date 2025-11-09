@@ -32,7 +32,27 @@ defaults:
 
 ---
 
+# PR
+
+- 来年2月にもまた福岡で会おうぜ...
+- CfP is open! **(~ 11/18)**
+- Rubyじゃなくても「作ったもの自慢」できます
+
+---
+
+# 今日のテーマ
+
+<!--
+HERO
+-->
+
+---
+
 # pack / unpack ?
+
+<!--
+HERO
+-->
 
 ---
 
@@ -110,11 +130,19 @@ $VAR1 = {
 
 # pack/unpackの便利さを完全理解したところで
 
+<!--
+HERO
+-->
+
 ---
 
 # pack の歴史
 
 - Thanks: [History from Perl 1.0 to Perl 6](https://speakerdeck.com/anatofuz/history-from-perl-1-dot-0-to-perl-6)
+
+<!--
+HERO
+-->
 
 ---
 
@@ -171,14 +199,18 @@ $VAR1 = {
 
 # pack/unpackの覚え方
 
+<!--
+HERO
+-->
+
 ---
 
 # 覚え方
 
 - サイズ
-    - `CSLQ`
+    - `CSLQ` (後述)
 - エンディアン
-    - 基本的にCPUに合ったエンディアンを指定すればいい
+    - 基本的にCPUに合わせてくれるので意識せず
 - 符号あるなし
     - 小文字はあり、大文字はなし
 
@@ -241,6 +273,26 @@ $VAR1 = {
 
 ---
 
+# アルファベットの覚え方
+
+| フォーマット | 説明               |
+|--------------|--------------------|
+| C            | Char (文字)    |
+| S            | Short (短い)        |
+| L            | Long (長い)         |
+| Q            | Quad (4倍)    |
+| Z            | Zero-terminated (ゼロ終端文字) |
+
+---
+
+# 実践編
+
+<!--
+HERO
+-->
+
+---
+
 # 例: Rubyの文字列を表現した構造体(3.4)
 
 ```c
@@ -292,7 +344,11 @@ class String
   alias inspect_with_address inspect
   alias inspect original_inspect
 end
+```
 
+----
+
+```ruby
 str = "Hello, YAPC!" #=> "Hello, YAPC!"
 puts str.inspect_with_address
 #<String:0x0000fe263bd10528>
@@ -337,6 +393,10 @@ payload: Hello, YAPC!
 
 # Rubyから見たPerlのpack/unpack
 
+<!--
+HERO
+-->
+
 ---
 
 # ...ほとんどのフォーマットは実は同じ
@@ -349,22 +409,35 @@ payload: Hello, YAPC!
 
 # 細かい話
 
-- `m` はRubyにしかない
+- `m` はRubyにしかないぞ
 - 浮動小数周りは実は結構違う(`f`/`d`は一緒だよ)
 
 ---
 
 # つまり
 
-- どちらかのフォーマットを覚えれば両方で使えて便利
-- Rubyistだけど、Perlのpack完全に理解しました
+- どちらかのフォーマットを覚えれば両方で使えて便利...ってｺﾄ!?
 
 ---
 
-# まとめ
+# Rubyistだけど、Perlのpack完全に理解しました
+
+<!--
+HERO
+-->
 
 ---
 
-# packとunpack、楽しんでみてね！
+# おしまい
 
-- け◯た食堂風の締め
+<!--
+HERO
+-->
+
+---
+
+# packとunpack、楽しんでみてね！　 <s>け◯た食堂風</s>
+
+<!--
+GOODBYE
+-->
