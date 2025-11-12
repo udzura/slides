@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibonacci Calculator - WebAssembly</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            cursor: pointer;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+        input[type="file"]:hover {
+            border-color: #667eea;
+            background: #e3f2fd;
+        }
+        .upload-status {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .upload-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .upload-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-iterative {
+            background: #667eea;
+            color: white;
+        }
+        .btn-iterative:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-recursive {
+            background: #764ba2;
+            color: white;
+        }
+        .btn-recursive:hover {
+            background: #633d8a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+        .result-label {
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .time {
+            font-size: 14px;
+            color: #999;
+            margin-top: 5px;
+        }
+        .error {
+            color: #e74c3c;
+            padding: 10px;
+            background: #ffe6e6;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 Fibonacci Calculator</h1>
+        
+        <div class="input-group">
+            <label for="wasmFile">WASMファイルをアップロード:</label>
+            <input type="file" id="wasmFile" accept=".wasm" onchange="handleFileUpload(event)">
+        </div>
+        
+        <div id="uploadStatus"></div>
+        
+        <div class="input-group">
+            <label for="n">n の値を入力 (0-40推奨):</label>
+            <input type="number" id="n" value="10" min="0" max="50">
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-iterative" onclick="calculateFibonacci(false)">反復版で計算</button>
+            <button class="btn-recursive" onclick="calculateFibonacci(true)">再帰版で計算</button>
+        </div>
+        
+        <div id="result"></div>
+        
+        <div class="info">
+            <strong>💡 使い方:</strong><br>
+            1. 上部のファイル選択から fibonacci.wasm をアップロード<br>
+            2. n の値を入力（反復版は大きな数値でも高速、再帰版は n > 40 で遅くなります）<br>
+            3. 計算ボタンをクリック
+        </div>
+    </div>
+
+    <script>
+        let wasmInstance = null;
+
+        // ファイルアップロード処理
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const statusDiv = document.getElementById('uploadStatus');
+            
+            if (!file.name.endsWith('.wasm')) {
+                statusDiv.innerHTML = '<div class="upload-status upload-error">❌ .wasm ファイルを選択してください</div>';
+                return;
+            }
+
+            try {
+                statusDiv.innerHTML = '<div class="upload-status">⏳ 読み込み中...</div>';
+                
+                const arrayBuffer = await file.arrayBuffer();
+                const result = await WebAssembly.instantiate(arrayBuffer);
+                wasmInstance = result.instance;
+                
+                statusDiv.innerHTML = '<div class="upload-status upload-success">✅ WASMファイルの読み込みに成功しました！</div>';
+                console.log('WebAssembly module loaded successfully from file!');
+                
+                // 利用可能な関数を表示
+                const exports = Object.keys(wasmInstance.exports);
+                console.log('Available exports:', exports);
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="upload-status upload-error">❌ エラー: ${error.message}</div>`;
+                console.error('Failed to load WebAssembly:', error);
+                wasmInstance = null;
+            }
+        }
+
+        // WebAssembly モジュールの読み込み（デフォルト）
+        async function loadWasm() {
+            try {
+                const response = await fetch('fibonacci.wasm');
+                const result = await WebAssembly.instantiateStreaming(response);
+                wasmInstance = result.instance;
+                document.getElementById('uploadStatus').innerHTML = 
+                    '<div class="upload-status upload-success">✅ デフォルトのWASMファイルを読み込みました</div>';
+                console.log('WebAssembly module loaded successfully!');
+            } catch (error) {
+                document.getElementById('uploadStatus').innerHTML = 
+                    '<div class="upload-status upload-error">ℹ️ fibonacci.wasm が見つかりません。WASMファイルをアップロードしてください。</div>';
+                console.log('Default wasm not found. Please upload a file.');
+            }
+        }
+
+        // フィボナッチ数を計算
+        function calculateFibonacci(useRecursive) {
+            if (!wasmInstance) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="error">❌ WebAssembly モジュールが読み込まれていません</div>';
+                return;
+            }
+
+            const n = parseInt(document.getElementById('n').value);
+            
+            if (isNaN(n) || n < 0) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="error">❌ 0以上の整数を入力してください</div>';
+                return;
+            }
+
+            const functionName = useRecursive ? 'fibonacci_recursive' : 'fibonacci';
+            const method = useRecursive ? '再帰版' : '反復版';
+            
+            try {
+                const startTime = performance.now();
+                const result = wasmInstance.exports[functionName](n);
+                const endTime = performance.now();
+                const executionTime = (endTime - startTime).toFixed(4);
+
+                document.getElementById('result').innerHTML = `
+                    <div class="result">
+                        <div class="result-label">fibonacci(${n}) の結果 [${method}]:</div>
+                        <div class="result-value">${result}</div>
+                        <div class="time">⏱️ 実行時間: ${executionTime} ms</div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<div class="error">❌ 計算エラー: ${error.message}</div>`;
+                console.error('Calculation error:', error);
+            }
+        }
+
+        // ページ読み込み時にWASMを初期化
+        window.addEventListener('load', loadWasm);
+    </script>
+</body>
+</html>

@@ -9,7 +9,7 @@ size: 16:9
 style: |
   h1 { color: #0f7f85; }
   h2 { color: #00c4cc; }
-  section li { color: #4e4c49; }
+  section li { color: #23221f; }
   section.hero > h1 { font-size: 50pt; }
   section.profile img {
     position: absolute;
@@ -124,12 +124,61 @@ _class: hero
 ![bg](image-3.png)
 
 ---
+<!--
+_class: hero
+-->
 
-# wasm を動かしてみよう（ターミナル）
+# wasm を動かしてみよう<br>（ターミナル）
 
 ---
 
 # setup
+
+----
+
+## 1. Wasmtime のインストール
+```bash
+# macOS / Linux
+curl https://wasmtime.dev/install.sh -sSf | bash
+
+# または Homebrew (macOS)
+brew install wasmtime
+
+# パスを通す
+export PATH="$HOME/.wasmtime/bin:$PATH"
+
+# インストール確認
+wasmtime --version
+```
+
+----
+
+## 2. Rust + wasm32-wasi ターゲットのインストール
+```bash
+# Rust のインストール
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# インストール後、シェルを再起動するか以下を実行
+source "$HOME/.cargo/env"
+
+# wasm32-wasi ターゲットの追加
+rustup target add wasm32-wasip1
+
+# インストール確認
+rustc --version
+rustup target list | grep wasm32-wasip1
+```
+
+----
+
+## 3. wasm-tools のインストール
+```bash
+# cargo 経由でインストール
+cargo install wasm-tools
+
+# インストール確認
+wasm-tools --version
+```
 
 ---
 
@@ -137,19 +186,115 @@ _class: hero
 
 ---
 
+# WAT形式のコードを覚えよう
+
+- WAT (WebAssembly Text Format) とは
+    - WebAssemblyのテキスト表現形式で、人間が読み書きできるようにしたもの
+    - バイナリ形式(.wasm)と1対1で相互変換可能
+        - 命令は直接記述する
+    - S式(S-expression)の構文を採用し、Lispに似た括弧ベースの記法
+
+---
+
 # addの実装
+
+```wasm
+(module
+  ;; add関数: 2つのi32整数を受け取り、その合計を返す
+  (func $add (export "add") (param $a i32) (param $b i32) (result i32)
+    local.get $a
+    local.get $b
+    i32.add
+  )
+)
+```
 
 ---
 
 # コンパイルと実行
 
+```bash
+wasm-tools parse add.wat -o add.wasm
+wasmtime add.wasm --invoke add 10 20
+# 出力: 30
+```
+
 ---
 
-# フィボナッチ数の計算
+### フィボナッチ数の計算
+
+```wasm
+(module
+  (func $fibonacci (export "fibonacci") (param $n i32) (result i32)
+    local.get $n
+    i32.const 2
+    i32.lt_u
+    if (result i32) ;; n が 0 または 1 の場合
+      local.get $n
+      return
+    end
+    
+    local.get $n
+    i32.const 1
+    i32.sub
+    call $fibonacci ;; fibonacci(n-1)
+
+    local.get $n
+    i32.const 2
+    i32.sub
+    call $fibonacci ;; fibonacci(n-2)
+    
+    i32.add
+  )
+)
+```
 
 ---
 
-# 文字の表示（ようやくhello world）
+```bash
+wasm-tools parse fibonacci.wat -o fibonacci.wasm
+wasmtime fibonacci.wasm --invoke fibonacci 10
+# 出力: 55
+```
+
+---
+
+### 文字の表示（ようやくhello world）
+
+```wasm
+(module
+  (import "wasi_snapshot_preview1" "fd_write" 
+    (func $fd_write (param i32 i32 i32 i32) (result i32)))
+  (memory 1)
+  (export "memory" (memory 0))
+  (data (i32.const 8) "Hello, World!\n")
+  
+  (func $main (export "_start")
+    i32.const 0
+    i32.const 8
+    i32.store
+    
+    i32.const 4
+    i32.const 14
+    i32.store
+    
+    i32.const 1
+    i32.const 0
+    i32.const 1
+    i32.const 20
+    call $fd_write
+    drop
+  )
+)
+```
+
+---
+
+```bash
+wasm-tools parse hello.wat -o hello.wasm
+wasmtime hello.wasm
+# 出力: Hello, World!
+```
 
 ---
 
@@ -157,12 +302,56 @@ _class: hero
 
 ---
 
-# wasm を動...かせる？
+# fibを動かしてみよう
+
+```html
+<html>
+  <head>
+    <title>My first wasm</title>
+    <script async type="text/javascript">
+      WebAssembly.instantiateStreaming(fetch("fibonacci.wasm"), null).then(
+      (obj) => {
+        let answer = obj.instance.exports.fibonacci(20);
+        alert("answer: fib(20) = " + answer.toString());
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Wasm working on browser</h1>
+  </body>
+</html>
+```
+
+---
+
+# このファイルを...
+
+```bash
+# fibonacci.wasm と同じディレクトリに保存
+vim index.html
+python3 -m http.server 8080
+```
+
+- `http://localhost:8080` にアクセスしよう
+
+---
+
+# hello world を動...かせる？
 
 （質問タイム）
 
 - hello worldってブラウザで動くの？
 - どう動くの？
+
+---
+
+# 実験結果
+
+---
+
+# 動かすために
+
+- あと一つ必要なものがある
 
 ---
 
@@ -179,7 +368,37 @@ _class: hero
 
 ---
 
-# ブラウザでWASIをエミュレートする
+# ブラウザでWASIをエミュレートしよう
+
+---
+
+```html
+<html>
+  <head>
+    <title>My first wasm</title>
+    <!-- browser_wasi_shim をCDNから読み込む -->
+    <script async type="module">
+      import {
+        WASI, File, OpenFile, ConsoleStdout
+      } from 'https://cdn.jsdelivr.net/npm/@bjorn3/browser_wasi_shim@0.4.2/+esm';
+
+      let fds = [
+        new OpenFile(new File([])), // stdin
+        ConsoleStdout.lineBuffered(msg => console.log(`[stdout] ${msg}`)),
+        ConsoleStdout.lineBuffered(msg => console.warn(`[stderr] ${msg}`)),
+      ];
+      let wasi = new WASI([], [], fds);
+      let importObject = { wasi_snapshot_preview1: wasi.wasiImport };
+      WebAssembly.instantiateStreaming(fetch("helloworld.wasm"), importObject).then(
+        (obj) => { obj.instance.exports._start(); });
+    </script>
+  </head>
+  <body>
+    <h1>Wasm working on browser</h1>
+  </body>
+</html>
+```
+
 
 ---
 
@@ -188,6 +407,10 @@ _class: hero
 ---
 
 # ここまでのまとめ
+
+- Wasmの基本的な概念を理解した
+- Wasmのダンプルコードを書いてみた
+- WasmをCLI、ブラウザでそれぞれ動かした
 
 ---
 <!--
@@ -221,6 +444,15 @@ _class: hero
 ---
 
 # WASIを少し深掘りする
+
+- OSについて
+    - 「システムコール」って聞いたことがありますか？
+    - 「システムコール」にはどんなものがありますか？
+    - 「ファイルをオープンする」ってどんなシステムコールですか？
+
+---
+
+# WASIで「ファイルをオープンする」話
 
 ---
 
@@ -301,15 +533,58 @@ _class: hero
 
 # ビルドしてみよう
 
+```bash
+git clone https://github.com/udzura/seckun_rm.git
+cd seckun_rm
+cargo build --target wasm32-wasip1 --release
+# out: target/wasm32-wasip1/release/rm.wasm
+```
+
+---
+
+# 同梱している `rm.sh` を確認しよう
+
+```bash
+#!/usr/bin/env bash
+
+RM_WASM_PATH=${RM_WASM_PATH:-target/wasm32-wasip1/release/rm.wasm}
+wasmtime --dir `pwd` --env PWD=`pwd` $RM_WASM_PATH "$@"
+```
+
 ---
 
 # 動作確認
+
+```bash
+export SECKUN_RM_WASM=$(pwd)/target/wasm32-wasip1/release/rm.wasm
+touch hoge.txt
+./rm.sh -iv hoge.txt
+./rm.sh -iv /etc/hosts # これは消せる？
+```
+
+
 
 ---
 
 # AIエージェントにこのrmを使わせる
 
+- 事前準備としてこの `rm.sh` を `rm` として保存し、実行権限を付与する
+
+```bash
+cp rm.sh ~/local/bin/rm
+chmod +x ~/local/bin/rm
+# rmを編集してSECKUN_RM_WASMのパスを修正する
+```
+
+---
+
 - Gemini CLIの例
+  - 簡易的に実行時のPATHを変更。ちゃんとやるなら設定を永続化
+
+```bash
+export PATH=~/local/bin:$PATH
+gemini
+```
 
 <!-- TODO: Claude Codeの例 -->
 
@@ -317,6 +592,12 @@ _class: hero
 
 # 防御できているか確認しよう
 
+- Use your prompt!!
+
 ---
 
 # 今日のまとめ
+
+- Wasmの基本的な概念、利用方法を理解した
+- Wasmのサンドボックス特性を活かした応用例を紹介した
+- AIエージェントの安全なシステム操作にWasmを活用するアイデアを示した
