@@ -144,9 +144,6 @@ curl https://wasmtime.dev/install.sh -sSf | bash
 # または Homebrew (macOS)
 brew install wasmtime
 
-# パスを通す
-export PATH="$HOME/.wasmtime/bin:$PATH"
-
 # インストール確認
 wasmtime --version
 ```
@@ -342,6 +339,7 @@ python3 -m http.server 8080
 
 - hello worldってブラウザで動くの？
 - どう動くの？
+- さっきのファイルはどう変える？
 
 ---
 
