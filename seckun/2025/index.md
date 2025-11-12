@@ -134,6 +134,9 @@ _class: hero
 
 # setup
 
+- Windows...???
+- WSLでなんとか頑張れるかもしれない
+
 ----
 
 ## 1. Wasmtime のインストール
