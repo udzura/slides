@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>My first wasm</title>
+    <!-- browser_wasi_shim をCDNから読み込む -->
+    <script async type="module">
+      import {
+        WASI, File, OpenFile, ConsoleStdout
+      } from 'https://cdn.jsdelivr.net/npm/@bjorn3/browser_wasi_shim@0.4.2/+esm';
+
+      let fds = [
+        new OpenFile(new File([])), // stdin
+        ConsoleStdout.lineBuffered(msg => console.log(`[stdout] ${msg}`)),
+        ConsoleStdout.lineBuffered(msg => console.warn(`[stderr] ${msg}`)),
+      ];
+      let wasi = new WASI([], [], fds);
+      let importObject = { "wasi_snapshot_preview1": wasi.wasiImport };
+      WebAssembly.instantiateStreaming(fetch("helloworld.wasm"), importObject).then(
+        (obj) => { wasi.start(obj.instance); });
+    </script>
+  </head>
+  <body>
+    <h1>Wasm working on browser</h1>
+  </body>
+</html>

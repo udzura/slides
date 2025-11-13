@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <title>My first wasm</title>
+    <script async type="text/javascript">
+      WebAssembly.instantiateStreaming(fetch("fibonacci.wasm"), {}).then(
+      (obj) => {
+        let answer = obj.instance.exports.fibonacci(20);
+        alert("answer: fib(20) = " + answer.toString());
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Wasm working on browser</h1>
+  </body>
+</html>

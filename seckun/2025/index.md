@@ -215,7 +215,7 @@ wasm-tools --version
 
 ```bash
 wasm-tools parse add.wat -o add.wasm
-wasmtime add.wasm --invoke add 10 20
+wasmtime --invoke 'add' add.wasm 10 20
 # 出力: 30
 ```
 
@@ -228,22 +228,19 @@ wasmtime add.wasm --invoke add 10 20
   (func $fibonacci (export "fibonacci") (param $n i32) (result i32)
     local.get $n
     i32.const 2
-    i32.lt_u
-    if (result i32) ;; n が 0 または 1 の場合
-      local.get $n
+    i32.lt_s
+    if
+      i32.const 1
       return
     end
-    
     local.get $n
     i32.const 1
     i32.sub
-    call $fibonacci ;; fibonacci(n-1)
-
+    call $fibonacci
     local.get $n
     i32.const 2
     i32.sub
-    call $fibonacci ;; fibonacci(n-2)
-    
+    call $fibonacci
     i32.add
   )
 )
@@ -253,8 +250,8 @@ wasmtime add.wasm --invoke add 10 20
 
 ```bash
 wasm-tools parse fibonacci.wat -o fibonacci.wasm
-wasmtime fibonacci.wasm --invoke fibonacci 10
-# 出力: 55
+wasmtime --invoke fibonacci fibonacci.wasm 10
+# 出力: 89
 ```
 
 ---
@@ -291,8 +288,8 @@ wasmtime fibonacci.wasm --invoke fibonacci 10
 ---
 
 ```bash
-wasm-tools parse hello.wat -o hello.wasm
-wasmtime hello.wasm
+wasm-tools parse helloworld.wat -o helloworld.wasm
+wasmtime helloworld.wasm
 # 出力: Hello, World!
 ```
 
@@ -309,7 +306,7 @@ wasmtime hello.wasm
   <head>
     <title>My first wasm</title>
     <script async type="text/javascript">
-      WebAssembly.instantiateStreaming(fetch("fibonacci.wasm"), null).then(
+      WebAssembly.instantiateStreaming(fetch("fibonacci.wasm"), {}).then(
       (obj) => {
         let answer = obj.instance.exports.fibonacci(20);
         alert("answer: fib(20) = " + answer.toString());
@@ -389,9 +386,9 @@ python3 -m http.server 8080
         ConsoleStdout.lineBuffered(msg => console.warn(`[stderr] ${msg}`)),
       ];
       let wasi = new WASI([], [], fds);
-      let importObject = { wasi_snapshot_preview1: wasi.wasiImport };
+      let importObject = { "wasi_snapshot_preview1": wasi.wasiImport };
       WebAssembly.instantiateStreaming(fetch("helloworld.wasm"), importObject).then(
-        (obj) => { obj.instance.exports._start(); });
+        (obj) => { wasi.start(obj.instance); });
     </script>
   </head>
   <body>
@@ -539,6 +536,7 @@ git clone https://github.com/udzura/seckun_rm.git
 cd seckun_rm
 cargo build --target wasm32-wasip1 --release
 # out: target/wasm32-wasip1/release/rm.wasm
+file target/wasm32-wasip1/release/rm.wasm
 ```
 
 ---
@@ -572,8 +570,9 @@ touch hoge.txt
 - 事前準備としてこの `rm.sh` を `rm` として保存し、実行権限を付与する
 
 ```bash
-cp rm.sh ~/local/bin/rm
-chmod +x ~/local/bin/rm
+mkdir -p ~/.local/bin
+cp rm.sh ~/.local/bin/rm
+chmod +x ~/.local/bin/rm
 # rmを編集してSECKUN_RM_WASMのパスを修正する
 ```
 
@@ -583,7 +582,7 @@ chmod +x ~/local/bin/rm
   - 簡易的に実行時のPATHを変更。ちゃんとやるなら設定を永続化
 
 ```bash
-export PATH=~/local/bin:$PATH
+export PATH=~/.local/bin:$PATH
 gemini
 ```
 
