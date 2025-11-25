@@ -6,17 +6,17 @@
     <title>PHPで“本気で”WebAssemblyを動かす方法</title>
     
     <!-- OGP Tags -->
-    <meta property="og:title" content="PHPで“本気で”WebAssemblyを動かす方法">
-    <meta property="og:description" content="「PHPで“本気で”WebAssemblyを動かす方法」於PHPカンファレンス福岡2025のスライドです。">
-    <meta property="og:image" content="https://udzura.jp/slides/2025/phpcon-fukuoka//ogp.png">
+    <meta property="og:title" content="Binary &quot;pack&quot; Rebooted">
+    <meta property="og:description" content="「Binary &quot;pack&quot; Rebooted」於YAPC::Fukuoka 2025のスライドです。">
+    <meta property="og:image" content="https://udzura.jp/slides/2025/yapc-fukuoka/ogp.png">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://udzura.jp/slides/2025/phpcon-fukuoka/">
+    <meta property="og:url" content="https://udzura.jp/slides/2025/yapc-fukuoka/">
     
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="PHPで“本気で”WebAssemblyを動かす方法">
-    <meta name="twitter:description" content="「PHPで“本気で”WebAssemblyを動かす方法」於PHPカンファレンス福岡2025のスライドです。">
-    <meta name="twitter:image" content="https://udzura.jp/slides/2025/phpcon-fukuoka//ogp.png">
+    <meta name="twitter:title" content="Binary &quot;pack&quot; Rebooted">
+    <meta name="twitter:description" content="「Binary &quot;pack&quot; Rebooted」於YAPC::Fukuoka 2025のスライドです。">
+    <meta name="twitter:image" content="https://udzura.jp/slides/2025/yapc-fukuoka/ogp.png">
     
     <style>
         * {
@@ -220,11 +220,11 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>PHPで“本気で”WebAssemblyを動かす方法</h1>
+            <h1>Binary "pack" Rebooted</h1>
             <div class="page-info">
                 <span id="page-info">Loading...</span>
             </div>
-            <a href="./index.pdf" download class="download-link">
+            <a href="./binary-pack-rebooted.pdf" download class="download-link">
                 📥 Download PDF
             </a>
         </div>
@@ -292,7 +292,7 @@
         const linksContainer = document.getElementById('pdf-links');
 
         // Load PDF
-        const url = './index.pdf';
+        const url = './binary-pack-rebooted.pdf';
 
         pdfjsLib.getDocument(url).promise.then(pdf => {
             pdfDoc = pdf;
@@ -315,7 +315,7 @@
             loading.style.display = 'none';
             renderPage(pageNum);
         }).catch(err => {
-            loading.innerHTML = '<div>♻️ loading PDF...</div>';
+            loading.innerHTML = '<div>loading PDF...</div>';
         });
 
         function renderPage(num) {
