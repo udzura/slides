@@ -297,25 +297,13 @@
         pdfjsLib.getDocument(url).promise.then(pdf => {
             pdfDoc = pdf;
             
-            // Initialize PDFLinkService
-            pdfLinkService = new pdfjsLib.PDFLinkService();
-            pdfLinkService.setDocument(pdf);
-            pdfLinkService.setViewer({
-                scrollPageIntoView: function(params) {
-                    const pageNumber = params.pageNumber || params.dest[0];
-                    if (typeof pageNumber === 'number') {
-                        pageNum = pageNumber;
-                        queueRenderPage(pageNum);
-                    }
-                }
-            });
-            
             totalPagesSpan.textContent = pdf.numPages;
             pageInput.max = pdf.numPages;
             loading.style.display = 'none';
             renderPage(pageNum);
         }).catch(err => {
-            loading.innerHTML = '<div>loading PDF...</div>';
+            console.error('PDF loading error:', err);
+            loading.innerHTML = '<div class="error">❌ Error loading PDF: ' + err.message + '</div>';
         });
 
         function renderPage(num) {

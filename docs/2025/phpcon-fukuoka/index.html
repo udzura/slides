@@ -297,19 +297,6 @@
         pdfjsLib.getDocument(url).promise.then(pdf => {
             pdfDoc = pdf;
             
-            // Initialize PDFLinkService
-            pdfLinkService = new pdfjsLib.PDFLinkService();
-            pdfLinkService.setDocument(pdf);
-            pdfLinkService.setViewer({
-                scrollPageIntoView: function(params) {
-                    const pageNumber = params.pageNumber || params.dest[0];
-                    if (typeof pageNumber === 'number') {
-                        pageNum = pageNumber;
-                        queueRenderPage(pageNum);
-                    }
-                }
-            });
-            
             totalPagesSpan.textContent = pdf.numPages;
             pageInput.max = pdf.numPages;
             loading.style.display = 'none';
