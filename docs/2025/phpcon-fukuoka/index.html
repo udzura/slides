@@ -355,28 +355,49 @@
         function renderLinks(page, viewport) {
             // Clear existing links
             linksContainer.innerHTML = '';
-            linksContainer.style.width = viewport.width + 'px';
-            linksContainer.style.height = viewport.height + 'px';
+            linksContainer.style.width = '100%';
+            linksContainer.style.height = '100%';
+            
+            // Get the original PDF page dimensions (without scale)
+            const originalViewport = page.getViewport({ scale: 1 });
+            const pdfWidth = originalViewport.width;
+            const pdfHeight = originalViewport.height;
             
             page.getAnnotations().then(annotations => {
+                console.log(annotations);
+
                 annotations.forEach(annotation => {
                     if (annotation.subtype === 'Link' && annotation.url) {
                         const rect = annotation.rect;
                         const link = document.createElement('a');
                         
-                        // Transform PDF coordinates to canvas coordinates
+                        // Calculate position and size as percentage of PDF dimensions
                         const [x1, y1, x2, y2] = rect;
-                        const height = viewport.height;
+                        console.log(rect);
+                        
+                        const leftPercent = (x1 / pdfWidth) * 100;
+                        const topPercent = ((pdfHeight - y2) / pdfHeight) * 100;
+                        const widthPercent = ((x2 - x1) / pdfWidth) * 100;
+                        const heightPercent = ((y2 - y1) / pdfHeight) * 100;
                         
                         link.href = annotation.url;
                         link.target = '_blank';
                         link.style.position = 'absolute';
-                        link.style.left = x1 + 'px';
-                        link.style.top = (height - y2) + 'px';
-                        link.style.width = (x2 - x1) + 'px';
-                        link.style.height = (y2 - y1) + 'px';
+                        link.style.left = leftPercent + '%';
+                        link.style.top = topPercent + '%';
+                        link.style.width = widthPercent + '%';
+                        link.style.height = heightPercent + '%';
                         link.style.cursor = 'pointer';
+                        link.style.backgroundColor = 'transparent';
+                        link.style.transition = 'background-color 0.2s';
                         link.title = annotation.url;
+                        
+                        link.addEventListener('mouseenter', () => {
+                            link.style.backgroundColor = 'rgba(18,171,177,0.5)';
+                        });
+                        link.addEventListener('mouseleave', () => {
+                            link.style.backgroundColor = 'transparent';
+                        });
                         
                         linksContainer.appendChild(link);
                     } else if (annotation.subtype === 'Link' && annotation.dest) {
@@ -384,16 +405,30 @@
                         const rect = annotation.rect;
                         const link = document.createElement('a');
                         
+                        // Calculate position and size as percentage of PDF dimensions
                         const [x1, y1, x2, y2] = rect;
-                        const height = viewport.height;
+                        
+                        const leftPercent = (x1 / pdfWidth) * 100;
+                        const topPercent = ((pdfHeight - y2) / pdfHeight) * 100;
+                        const widthPercent = ((x2 - x1) / pdfWidth) * 100;
+                        const heightPercent = ((y2 - y1) / pdfHeight) * 100;
                         
                         link.href = '#';
                         link.style.position = 'absolute';
-                        link.style.left = x1 + 'px';
-                        link.style.top = (height - y2) + 'px';
-                        link.style.width = (x2 - x1) + 'px';
-                        link.style.height = (y2 - y1) + 'px';
+                        link.style.left = leftPercent + '%';
+                        link.style.top = topPercent + '%';
+                        link.style.width = widthPercent + '%';
+                        link.style.height = heightPercent + '%';
                         link.style.cursor = 'pointer';
+                        link.style.backgroundColor = 'transparent';
+                        link.style.transition = 'background-color 0.2s';
+                        
+                        link.addEventListener('mouseenter', () => {
+                            link.style.backgroundColor = 'rgba(212, 244, 245, 0.5)';
+                        });
+                        link.addEventListener('mouseleave', () => {
+                            link.style.backgroundColor = 'transparent';
+                        });
                         
                         link.addEventListener('click', (e) => {
                             e.preventDefault();
