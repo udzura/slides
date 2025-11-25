@@ -260,6 +260,7 @@
                 <button id="zoom-out-btn" class="btn zoom-btn">−</button>
                 <div class="zoom-display" id="zoom-display">100%</div>
                 <button id="zoom-in-btn" class="btn zoom-btn">+</button>
+                <button id="actual-size-btn" class="btn">Original Size</button>
                 <button id="fit-btn" class="btn">Fit</button>
             </div>
         </div>
@@ -351,8 +352,6 @@
             const pdfHeight = originalViewport.height;
             
             page.getAnnotations().then(annotations => {
-                console.log(annotations);
-
                 annotations.forEach(annotation => {
                     if (annotation.subtype === 'Link' && annotation.url) {
                         const rect = annotation.rect;
@@ -360,7 +359,6 @@
                         
                         // Calculate position and size as percentage of PDF dimensions
                         const [x1, y1, x2, y2] = rect;
-                        console.log(rect);
                         
                         const leftPercent = (x1 / pdfWidth) * 100;
                         const topPercent = ((pdfHeight - y2) / pdfHeight) * 100;
@@ -490,12 +488,19 @@
                 updateZoom();
             });
         }
+        
+        function setActualSize() {
+            scale = 1.0;
+            updateZoom();
+        }
 
         // Event listeners
         prevBtn.addEventListener('click', onPrevPage);
         nextBtn.addEventListener('click', onNextPage);
         zoomInBtn.addEventListener('click', zoomIn);
         zoomOutBtn.addEventListener('click', zoomOut);
+        const actualSizeBtn = document.getElementById('actual-size-btn');
+        actualSizeBtn.addEventListener('click', setActualSize);
         fitBtn.addEventListener('click', fitToWidth);
 
         pageInput.addEventListener('change', (e) => {

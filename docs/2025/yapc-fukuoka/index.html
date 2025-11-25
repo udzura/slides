@@ -260,6 +260,7 @@
                 <button id="zoom-out-btn" class="btn zoom-btn">−</button>
                 <div class="zoom-display" id="zoom-display">100%</div>
                 <button id="zoom-in-btn" class="btn zoom-btn">+</button>
+                <button id="actual-size-btn" class="btn">Original Size</button>
                 <button id="fit-btn" class="btn">Fit</button>
             </div>
         </div>
@@ -488,12 +489,19 @@
                 updateZoom();
             });
         }
+        
+        function setActualSize() {
+            scale = 1.0;
+            updateZoom();
+        }
 
         // Event listeners
         prevBtn.addEventListener('click', onPrevPage);
         nextBtn.addEventListener('click', onNextPage);
         zoomInBtn.addEventListener('click', zoomIn);
         zoomOutBtn.addEventListener('click', zoomOut);
+        const actualSizeBtn = document.getElementById('actual-size-btn');
+        actualSizeBtn.addEventListener('click', setActualSize);
         fitBtn.addEventListener('click', fitToWidth);
 
         pageInput.addEventListener('change', (e) => {
