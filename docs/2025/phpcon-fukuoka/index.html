@@ -88,9 +88,9 @@
             background: #f5f5f5;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 600px;
-            padding: 20px;
+            align-items: flex-start;
+            min-height: auto;
+            padding: 20px 20px 0 20px;
         }
 
         #pdf-canvas {
@@ -520,6 +520,27 @@
                 onPrevPage();
             } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
                 e.preventDefault();
+                onNextPage();
+            }
+        });
+        
+        // Links container click navigation (left/right edge)
+        linksContainer.addEventListener('click', (e) => {
+            // Skip if clicking on an actual link
+            if (e.target.tagName === 'A') {
+                return;
+            }
+            
+            const rect = linksContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const containerWidth = rect.width;
+            
+            // Left 30% goes to previous page
+            if (x < containerWidth * 0.3) {
+                onPrevPage();
+            }
+            // Right 30% goes to next page
+            else if (x > containerWidth * 0.7) {
                 onNextPage();
             }
         });
