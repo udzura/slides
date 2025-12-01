@@ -1,0 +1,54 @@
+/* @theme infrastudy */
+
+@import 'default';
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap');
+
+section {
+    font-family: "M PLUS Rounded 1c", sans-serif !important;
+}
+h1 {
+    font-weight: 700 !important;
+    font-size: 90px;
+    color: #222222;
+}
+
+section.profile h1 {
+    font-weight: 500 !important;
+    font-size: 60px;
+    color: #222222;
+}
+h2 {
+    font-size: 55px;
+    font-weight: 500;
+    color: #222222;
+}
+h3 {
+    font-weight: 500;
+    color: #888888;
+}
+section.hero h1 {
+    font-weight: 700 !important;
+    font-size: 80px;
+}
+section.hero2 h1 {
+    width: 100% !important;
+    font-weight: 700 !important;
+    font-size: 80px;
+}
+
+strong {
+    font-weight: 500;
+    color: #cc0000;
+}
+
+section.profile img {
+    position: absolute;
+    top: 25%;
+    left: 65%;
+    overflow: hidden !important;
+    border-radius: 50% !important;
+}
+
+section.profile > ul {
+    width: 58%;
+}
