@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024年のスライド一覧</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 20px;
+        }
+        
+        .slide-list {
+            list-style: none;
+            margin-top: 40px;
+        }
+        
+        .slide-item {
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .slide-item:hover {
+            border-left-color: #2980b9;
+            transform: translateX(5px);
+        }
+        
+        .slide-link {
+            display: block;
+            padding: 20px 25px;
+            background: #f8f9fa;
+            text-decoration: none;
+            color: #2c3e50;
+            border-radius: 0 8px 8px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .slide-link:hover {
+            background: #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .slide-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .slide-path {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-family: "Monaco", "Courier New", monospace;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .slide-title {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2024年のスライド一覧</h1>
+        
+        <ul class="slide-list">
+            <li class="slide-item">
+                <a href="ebpfjapan/" class="slide-link">
+                    <div class="slide-title">Become Friends with eBPF</div>
+                    <div class="slide-path">ebpfjapan/</div>
+                </a>
+            </li>
+            
+            <li class="slide-item">
+                <a href="infrastudy/" class="slide-link">
+                    <div class="slide-title">自分を好きになる方法</div>
+                    <div class="slide-path">infrastudy/</div>
+                </a>
+            </li>
+            
+            <li class="slide-item">
+                <a href="mf-fukuoka-tech-lt/" class="slide-link">
+                    <div class="slide-title">mruby/edge 超入門 + VMって何？</div>
+                    <div class="slide-path">mf-fukuoka-tech-lt/</div>
+                </a>
+            </li>
+            
+            <li class="slide-item">
+                <a href="phpconfuk2024-lt/" class="slide-link">
+                    <div class="slide-title">Marpはいいぞ</div>
+                    <div class="slide-path">phpconfuk2024-lt/</div>
+                </a>
+            </li>
+            
+            <li class="slide-item">
+                <a href="phpconfuk2024-preevent/" class="slide-link">
+                    <div class="slide-title">超入門 よかBPF for PHPer</div>
+                    <div class="slide-path">phpconfuk2024-preevent/</div>
+                </a>
+            </li>
+            
+            <li class="slide-item">
+                <a href="rubyistkaigi04/" class="slide-link">
+                    <div class="slide-title">Rubyをこじらせて</div>
+                    <div class="slide-path">rubyistkaigi04/</div>
+                </a>
+            </li>
+            
+            <li class="slide-item">
+                <a href="rubykaigi/" class="slide-link">
+                    <div class="slide-title">An mruby for WebAssembly</div>
+                    <div class="slide-path">rubykaigi/</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

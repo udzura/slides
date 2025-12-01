@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025年のスライド一覧</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f3e7f9 0%, #d8bfd8 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #6a1b9a;
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .slides-list {
+            list-style: none;
+        }
+        
+        .slide-item {
+            background: white;
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .slide-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+        
+        .slide-item a {
+            display: block;
+            padding: 2rem;
+            color: #4a148c;
+            text-decoration: none;
+            border-left: 5px solid #9c27b0;
+        }
+        
+        .slide-item:hover a {
+            border-left-color: #7b1fa2;
+        }
+        
+        .slide-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #8e24aa;
+        }
+        
+        .slide-path {
+            font-size: 0.9rem;
+            color: #9575cd;
+            font-family: 'Courier New', monospace;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+            
+            .slide-item a {
+                padding: 1.5rem;
+            }
+            
+            .slide-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2025年のスライド一覧</h1>
+        <ul class="slides-list">
+            <li class="slide-item">
+                <a href="akarenga-lt-20250720/">
+                    <div class="slide-title">WebAssembly AI Agentを作ってみた</div>
+                    <div class="slide-path">akarenga-lt-20250720/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="fukuokago21/">
+                    <div class="slide-title">Go＋Geminiなサービスを爆速で作ってみた</div>
+                    <div class="slide-path">fukuokago21/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="fukuokarb397/">
+                    <div class="slide-title">RubyKaigiで通らなかった方のプロポーザル</div>
+                    <div class="slide-path">fukuokarb397/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="phpcon-fukuoka/">
+                    <div class="slide-title">PHPで"本気で"WebAssemblyを動かす方法</div>
+                    <div class="slide-path">phpcon-fukuoka/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="rubykaigi/">
+                    <div class="slide-title">Running ruby.wasm on Pure Ruby Wasm Runtime</div>
+                    <div class="slide-path">rubykaigi/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="rubykaigi-followup/">
+                    <div class="slide-title">今後は Wardite の高速化をしたいと思います</div>
+                    <div class="slide-path">rubykaigi-followup/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="yapc-fukuoka/">
+                    <div class="slide-title">Binary "pack" Rebooted</div>
+                    <div class="slide-path">yapc-fukuoka/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="mirishira-ai/1/">
+                    <div class="slide-title">ミリしらAI勉強会へようこそ！</div>
+                    <div class="slide-path">mirishira-ai/1/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="tokyo12-lt/">
+                    <div class="slide-title">超入門WebAssembly 〜入門で収まらなかったバージョン〜</div>
+                    <div class="slide-path">tokyo12-lt/</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
+
