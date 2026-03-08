@@ -29,7 +29,7 @@ _class: profile
 - 近藤うちお (@udzura)
 - エンジニアカフェ ハッカーサポーター
 - 所属: 株式会社SmartHR プロダクトエンジニア
-- 4月に函館でしゃべります（RubyKaigi 2025）
+- 4月に函館でしゃべります（RubyKaigi 2026）
 
 ----
 
@@ -45,7 +45,7 @@ _class: profile
 # mruby/edge のこれまで
 
 - RubyKaigi 2024 で PoC を紹介
-- 今年の RubyKaigi 2025（函館）でも発表予定
+- 今年の RubyKaigi 2026（函館）でも発表予定
   - 函館に行こう！
 
 ----
