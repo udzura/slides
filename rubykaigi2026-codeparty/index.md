@@ -246,6 +246,13 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
 
 ---
 
+# ちなみに...
+
+- 💡 実はCargoの作者の一人は **Yehuda Katz** — bundlerの作者でもある
+  - そりゃ〜使いやすいよね！
+
+---
+
 # bundlerを使った手順
 
 ---
