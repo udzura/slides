@@ -19,9 +19,9 @@ style: |
 
 <!-- _class: hero -->
 
-# Ruby x Rust 入門
+# Beginning Ruby x Rust
 
-コード懇親会 @ RubyKaigi 2026 / Ruby x Rust 分科会
+コード懇親会 @ RubyKaigi 2026 / Ruby x Rust テーブル
 
 ---
 
@@ -57,7 +57,7 @@ style: |
 # 具体的には
 
 - Rustはコンパイル時に **所有権(ownership)** と **借用(borrow)** をチェック
-- ダングリングポインタ、use-after-free、二重解放などを **コンパイルエラー** で防止
+- ダングリングポインタ、use-after-freeなどを **コンパイルエラー** で防止
 - GCなしでメモリ安全を実現 → パフォーマンスと安全性を両立
 - C/C++で長年悩まされてきたメモリバグのカテゴリがまるごと消える
 
@@ -98,6 +98,18 @@ int main() {
 
 ---
 
+# 実行例
+
+```bash
+$ clang sample1.c -w -Oz -o sample1.out
+$ ./sample1.out                        
+-281521464 # ???
+```
+
+- NOTE: `-w` で警告を消しているが、実際はコンパイラが警告してくれはする
+
+---
+
 # Rustなら大丈夫
 
 ```rust
@@ -111,10 +123,10 @@ fn create_value() -> &i32 {
 
 ```
 error[E0515]: cannot return reference to local variable `x`
- --> src/main.rs:3:5
-  |
-3 |     &x
-  |     ^^ returns a reference to data owned by the current function
+  --> examples/sample1.rs:13:5
+   |
+13 |     &x // コンパイルエラー
+   |     ^^ returns a reference to data owned by the current function
 ```
 
 → ライフタイムの仕組みにより、**dangling pointerはそもそも作れない**
@@ -221,6 +233,36 @@ int main() {
 
 ---
 
+# 攻撃の検証
+
+```bash
+$ clang sample2.c -fsanitize=address -O0 -o sample2.out
+$ ./sample2.out
+=================================================================
+==14745==ERROR: AddressSanitizer: heap-use-after-free on address 0x606000000260 at pc 0x000101423808 bp 0x00016f092680 sp 0x00016f091e10
+READ of size 2 at 0x606000000260 thread T0
+    #0 0x000101423804 in printf_common(void*, char const*, char*)+0x64c (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x1b804)
+    #1 0x0001014245c4 in printf+0x68 (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x1c5c4)
+    #2 0x000100d6c838 in main+0x58 (sample2.out:arm64+0x100000838)
+    #3 0x000182cf9d50  (<unknown module>)
+
+0x606000000260 is located 0 bytes inside of 64-byte region [0x606000000260,0x6060000002a0)
+freed by thread T0 here:
+    #0 0x000101445424 in free+0x7c (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x3d424)
+    #1 0x000100d6c820 in main+0x40 (sample2.out:arm64+0x100000820)
+    #2 0x000182cf9d50  (<unknown module>)
+
+previously allocated by thread T0 here:
+    #0 0x000101445330 in malloc+0x78 (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x3d330)
+    #1 0x000100d6c800 in main+0x20 (sample2.out:arm64+0x100000800)
+    #2 0x000182cf9d50  (<unknown module>) ...
+```
+
+- 今回は、ASan（AddressSanitizer）に敢えて検出させて確認
+- ちなみにASan有効はオーバーヘッドがあり、一般に実行時間は x2 程度になるそう
+
+---
+
 # Rustなら大丈夫
 
 ```rust
@@ -239,12 +281,17 @@ fn main() {
 
 ```
 error[E0382]: borrow of moved value: `buf`
- --> src/main.rs:5:20
+ --> examples/sample2.rs:6:20
   |
-4 |     drop(buf);
+2 |     let buf = String::from("Hello, RubyKaigi!");
+  |         --- move occurs because `buf` has type `String`,
+  |             which does not implement the `Copy` trait
+3 |
+4 |     drop(buf); // 明示的に解放
   |          --- value moved here
-5 |     println!("{}", buf);
-  |                    ^^^ value used here after move
+5 |
+6 |     println!("{}", buf); // コンパイルエラー！
+  |                    ^^^ value borrowed here after move
 ```
 
 → **解放済みの値は二度と使えない**。コンパイラが保証する
@@ -283,13 +330,13 @@ fn main() {
 
 ---
 
-# Rustでgemを書く
+# Rustを使ってgemを書く？
 
 ---
 
 # Rustでgemを書くメリット
 
-- 無論、 C と比べた安全性はあるが、他にも色々
+- 無論、 C と比べた安全性はあるが、他にも色々紹介
 
 ---
 
