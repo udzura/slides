@@ -1,0 +1,12 @@
+[package]
+name = "my_rust_gem"
+version = "0.1.0"
+edition = "2021"
+authors = ["Uchio Kondo <udzura@udzura.jp>"]
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+magnus = { version = "0.8.2" }

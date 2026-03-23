@@ -422,23 +422,35 @@ $ bundle gem my_rust_gem --ext=rust
 
 ```
 my_rust_gem/
-├── Cargo.toml          # Rustの依存管理
+├── bin
+│   └── ...
+├── Cargo.toml
+├── ext
+│   └── my_rust_gem
+│       ├── Cargo.toml
+│       ├── extconf.rb
+│       └── src
+│           └── lib.rs
 ├── Gemfile
-├── ext/
-│   └── my_rust_gem/
-│       ├── Cargo.toml   # 拡張本体のCargo設定
-│       ├── extconf.rb   # ビルド設定
-│       └── src/
-│           └── lib.rs   # Rustのコード本体
-├── lib/
-│   └── my_rust_gem.rb   # Rubyのエントリポイント
+├── lib
+│   ├── my_rust_gem
+│   │   └── version.rb
+│   └── my_rust_gem.rb
 ├── my_rust_gem.gemspec
-└── ...
+├── Rakefile
+├── README.md
+├── sig
+│   └── my_rust_gem.rbs
+└── test
+    ├── my_rust_gem_test.rb
+    └── test_helper.rb
+
+9 directories, 15 files
 ```
 
 ---
 
-# 生成されるRustコード (ext/.../src/lib.rs)
+# 生成されるRustコード (ext/my_rust_gem/src/lib.rs)
 
 ```rust
 use magnus::{function, prelude::*, Error, Ruby};
@@ -449,30 +461,41 @@ fn hello(subject: String) -> String {
 
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
-    ruby.define_global_function("hello", function!(hello, 1));
+    let module = ruby.define_module("MyRustGem")?;
+    module.define_singleton_method("hello", function!(hello, 1))?;
     Ok(())
 }
 ```
 
 - **magnus** クレート = RubyのC APIのRustバインディング
 - `#[magnus::init]` でRuby拡張のエントリポイントを定義
-- `define_global_function` など直感的なAPIが用意される
+- `define_module`, `define_global_function` など直感的なAPIが用意される
 
 ---
 
 # ビルドして使う
 
+- もちろん、事前にRustとCargoをインストールしてください！
+
 ```bash
 # ビルド
+$ bundle install
 $ bundle exec rake compile
 
 # 試す
-$ bundle exec ruby -e "require 'my_rust_gem'; puts hello('RubyKaigi')"
+$ bundle exec ruby -e "require 'my_rust_gem'; puts MyRustGem.hello('RubyKaigi')"
 Hello from Rust, RubyKaigi!
 ```
 
 - `rake compile` で Cargo → `.so` / `.bundle` をビルド
 - あとは普通のgemと同じように使える
+
+---
+
+# いきなり書いてみる？
+
+- ドキュメント: https://docs.rs/magnus/latest/magnus/#examples
+- 多分... 補完に任せればなんとなく書けるんじゃないかなあ
 
 ---
 
@@ -482,7 +505,7 @@ Hello from Rust, RubyKaigi!
 - **Rustでgemを書く** メリットは大きい
   - 型による設計、エディタ支援、豊富なライブラリ
 - **bundlerが `--ext=rust` をサポート** — 今すぐ始められる
-- Rubyの柔軟さ × Rustの安全性・生産性 = 気持ちいいぞ！
+- Rubyの柔軟さ × Rustの安全性・生産性 = 型が決まる = 気持ちいい！
 
 ---
 
