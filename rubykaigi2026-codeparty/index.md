@@ -1,27 +1,22 @@
 ---
 marp: true
-theme: default
+theme: rubykaigi2026
+backgroundImage: url(./bg-2026.002.png)
 title: "コード懇親会 @ RubyKaigi 2026 / Ruby x Rust 分科会"
 paginate: true
 style: |
-    h1 { color: #0f7f85; }
-    h2 { color: #0f7f85; }
-    section li { color: ##4e4c49 }
-    section.hero > h1 { font-size: 70pt; }
-    section.profile img {
-        position: absolute;
-        top: 25%;
-        left: 65%;
-        overflow: hidden !important;
-        border-radius: 50% !important;
-    }
+    section.hero h1 { font-size: 64pt; }
+    section.hero h2 { text-align: center; }
 ---
 
-<!-- _class: hero -->
+<!--
+_class: hero
+_backgroundImage: url(./bg-2026.002.png)
+-->
 
 # Beginning Ruby x Rust
 
-コード懇親会 @ RubyKaigi 2026 / Ruby x Rust テーブル
+## コード懇親会 @ RubyKaigi 2026 / Ruby x Rust テーブル
 
 ---
 
@@ -34,6 +29,11 @@ style: |
 
 ---
 
+<!--
+_class: hero0
+_backgroundImage: url(./bg-2026.003.png)
+-->
+
 # Rustのメリット
 
 ---
@@ -41,6 +41,11 @@ style: |
 # 色々あるので、個人の感想だけ共有します
 
 ---
+
+<!--
+_class: hero0
+_backgroundImage: url(./bg-2026.003.png)
+-->
 
 # とにかくメモリ安全
 
@@ -62,6 +67,11 @@ style: |
 - C/C++で長年悩まされてきたメモリバグのカテゴリがまるごと消える
 
 ---
+
+<!--
+_class: hero0
+_backgroundImage: url(./bg-2026.003.png)
+-->
 
 # ライフタイムの「力」
 
@@ -198,6 +208,11 @@ fn main() {
 
 ---
 
+<!--
+_class: hero0
+_backgroundImage: url(./bg-2026.003.png)
+-->
+
 # 所有権の「力」
 
 ---
@@ -330,6 +345,11 @@ fn main() {
 
 ---
 
+<!--
+_class: hero0
+_backgroundImage: url(./bg-2026.003.png)
+-->
+
 # Rustを使ってgemを書く？
 
 ---
@@ -402,6 +422,11 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
   - そりゃ〜使いやすいよね！
 
 ---
+
+<!--
+_class: hero0
+_backgroundImage: url(./bg-2026.003.png)
+-->
 
 # bundlerを使った手順
 
@@ -499,6 +524,15 @@ Hello from Rust, RubyKaigi!
 
 ---
 
+<!--
+_class: hero0
+_backgroundImage: url(./bg-2026.003.png)
+-->
+
+# 　Wrapping Up
+
+---
+
 # まとめ
 
 - **Rustはメモリ安全** — dangling pointer、use-after-freeなどなどを **コンパイル時に防止**
@@ -518,7 +552,14 @@ Hello from Rust, RubyKaigi!
 
 ---
 
+<!--
+_class: hero0
+_backgroundImage: url(./bg-2026.003.png)
+-->
+
 # 型を決めると気持ちいい...
+
+---
 
 ```rust
 #[derive(Debug, Default)]
