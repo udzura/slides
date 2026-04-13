@@ -480,6 +480,10 @@ let environ = ENV {
 
 ----
 
+TODO
+
+----
+
 - フレームが終了する瞬間に、レジスタの内容を captured にコピーし、expired = true にする
 
 ```rust
