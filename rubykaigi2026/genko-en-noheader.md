@@ -1,127 +1,95 @@
-I would like to talk about my product. I'm Kondo, a product engineer at SmartHR. SmartHR is a startup providing Japan's largest HR SaaS, and we are also a Platinum Sponsor of RubyKaigi 2026. I traveled here to Hakodate today from Fukuoka, Kyushu, which is on the almost exact opposite side of Japan. It is my first time landing in Hokkaido. Welcome to Hakodate, everyone. I am truly happy to give a talk in such a beautiful city.
+Today, I'd like to talk about a product called Uzumibi. I'm Kondo, a product engineer at SmartHR—Japan's largest HR SaaS startup and a Platinum Sponsor of RubyKaigi 2026. I traveled here from Fukuoka, Kyushu. It's my first time in Hokkaido, and I'm thrilled to speak in this beautiful city.
 
-Since I did a little research on the city of Hakodate, I’d like to talk about that first. Hakodate is a city with a very deep history. At the end of the Edo period, the Boshin War took place, which was the last civil war in Japanese history. The final and main stage for this conflict was Goryokaku, right here in Hakodate. Goryokaku Park is beautiful, but it might also be a good place to reflect on peace in Japan.
+Today's theme is an open-source framework called **Uzumibi**. It's a framework for developing applications on edge and serverless platforms using Ruby. "Uzumibi" means "buried fire" or embers under ashes, named out of admiration for a certain famous framework.
 
-Hakodate is also a literary city. Today, I'll introduce one writer: Takuboku Ishikawa. He is a famous young poet from the Meiji era who represents Japan; almost everyone living in Japan knows him. He actually lived in Hakodate for a while. Though he moved all over the country throughout his life, it's said that the city he loved the most was Hakodate. There is a bronze statue of him and his grave here. I really like Takuboku Ishikawa, so going a bit off-topic today, I'd like to quote one of his *tanka* poems. It's said this poem was inspired by Omorihama beach in Hakodate.
+The key features of Uzumibi are: 
+* It has a generator and supports multiple platforms.
+* It uses an easy-to-remember, Sinatra-like DSL.
+* It supports platform integration features—like Durable Objects and Queues—on Cloudflare.
+* And above all, it is **extremely lightweight**.
 
-> *"On the white sand of the beach of a small island in the Eastern Sea, I, bathed in tears, play with a crab."*
+Let's see it in action. You can install Uzumibi using the `cargo` command, then generate a Cloudflare template via `uzumibi new`. The important file generated is `app.rb`. If you open it, any Rubyist can guess what it does. I'll modify it slightly to access a Key-Value Store (KVS). Just like that, this code can be deployed immediately.
 
-I resonate with this poem in two ways. First, this poem is said to depict the agony of creation. It reminds me of how I suffered when I was young, unable to write programs the way I wanted. Second, I am literally crying right now while playing with a crab *(Rust's mascot)*. The product I'm introducing today is written in Rust, you see.
+Please look at the file size. The artifact generated contains a WebAssembly file that is 1.5MB before compression, and **only about 500KB after compression**. This easily fits well within the free plan limits of Cloudflare Workers. And this isn't just a mockup; if you actually access it, you can see it connects to the KVS exactly as written in Ruby.
 
-Returning to our main topic, let me introduce the theme for today: an open-source framework called **Uzumibi**. 
+Uzumibi proves you can comfortably develop edge applications in Ruby. While this example uses Cloudflare Workers, you can write similar code and run it exactly the same way on serverless environments like Google Cloud Run. Isn't this incredibly convenient?
 
-Uzumibi is a framework for developing applications on edge and serverless platforms using Ruby. "Uzumibi" means "buried fire" or embers, and I named it out of admiration for a certain famous framework.
+You might find this strange. `ruby.wasm` allows you to write applications in Ruby, but it usually generates much larger artifacts—around 10MB if it includes production code. So how is this magic possible? It's because Uzumibi is based on an entirely different mruby runtime I created, called **mrubyEdge**.
 
-The key features of Uzumibi are:
-* First, It has a **generator** and supports multiple platforms.
-* Then, It has an easy-to-remember, **Sinatra-like DSL**.
-* It supports **platform integration features**, such as Durable Objects and Queues, if you are using Cloudflare.
-* Above all, it is **extremely lightweight**.
+Before you can understand Uzumibi's power, I need to explain mrubyEdge. It's a custom mruby runtime I've been developing since 2014, written entirely in Rust and designed from the ground up to be compiled into WebAssembly. Because it generates highly portable Wasm, it runs everywhere, including the edge.
 
-So, let's see it in action. You can easily install it using the `cargo` command. Then, you can create a Cloudflare template via the `uzumibi` command. Typing `uzumibi new` generates some code, but the important one is the `app.rb` file. If you open this file, any Rubyist can probably guess what it means. I'll modify this a bit to access a Key-Value Store (KVS). And this code can be deployed immediately, just like this.
+My motivation was simple: generating small artifacts was too difficult with the CRuby-based `ruby.wasm`. Compiling CRuby to Wasm right now generates a binary of about 10MB before compression. Even gzipped, it's around 5MB.
 
-Please look at the capacity. The artifact generated from this code contains a WebAssembly file that is 1.5MB before compression, and **only about 500KB after compression**. This size easily fits within the free plan limits of Cloudflare Workers. And this code isn't just for show; if you actually access it, you can see that it accesses the KVS exactly as written in the Ruby code.
+In contrast, lightweight implementations like `mruby` and `mruby/c` inherently follow a philosophy of excluding unnecessary code. Basing my work on mruby seemed like a great approach to automatically build only the necessary features. 
 
-As you can see, Uzumibi proves that you can comfortably develop Edge applications in Ruby. This example uses Cloudflare Workers. But you can write similar code and run it the exact same way on serverless environments like Google Cloud Run. Don't you think this is incredibly convenient?
+However, Yukihiro Matsumoto's original mruby relies on C functions like `setjmp` and `longjmp` for code jumps. Since WebAssembly's core instructions lack a `goto` equivalent, compiling these to Wasm requires hacks. Other implementations like PicoRuby rely on Emscripten for this, meaning the Wasm binary must include Emscripten's bulky runtime, which also forcefully imports and exports several functions behind the scenes.
 
-At the same time, you might find this strange. `ruby.wasm` allows you to write applications in Ruby, but it should generate much larger artifacts. Probably over 5MB, and if it includes production code, it is expected to be 8 to 10MB. 
+Given this, I decided I couldn't simply rely on existing Ruby or mruby implementations, and chose to rewrite it from scratch in Rust. Rust offers distinct advantages: productivity and safety via its advanced type system, a powerful Wasm ecosystem, and memory safety. Plus, I personally wanted to implement a VM myself.
 
-How is this magic possible? It's because Uzumibi is based on an entirely different mruby runtime I created, called **mrubyEdge**.
+By 2024, a prototype of mrubyEdge was complete. Two years ago, I gave a presentation on it at RubyKaigi in Okinawa. However, it was strictly a Proof of Concept, only capable of running a Fibonacci function for a demo.
 
-Before you can understand the power of Uzumibi, I need to talk about the recent progress of mrubyEdge. It is a custom mruby runtime I've been developing since 2014. It is written entirely in Rust and is designed from the ground up to be compiled to WebAssembly. Because it can create highly portable WebAssembly, it runs in many places. Therefore, it can also be used on the Edge.
+At the beginning of 2025, I resumed development. I deeply studied implementations like `mruby/c` and redesigned the VM. Once the VM was running, I relentlessly implemented instructions: find a Ruby sample code, confirm it with existing `mruby`, compile it to bytecode, make it run on mrubyEdge, and add it as an E2E test. Through this tedious repetition, mrubyEdge gradually matured.
 
-The motivation for developing mrubyEdge was simple: generating small artifacts was difficult with the CRuby-based `ruby.wasm`. If you compile CRuby to Wasm right now, it generates a binary of about 10MB even before compression. You can gzip it, but it will still be around 5MB.
+Let me share a few implementation struggles from this period.
 
-On the other hand, there are more lightweight implementations like `mruby` and `mruby/c`. These inherently follow a philosophy of not including unnecessary code in the runtime. Therefore, I thought that basing my work on mruby would be a good choice to automatically select and build only the necessary features.
+Here is an mruby instruction to calculate `1 + 2`. As you can see, it looks different from CRuby's instructions. CRuby uses a **stack machine**, pushing operands onto a stack and consuming them with an `add` instruction. mruby, however, is a **register machine**. Operands are stored in registers like R1 and R2, and the `add` instruction specifies those registers and returns the result to one of them.
 
-`mruby` was also developed by Yukihiro Matsumoto, but its internal implementation uses C language functions called `setjmp` and `longjmp`. This makes the problem difficult. Actually, WebAssembly's core instructions do not have anything like a `goto` instruction. So, when compiling code that uses `setjmp` or `longjmp` to Wasm, you have to either use hacks with Emscripten or convert them into proposed exception-handling instructions.
+A register machine requires specific data structures: a container for registers, a reference to the instruction sequence (`IREP`), a program counter, and a call stack (`callinfo`). 
 
-By the way, you can also generate Wasm with PicoRuby. However, it still uses `setjmp` and `longjmp` in its compiler part, so I thought it was a bit unsuitable for what I wanted to achieve. If you depend on Emscripten, the Wasm binary will have to include Emscripten's own runtime. Also, Emscripten automatically imports and exports several functions on its own.
+For memory efficiency and access speed, registers are not hash maps; they are internally implemented as **slices**. The implementation shifts the start point of the slice every time a function's stack is pushed. Conceptually, when a function is called, the register offset moves forward, and when it returns, it shifts back.
 
-Against this background, I decided I couldn't simply rely on existing Ruby or mruby implementations, and chose the path of rewriting it in Rust. Of course, Rust has distinct advantages: productivity and safety due to its advanced type system, a powerful ecosystem surrounding WebAssembly, and above all, memory safety. But honestly, I also had a personal motivation to try implementing a Virtual Machine (VM) myself at least once.
+We also reused Rust's convenient traits wherever possible. For example, a struct implementing the `Hash` trait can be used as a hash key, and `PartialEq` allows comparisons.
 
-Let's briefly look back at the history of mrubyEdge. By 2024, a prototype of mrubyEdge was complete. So, two years ago, I actually gave a presentation on mrubyEdge at RubyKaigi in Okinawa—which is very far from Hokkaido. However, it was strictly a Proof of Concept. It was only capable of running the features needed to execute a Fibonacci function for a demo.
+We map Ruby-level Hashes directly to Rust's standard `HashMap`. For the key in the Rust `HashMap`, we insert an enum called `ValueHasher`, which implements the `Hash` trait. The actual Ruby objects—`key` and `value`—are stored as a tuple on the value side. Because `ValueHasher` simply wraps booleans or integers that natively implement the `Hash` trait in Rust, it acts as a perfect hash key. As a result, internal functions like `HashSet` become incredibly clean and simple.
 
-At the beginning of 2025, I restarted the development. My previous approach was hitting a wall, so I deeply studied existing implementations like `mruby/c` for reference and redesigned the VM. Once the VM was running, I just kept implementing instructions. 
+Next: closures and upvalues. To capture the surrounding environment, we created an `Env` struct in mrubyEdge, which has an `Option` type to hold the parent `Env` and a vector for captured variables.
 
-The process was simple: 
-1. Find a Ruby sample code that would trigger a specific instruction.
-2. Confirm the bytecode using the existing `mruby`.
-3. Compile it and make it run on mrubyEdge.
-4. Finally, add the original code as an E2E test case. 
+Interestingly, the array meant to capture the environment **doesn't actually copy anything at the moment the lambda is created**. Why? Because a closure's lifetime is usually shorter than the outer method's. As long as the outer method's environment is alive, the internal lambda is fine, so no capture is needed. But if you return a lambda as a value and use it elsewhere, the method's environment is destroyed, causing a problem.
 
-I just repeated this steadily. Through this process, mrubyEdge gradually became more complete. I'll share a few more struggles about the implementation here.
+To solve this, mrubyEdge delays the process: it copies the register contents into the capture at the exact moment the frame ends. This avoids unnecessary copies but secures the data when needed. Since each `Env` holds a reference to its parent, getting an upvalue is just tracing through them.
 
-As a basic premise, let me briefly show you an mruby instruction. This is an mruby instruction to calculate `1 + 2`. In reality, the mruby compiler might optimize this, so please treat it as just an example, but it feels a bit different from the instructions CRuby generates. 
+Let's look at the inheritance tree. The `RClass` struct holds a method table by attaching an un-inlineable module inside it. In Ruby, singleton classes (eigenclasses) are highly important. 
 
-CRuby's instructions are based on a **stack machine**, so operands 1 and 2 are pushed onto the stack in order, and the `add` instruction consumes the stack contents once. On the other hand, mruby is a **register machine**. Operands are stored in registers like R1 and R2, just like variables, and the `add` instruction specifies the registers and returns the result to the same register.
+If class `Bar` inherits from `Foo`, what happens when you create an instance of `Bar`? Since `Bar` itself is a class instance, its inheritance tree is slightly unique: `Bar`'s singleton class, then `Foo`'s singleton, `Object`'s singleton, `BasicObject`'s singleton, and finally the `Class` class. To accurately reproduce this complex chain in Rust, we modified the initialization logic specifically for class instances to recursively call the singleton class generation method on the parent class.
 
-To briefly introduce the data structures needed for a register machine: we need a container to hold registers, a reference to the instruction sequence called `IREP`, a program counter, and a stack for context information of called functions, known as `callinfo`. 
+Finally, exceptions. When compiled into mruby bytecode, an exception is raised specifically at the `send` instruction. Execution then jumps to `rescue`. The VM extracts the active exception into a register, checks for a match, and either executes the rescue clause or re-raises the error, eventually hitting the `ensure` block.
 
-Now, looking at this structure, there's something I need to explain. Registers have numbers like 1, 2, 3, and 4, but you might find it strange that they are not implemented as a hash map. For memory efficiency and access speed, registers are internally implemented as **slices**. We designed it so the start point of the slice moves every time a function stack is pushed. Also, by limiting the maximum value of the entire register array, stack overflows can be automatically detected. The pseudo-code looks like this. The structure has a member pointing to the head of the current frame. The mental image is that when a function is called, the register offset moves forward, and when it returns, it goes back.
+When an exception occurs, the VM's state updates to indicate "an exception is active." While in this state, the VM skips regular instructions and traverses upwards through the blocks until the exception is handled.
 
-Let me talk about a few more implementation tricks. First, we reused Rust's convenient traits wherever possible. Ruby has hash maps (Hashes) and mechanisms to evaluate equality, and Rust has similar things. For example, a struct that implements the `Hash` trait can be used as a hash key in Rust, and if it implements `PartialEq`, it can be compared.
+The implementation of `break` is quite similar. In mrubyEdge, `break` is implemented as a type of exception because it behaves identically, unwinding the call stack and tracing blocks upwards until it finds the invocation point. 
 
-This is an example of the actual Hash struct implementation in mrubyEdge. We map Ruby's Hash directly to Rust's standard `HashMap`. Here, we insert an enum called `ValueHasher` as the key for the Rust-level HashMap, and implement the `Hash` trait on it. Inside the HashMap, we use this `ValueHasher` as the key, and the actual Ruby object `key` and `value` are held as a tuple in the value side. Since the inside of `ValueHasher` directly stores boolean or integer values—which natively implement the Hash trait in Rust—it can easily be used as a hash key. As a result, the implementation of internal functions like `HashSet` becomes very simple.
+By mid-November 2025, basic instructions were supported. About 84% of mruby 3.4's instructions were implemented, along with foundational mechanisms to define classes and methods.
 
-Next, I'll explain the implementation of closures and upvalues. You probably don't need an explanation of what a closure is, but it's a function that carries its surrounding environment. Since information about the surrounding environment is needed, we created a struct called `Env`. It has an Option type to hold the `Env` of the layer above it, and a vector for captured variables.
+For the finishing touch, I needed a standard library. Since the foundation was solid, I had AI write all the basic standard libraries. This experiment was highly successful. Your favorites like `String`, `Array`, `Hash`, and `Enumerable` were now working. 
 
-What's interesting is that this `Env` is generated from the VM's state exactly when the lambda or block is created. The key point is that the array capturing the environment **doesn't copy anything at this stage**. Why? Because while this kind of Ruby code generates a closure, the lifetime of this closure is shorter than the outer method. Therefore, as long as the outer method's environment is alive, this internal lambda is also alive. In such cases, we can guarantee the upper environment is alive, so there's no need to capture it. 
+By early February, my custom Ruby was running properly, and I wanted to build a real application. I originally named the project "mrubyEdge" because I intended to run it on WasmEdge. I honestly didn't expect it to run on serverless edge platforms. But since it was running everywhere, I decided to test it on Cloudflare Workers. Since Cloudflare Workers runs JavaScript, it can naturally execute Wasm.
 
-However, if you create a lambda inside a method, return it as a value, and use it elsewhere, it becomes a problem. The environment from when the method was called should be destroyed when the method ends. It seems some implementations don't support this properly, but in mrubyEdge, we added an implementation that copies the register contents to the capture at the exact moment the frame ends. This avoids unnecessary copies but secures the data when needed. Since an `Env` holds the `Env` above it, getting an upvalue is just a matter of tracing through them.
+I implemented the necessary functions, built a bridge for the Wasm interface, and aligned the Ruby code. After just a few days of trial and error in December, I had mruby running on Cloudflare Workers. 
 
-Let me explain a little more. Let's talk about the inheritance tree. The `RClass` struct in mrubyEdge roughly looks like this. We hold a method table by creating a module that cannot be inlined inside the module. 
+Furthermore, when compiled, this mruby code fit into **just about 400KB**. Even anticipating a size increase after fully implementing the standard library, I knew it would effortlessly stay under 1MB.
 
-By the way, in Ruby's inheritance, the existence of singleton classes (eigenclasses) is very important. Can you visualize Ruby's inheritance tree, including singleton classes?
+Convinced it was viable, I began developing in earnest. I wrote spike code and added support for Fastly and other frameworks. Interestingly, it can even run on Web Workers or Service Workers—meaning you can implement an API completely self-contained within the browser.
 
-For example, if you have a class `Foo` and a class `Bar` that inherits from it, the inheritance tree for this class looks like this. When you create an instance of this `Bar` class, the singleton class's inheritance tree starts with `Bar`'s singleton class. Now, this `Bar` class itself is also a class instance, right? So, this class instance has its own singleton class. What does this inheritance tree look like? 
+I also integrated Cloudflare's rich services, like Durable Objects and Queues. These are introduced as an abstraction layer supporting Cloudflare Workers and Google Cloud Run. For Cloud Run, similar functions are achieved using Firestore and Cloud Pub/Sub. I'd love to continue adding support for other services, and contributions are highly welcome.
 
-The answer is: first, `Bar`'s singleton class, then `Foo`'s singleton class, above that is `Object`'s singleton class, above that `BasicObject`'s singleton class, and finally the `Class` class appears. As you can see, the inheritance tree for class instances is slightly unique, so we had to reproduce this. 
+I intended to talk mainly about Uzumibi today, but I spent most of the time on my struggles with mrubyEdge. The truth is, because the mrubyEdge foundation was built so solidly, Uzumibi just worked without much fuss. I built what I wanted, and inadvertently created a framework highly useful for everyone.
 
-Specifically, we implemented a `find` method in Rust. For normal cases, you can just search recursively. The function to initialize the singleton class of a certain object is here. Once a singleton class is created, the class above it is its original class, and you just follow the classes above it in order. We changed the initialization method for singleton classes only for class instances. It recursively calls the generation method of the parent class's singleton class, treating the parent class functioning as the original class as its parent. As a result, we can generate the exact inheritance tree we just saw.
+A key takeaway is that my original approach was right: I wanted a portable Wasm binary with complete control over Wasm-specific features, and I wanted to keep the footprint as small as possible. By achieving this, I believe we are opening up a new horizon on the Edge. 
 
-Finally, regarding exceptions: mrubyEdge's exceptions look like this. When you compile Ruby code that simply raises an exception into mruby bytecode, a few special instructions appear. 
+Uzumibi is still a newborn framework, but it has the power to transform your development workflows. Please give it a try.
 
-If you follow the bytecode, you can see that an exception is raised by the `send` instruction. If an exception occurs, it jumps to `rescue`. The VM takes the exception it holds into a register, and at `rescue`, if R2 matches R3, it stores `true`. If it's `true`, it moves and executes the rescue clause; if not, it jumps and raises the exception again. Finally, there's an `ensure` block. 
+I have a little time left, so let's discuss future challenges: **asynchronous programming**. 
 
-Therefore, when an exception occurs, the VM's state is updated with the information that "an exception occurred." Based on that, by combining actions like simply fetching instructions or raising it again, we can implement Ruby's exceptions. By the way, if the VM is in a state holding an exception, it skips loops and goes back to upper blocks within the VM's instruction loop.
+Wasm must work seamlessly with JavaScript, where I/O operations—like `fetch`, or Cloudflare Workers' Durable Objects and Queues—are fundamentally asynchronous. 
 
-The implementation of `break` is similar. In mrubyEdge, `break` is implemented as a type of exception. This is because when a `break` occurs, it behaves the exact same way, tracing blocks upwards. Once it finds the place where the block was called, it stops there. However, while working on the `break` implementation, I noticed the `ensure` implementation might not be completely accurate yet, so that's a future task.
+However, **Wasm cannot accept asynchronous functions as imports**. As a workaround, a tool called `Asyncify` emerged, allowing you to pseudo-pass async functions to a Wasm instance. Uzumibi uses `Asyncify` internally for Cloudflare Workers support.
 
-Through all this repeated implementation, I was able to support the basic instructions by mid-November 2025. About 80% was implemented, and as the finishing touch, I needed a standard library. Waiting for contributors would have been fine, but since the foundation was ready, I had AI write the entire basic standard library. As a result, I managed to implement about the equivalent of `mruby/c`'s methods as a benchmark. In the future, I'd like to make it pass the `mruby` test cases themselves, but the really basic Ruby functions are working quite well.
+But a massive downside is binary bloat—it increases size by about 1.5 times. I started this project to fix bloated binaries, so relying on `Asyncify` is unacceptable.
 
-It was early February when it worked to a satisfying degree. Since my custom Ruby was working well, I started wanting a real application. The timeline goes back and forth a bit, but I originally named it "Edge" intending to run it on WasmEdge, and I didn't actually think it would run on Serverless Edge platforms. But thinking it might actually work, I started looking into Cloudflare Workers. 
+Furthermore, integrating with Rust's standard server libraries like Hyper and Tokio requires treating async as a first-class citizen. Currently, mrubyEdge compromises on Cloud Run by performing I/O operations on a single thread. While we can mitigate this bottleneck in Cloud Run by spinning up many single-threaded containers—a design strictly dedicated to serverless—it's not truly general-purpose. Therefore, I want to make mrubyEdge inherently async-compatible.
 
-Cloudflare Workers is fundamentally an edge platform for running JavaScript, but of course, you can use Wasm inside JavaScript. So, I implemented the necessary functions, made it possible to exchange data, investigated the Wasm interface, and implemented a bridge that matched the Ruby code with the Cloudflare Workers interface. This was done at the end of December last year, and I was able to run mruby on Cloudflare Workers after just a few days of trial and error. 
+Looking at the current VM, it runs a simple synchronous instruction loop. But since the VM is just a state machine, it shouldn't have a bad affinity with async. A VM tailored for async programming could yield and resume at arbitrary times. I am currently exploring this implementation, and I suppose a fully async VM is my homework for next year.
 
-Furthermore, when I compiled and deployed this mruby code, it fit into **just about 400KB before compilation**. Of course, it had very few features at this stage, so naturally it was small, but it was well below the free plan limits. I easily imagined that even if I seriously implemented the standard library and the size increased, it would still comfortably stay under 1MB. 
+Today I introduced mrubyEdge and the Uzumibi framework. While hurdles remain, it already has quality sufficient for practical use. 
 
-So, first, I enriched the Cloudflare Workers implementation. I also wrote spike code and implemented it for Fastly and other frameworks. The current implementation status looks like this. Interestingly, it can be run on Web Workers or Service Workers, meaning an API entirely self-contained in the browser is also possible. Please try that out if you have the chance. 
-
-And speaking of Cloudflare Workers, there are rich integration services like Durable Objects and Queues. I made all of those available from Uzumibi as well. These services are introduced as an external service abstraction layer in the form of KV, Queue, and Access. Currently, this abstraction layer only supports Cloudflare Workers and Google Cloud Run. For Cloud Run, similar functions are realized using Firestore, Cloud Pub/Sub, and Identity-Aware Proxy. I want to continue supporting other services if there are corresponding ones, but since I've mostly achieved what I personally want to use, I would very much welcome contributions.
-
-I intended to talk about Uzumibi today, but I ended up talking mostly about my struggles with mrubyEdge. Because the foundation of mrubyEdge was built so solidly, Uzumibi just worked normally. So, I just kept making what I wanted, and as a result, I think I've created a framework that is useful for everyone. 
-
-The important thing is that my original philosophy was quite right. What I wanted to create was a portable Wasm binary where I could fully control Wasm-specific features like import and export. Also, artifacts that are too large aren't very Wasm-like, so I wanted to keep them as small as possible. By achieving these two concepts, I created a Wasm that runs in many places, and I think it is opening up a new horizon called the "Edge." I guess the important thing is to think from scratch and create the right tools.
-
-Uzumibi is still a newborn framework, but I believe it has the power to change your workflows. Please give it a try.
-
-I have a little bit of time left, so I'd like to talk about future challenges at the end. That is, we have to face **asynchronous programming**. 
-
-Actually, Wasm and asynchronous programming are inseparable. Naturally, as a primary requirement, Wasm needs to work in tandem with JavaScript, and in JavaScript, functions related to I/O are basically all asynchronous. This is true for browsers, and also for Node.js. Naturally, Cloudflare Workers' APIs are also asynchronous. The integration features like Durable Objects and Queues are all async APIs, and basic functions like `fetch` are of course async.
-
-However, Wasm has one tricky point: to call integration features from inside Wasm, you have to pass them as import functions. But **Wasm cannot pass async functions to imports**. Many people were troubled by this, and as a result, a tool called *Asyncify* appeared. Using this tool, you can pseudo-pass async functions to a Wasm instance. Therefore, Uzumibi's Cloudflare Workers support uses Asyncify internally. 
-
-But a major drawback is that the binary size gets bloated. It's said to increase by about 1.5 times. I started making Uzumibi and mrubyEdge specifically because large binary sizes are a major problem, so ending up with a bloated size due to Asyncify is unacceptable.
-
-Furthermore, the Cloud Run implementation is a native implementation, but it speeds up and simplifies things by integrating with Rust's general-purpose server libraries. However, standard Rust server libraries like Hyper and Tokio have fantastic performance but are frameworks that treat async as a first-class citizen. Therefore, mrubyEdge won't reach its best performance unless it fully supports async natively. 
-
-Currently, there are some compromises. For example, in the current Cloud Run implementation, operations requiring I/O are performed on a single thread. This is a constraint of Tokio's specifications, and currently, the only options are to do this or communicate with a thread in charge of I/O via channels.
-
-Hearing this, you might naturally think that this point becomes a bottleneck, but for Cloud Run, it's possible to handle it by launching many single-threaded containers in a multi-process manner without using multi-core. So, it can be called a design dedicated to serverless, but it's not a general-purpose state. Therefore, I want to make mrubyEdge itself support async.
-
-Looking briefly at the current VM implementation, it has a very simple instruction loop. This hasn't changed since 2024. We run this loop synchronously, but I'm focusing on the fact that the VM itself is just a state machine. Somehow, this doesn't seem to have a bad affinity with async. If I were to create a VM specialized for async programming, I think it would work well if I designed the VM itself to be able to stop and resume at any arbitrary timing, but I'm currently at the stage of considering how to implement it. I really wanted to finish the async VM by now, but I guess that's homework for next year.
-
-**To wrap up:** Today I talked about mrubyEdge and introduced Uzumibi, which utilizes it. There are still challenges, but I think it already has a quality sufficient for practical use at this stage. When you are just touching Ruby, it's hard to step into the world of serverless and edge, but using mrubyEdge allows for highly compatible development. 
-
-Please give it a try, and I look forward to your feedback. Thank you very much.
+From an exclusively Ruby-centric world, it's often hard to step into serverless and edge computing. But with mrubyEdge, you can develop with high compatibility using the language you love. Please give it a try—I look forward to your feedback. Thank you very much.
