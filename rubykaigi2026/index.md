@@ -112,6 +112,10 @@ Let's see it in action. You can install Uzumibi using the cargo command, then ge
 
 ----
 
+◼ ここに生成されたファイルツリーが欲しい
+
+----
+
 <!--
 _class: pre-top20
 -->
@@ -147,6 +151,10 @@ The important file generated is app.rb. If you open it, any Rubyist can guess wh
 <!--
 Please look at the file size. The artifact generated contains a WebAssembly file that is 1.5MB before compression, and only about 500KB after compression. This easily fits well within the free plan limits of Cloudflare Workers. And this isn't just a mockup; if you actually access it, you can see it connects to the KVS exactly as written in Ruby.
 -->
+
+----
+
+◼ ここにデプロイ時のコマンド出力が欲しい
 
 ----
 
@@ -248,15 +256,18 @@ By 2024, a prototype of mrubyEdge was complete. Two years ago, I gave a presenta
 
 ----
 
+◼ ここに2024のスライドの画像が欲しい
+
+----
+
 # Resumed Development (2025)
 
 - Deeply studied `mruby/c` and redesigned the VM
 - Relentless instruction implementation cycle:
-  1. Find a Ruby sample code
-  2. Compile to bytecode with existing `mruby`
-  3. Make it run on mrubyEdge
-  4. Add as E2E test
-- Gradually matured through **tedious repetition**
+  - Find a Ruby sample code
+  - Compile to bytecode with existing `mruby`
+  - Make it run on mrubyEdge
+  - Add as E2E test
 
 <!--
 At the beginning of 2025, I resumed development. I deeply studied implementations like mruby/c and redesigned the VM. Once the VM was running, I relentlessly implemented instructions: find a Ruby sample code, confirm it with existing mruby, compile it to bytecode, make it run on mrubyEdge, and add it as an E2E test. Through this tedious repetition, mrubyEdge gradually matured.
@@ -307,6 +318,14 @@ CRuby uses a stack machine, pushing operands onto a stack and consuming them wit
 <!--
 A register machine requires specific data structures: a container for registers, a reference to the instruction sequence called IREP, a program counter, and a call stack called callinfo.
 -->
+
+----
+
+◼ ここにVMの構造体コードが欲しい
+
+----
+
+◼ ここにIREP、CALLINFOが欲しい
 
 ----
 
