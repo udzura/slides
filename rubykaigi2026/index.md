@@ -212,10 +212,10 @@ Before you can understand Uzumibi's power, I need to explain mrubyEdge. It's a c
 
 - `mruby` uses `setjmp` / `longjmp` for code jumps
 - Wasm core instructions have **no `goto` equivalent**
-- Compiling requires Emscripten hacks
-  - Emscripten runtime adds bulk
-  - Forcefully imports/exports several functions
-- PicoRuby has the same Emscripten dependency
+- Compiling requires some hacks
+  - PicoRuby has the same Emscripten dependency
+    - Emscripten runtime adds bulk codes
+    - Forcefully imports/exports several functions
 
 <!--
 Lightweight implementations like mruby and mruby/c inherently follow a philosophy of excluding unnecessary code. However, Yukihiro Matsumoto's original mruby relies on C functions like setjmp and longjmp for code jumps. Since WebAssembly's core instructions lack a goto equivalent, compiling these to Wasm requires hacks. Other implementations like PicoRuby rely on Emscripten for this, meaning the Wasm binary must include Emscripten's bulky runtime, which also forcefully imports and exports several functions behind the scenes.
@@ -335,12 +335,6 @@ _class: pre-top20
 
 # Register as Slices
 
-```
-[R0][R1][R2][R3][R4][R5][R6][R7][R8][R9]...
- ^                   ^
- frame 0 start       frame 1 start (after call)
-```
-
 - Offset shifts forward on function call
 - Shifts back on return
 - Efficient memory access, no hash map overhead
@@ -348,6 +342,14 @@ _class: pre-top20
 <!--
 For memory efficiency and access speed, registers are not hash maps; they are internally implemented as slices. The implementation shifts the start point of the slice every time a function's stack is pushed. Conceptually, when a function is called, the register offset moves forward, and when it returns, it shifts back.
 -->
+
+----
+
+```
+[R0][R1][R2][R3][R4][R5][R6][R7][R8][R9]...
+ ^                   ^
+ frame 0 start       frame 1 start (after call)
+```
 
 ----
 
@@ -389,6 +391,10 @@ We map Ruby-level Hashes directly to Rust's standard HashMap. For the key in the
 
 ----
 
+◼ ここに mrb_hash_set のコードが欲しい
+
+----
+
 <!--
 _class: hero
 -->
@@ -427,6 +433,15 @@ The Env struct has an Option type to hold the parent Env and a vector for captur
 
 - A closure's lifetime is usually **shorter** than the outer method's
   - No copy needed while the outer env is alive
+
+----
+
+◼ ここにtimesのような、環境が壊れないパターンのコードが欲しい
+
+----
+
+# "Orphaned" Lambdas
+
 - Problem: returning a lambda as a value
   - The method's environment is destroyed
 - Solution: **copy register contents into capture at the moment the frame ends**
@@ -436,6 +451,10 @@ The Env struct has an Option type to hold the parent Env and a vector for captur
 <!--
 Why? Because a closure's lifetime is usually shorter than the outer method's. As long as the outer method's environment is alive, the internal lambda is fine, so no capture is needed. But if you return a lambda as a value and use it elsewhere, the method's environment is destroyed, causing a problem. To solve this, mrubyEdge delays the process: it copies the register contents into the capture at the exact moment the frame ends. This avoids unnecessary copies but secures the data when needed. Since each Env holds a reference to its parent, getting an upvalue is just tracing through them.
 -->
+
+----
+
+◼ ここに関数からlambdaを返して使わせるコードが欲しい
 
 ----
 
@@ -454,6 +473,14 @@ Let's look at the inheritance tree. The RClass struct holds a method table. In R
 # Inheritance Tree with Singleton Classes
 
 - Class `Bar` inherits from `Foo`
+- `Bar` has its own singleton class (eigenclass)
+
+◼ ここに普通のインスタンスのシングルトンクラスの継承ツリーの図が欲しい
+
+----
+
+# Class's Singleton Class
+
 - `Bar` itself is a class instance → has a singleton class
 - Inheritance tree of `Bar` (as class instance):
   1. `Bar`'s singleton class
@@ -465,6 +492,10 @@ Let's look at the inheritance tree. The RClass struct holds a method table. In R
 <!--
 If class Bar inherits from Foo, what happens when you create an instance of Bar? Since Bar itself is a class instance, its inheritance tree is slightly unique: Bar's singleton class, then Foo's singleton, Object's singleton, BasicObject's singleton, and finally the Class class.
 -->
+
+----
+
+◼ ここにClassクラスインスタンスの継承ツリーの図が欲しい
 
 ----
 
@@ -480,6 +511,10 @@ To accurately reproduce this complex chain in Rust, we modified the initializati
 
 ----
 
+◼ ここにコード例が欲しい
+
+----
+
 <!--
 _class: hero
 -->
@@ -492,10 +527,18 @@ Finally, exceptions. When compiled into mruby bytecode, an exception is raised s
 
 ----
 
+◼ ここに例外のRubyコード
+
+----
+
+◼ ここにそれをコンパイルしたときのバイトコードが欲しい
+
+----
+
 # Exceptions in mrubyEdge
 
-- Exception raised at the `send` instruction
-- Execution jumps to `rescue`
+- Exception raised, then...
+- Execution jumps to `RESCUE`
 - VM extracts exception into a register
 - Checks for match → execute rescue or re-raise
 - Eventually hits `ensure` block
@@ -511,12 +554,21 @@ Execution then jumps to rescue. The VM extracts the active exception into a regi
 - When exception occurs: VM updates to **"exception active"** state
 - While in this state: **skips regular instructions**
 - Traverses upward through blocks until handled
-- `break` is implemented as **a type of exception**
-  - Same behavior: unwinds call stack upward
+
+◼ ここにVMに例外をセットするコードが欲しい
 
 <!--
 When an exception occurs, the VM's state updates to indicate "an exception is active." While in this state, the VM skips regular instructions and traverses upwards through the blocks until the exception is handled. The implementation of break is quite similar. In mrubyEdge, break is implemented as a type of exception because it behaves identically, unwinding the call stack and tracing blocks upwards until it finds the invocation point.
 -->
+
+----
+
+# cf. `break` in mrubyEdge
+
+- `break` is implemented as **a type of exception**
+  - Same behavior: unwinds call stack upward
+
+◼ ここにError enumにBreakがあるコードが欲しい
 
 ----
 
@@ -537,6 +589,10 @@ _class: hero
 <!--
 By mid-November 2025, basic instructions were supported. About 84% of mruby 3.4's instructions were implemented, along with foundational mechanisms to define classes and methods.
 -->
+
+----
+
+◼ ここにmruby/edgeの実装率テーブル
 
 ----
 
@@ -565,6 +621,10 @@ For the finishing touch, I needed a standard library. Since the foundation was s
 <!--
 By early February, my custom Ruby was running properly. I originally named the project "mrubyEdge" because I intended to run it on WasmEdge. I honestly didn't expect it to run on serverless edge platforms. But since it was running everywhere, I decided to test it on Cloudflare Workers. Since Cloudflare Workers runs JavaScript, it can naturally execute Wasm. I implemented the necessary functions, built a bridge for the Wasm interface, and aligned the Ruby code. After just a few days of trial and error in December, I had mruby running on Cloudflare Workers.
 -->
+
+----
+
+◼ ここにCF Workersで動いた時のPRのスクリーンショットが欲しい
 
 ----
 
@@ -607,11 +667,20 @@ Interestingly, it can even run on Web Workers or Service Workers—meaning you c
 
 ----
 
+◼ ここにサポート状況の表を貼る
+
+----
+
 # Cloudflare Service Integration
 
 - **KV** (Key-Value Store)
 - **Durable Objects**
 - **Queues**
+
+----
+
+# External Service Abstraction
+
 - Introduced as an **abstraction layer**
   - Cloudflare Workers: native APIs
   - Cloud Run: Firestore, Cloud Pub/Sub
@@ -620,6 +689,18 @@ Interestingly, it can even run on Web Workers or Service Workers—meaning you c
 <!--
 I also integrated Cloudflare's rich services, like Durable Objects and Queues. These are introduced as an abstraction layer supporting Cloudflare Workers and Google Cloud Run. For Cloud Run, similar functions are achieved using Firestore and Cloud Pub/Sub. I'd love to continue adding support for other services, and contributions are highly welcome.
 -->
+
+----
+
+◼ ここにCFとGoogle Cloudの機能対応表を貼る
+
+----
+
+<!--
+_class: hero
+-->
+
+# Retrospective: The Journey So Far
 
 ----
 
@@ -689,6 +770,18 @@ As a workaround, a tool called Asyncify emerged, allowing you to pseudo-pass asy
 
 ----
 
+```rust
+let mut uzumibi_request = uzumibi::build_uzumibi_request(&request);
+
+let result = tokio::task::spawn_blocking(move || {
+    uzumibi::uzumibi_handle_request(uzumibi_request)
+        .map_err(|e| e.to_string())
+})
+.await;
+```
+
+----
+
 # Cloud Run Compromise
 
 - Rust server libraries (Hyper, Tokio) require async as first-class
@@ -712,6 +805,8 @@ Furthermore, integrating with Rust's standard server libraries like Hyper and To
 - Currently exploring this implementation
 - Homework for **next year**
 
+◼ ここは進捗出たので更新
+
 <!--
 Looking at the current VM, it runs a simple synchronous instruction loop. But since the VM is just a state machine, it shouldn't have a bad affinity with async. A VM tailored for async programming could yield and resume at arbitrary times. I am currently exploring this implementation, and I suppose a fully async VM is my homework for next year.
 -->
@@ -733,11 +828,18 @@ _class: hero
 - From an exclusively Ruby-centric world:
   - Hard to step into serverless and edge computing
   - With mrubyEdge: develop with **the language you love**
-- Please give it a try!
 
 <!--
 Today I introduced mrubyEdge and the Uzumibi framework. While hurdles remain, it already has quality sufficient for practical use. From an exclusively Ruby-centric world, it's often hard to step into serverless and edge computing. But with mrubyEdge, you can develop with high compatibility using the language you love. Please give it a try—I look forward to your feedback. Thank you very much.
 -->
+
+----
+
+<!--
+_class: hero
+-->
+
+# lease give it a try!
 
 ----
 

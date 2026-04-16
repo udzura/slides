@@ -244,67 +244,16 @@ TBA
 ----
 
 ```rust
-/* typedef struct VM {
-  mrbc_irep *irep;
-
-  uint8_t        vm_id; // vm_id : 1..n
-  const uint8_t *mrb;   // bytecode
-
-  mrbc_irep *pc_irep;    // PC
-  uint16_t  pc;         // PC
-
-  //  uint16_t     reg_top;
-  mrbc_value    regs[MAX_REGS_SIZE];
-  mrbc_value   *current_regs;
-  mrbc_callinfo *callinfo_tail;
-
-  mrbc_class *target_class;
-
-  int32_t error_code;
-
-  volatile int8_t flag_preemption;
-  int8_t flag_need_memfree;
-} mrbc_vm;
-typedef struct VM mrb_vm; */
-
 pub struct VM {
-    pub irep: Rc<IREP>,
-
     pub id: usize,
-    pub bytecode: Vec<u8>,
-    pub current_irep: Rc<IREP>,
+    pub irep: Rc<IREP>,
     pub pc: Cell<usize>,
     pub regs: [Option<Rc<RObject>>; MAX_REGS_SIZE],
     pub current_regs_offset: usize,
     pub current_callinfo: Option<Rc<CALLINFO>>,
-    pub current_breadcrumb: Option<Rc<Breadcrumb>>,
-    pub kargs: RefCell<Option<RHashMap<RSym, Rc<RObject>>>>,
-    pub current_kargs: RefCell<Option<Rc<KArgs>>>,
-    pub target_class: TargetContext,
-    pub exception: Option<Rc<RException>>,
-
-    pub flag_preemption: Cell<bool>,
-
-    #[cfg(feature = "insn-limit")]
-    pub insn_count: Cell<usize>,
-    #[cfg(feature = "insn-limit")]
-    pub insn_limit: usize,
-
-    // common class
-    pub object_class: Rc<RClass>,
-    pub builtin_class_table: RHashMap<&'static str, Rc<RClass>>,
-    pub class_object_table: RHashMap<String, Rc<RObject>>,
-
     pub globals: RHashMap<String, Rc<RObject>>,
     pub consts: RHashMap<String, Rc<RObject>>,
-
-    pub upper: Option<Rc<ENV>>,
-    // TODO: using fixed array?
-    pub cur_env: RHashMap<usize, Rc<ENV>>,
-    pub has_env_ref: RHashMap<usize, bool>,
-
-    pub fn_table: RFnTable,
-    pub fn_block_stack: RFnStack,
+    //...
 }
 ```
 
@@ -317,17 +266,14 @@ pub struct VM {
 
 ```rust
 pub struct IREP {
-    pub __id: usize,
-
     pub nlocals: usize,
-    pub nregs: usize, // NOTE: is u8 better?
+    pub nregs: usize,
     pub rlen: usize,
     pub code: Vec<Op>,
     pub syms: Vec<RSym>,
     pub pool: Vec<RPool>,
-    pub reps: Vec<Rc<IREP>>,
-    pub lv: Option<RHashMap<usize, String>>,
     pub catch_target_pos: Vec<usize>,
+    // ...
 }
 
 #[derive(Debug, Clone)]
@@ -335,13 +281,10 @@ pub struct CALLINFO {
     pub prev: Option<Rc<CALLINFO>>,
     pub method_id: RSym,
     pub pc_irep: Rc<IREP>,
-    pub pc: usize,
     pub current_regs_offset: usize,
     pub target_class: TargetContext,
     pub n_args: usize,
-    pub return_reg: usize,
-    pub method_owner: Option<Rc<RModule>>,
-    pub has_block: Cell<bool>,
+    // ...
 }
 ```
 
