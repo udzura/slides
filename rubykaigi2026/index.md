@@ -112,7 +112,7 @@ Let's see it in action. You can install Uzumibi using the cargo command, then ge
 
 ----
 
-◼ ここに生成されたファイルツリーが欲しい
+<!-- TODO: ここに uzumibi new で生成されたファイルツリーのスクリーンショットまたはテキストを貼る -->
 
 ----
 
@@ -154,7 +154,7 @@ Please look at the file size. The artifact generated contains a WebAssembly file
 
 ----
 
-◼ ここにデプロイ時のコマンド出力が欲しい
+<!-- TODO: ここにデプロイ時のコマンド出力のスクリーンショットを貼る -->
 
 ----
 
@@ -256,7 +256,7 @@ By 2024, a prototype of mrubyEdge was complete. Two years ago, I gave a presenta
 
 ----
 
-◼ ここに2024のスライドの画像が欲しい
+<!-- TODO: ここに RubyKaigi 2024 Okinawa での発表スライドの画像を貼る -->
 
 ----
 
@@ -321,11 +321,56 @@ A register machine requires specific data structures: a container for registers,
 
 ----
 
-◼ ここにVMの構造体コードが欲しい
+<!--
+_class: pre-top20
+-->
+
+# VM Struct
+
+```rust
+pub struct VM {
+    pub id: usize,
+    pub irep: Rc<IREP>,
+    pub pc: Cell<usize>,
+    pub regs: [Option<Rc<RObject>>; MAX_REGS_SIZE],
+    pub current_regs_offset: usize,
+    pub current_callinfo: Option<Rc<CALLINFO>>,
+    pub globals: RHashMap<String, Rc<RObject>>,
+    pub consts: RHashMap<String, Rc<RObject>>,
+    //...
+}
+```
 
 ----
 
-◼ ここにIREP、CALLINFOが欲しい
+<!--
+_class: pre-top20
+-->
+
+# IREP & CALLINFO
+
+```rust
+pub struct IREP {
+    pub nlocals: usize,
+    pub nregs: usize,
+    pub rlen: usize,
+    pub code: Vec<Op>,
+    pub syms: Vec<RSym>,
+    pub pool: Vec<RPool>,
+    pub catch_target_pos: Vec<usize>,
+    // ...
+}
+
+pub struct CALLINFO {
+    pub prev: Option<Rc<CALLINFO>>,
+    pub method_id: RSym,
+    pub pc_irep: Rc<IREP>,
+    pub current_regs_offset: usize,
+    pub target_class: TargetContext,
+    pub n_args: usize,
+    // ...
+}
+```
 
 ----
 
@@ -391,7 +436,30 @@ We map Ruby-level Hashes directly to Rust's standard HashMap. For the key in the
 
 ----
 
-◼ ここに mrb_hash_set のコードが欲しい
+<!--
+_class: pre-top20
+-->
+
+# `hash_set` — Clean & Simple
+
+```rust
+pub fn mrb_hash_set_index(
+    this: Rc<RObject>,
+    key: Rc<RObject>,
+    value: Rc<RObject>,
+) -> Result<Rc<RObject>, Error> {
+    let hash: &RefCell<_> = match &this.value {
+        RValue::Hash(a) => a,
+        _ => return Err(Error::RuntimeError(
+            "Hash#[] must called on a hash".to_string(),
+        )),
+    };
+    let mut hash = hash.borrow_mut();
+    let hashed: ValueHasher = key.as_hash_key()?;
+    hash.insert(hashed, (key.clone(), value.clone()));
+    Ok(value.clone())
+}
+```
 
 ----
 
@@ -436,7 +504,23 @@ The Env struct has an Option type to hold the parent Env and a vector for captur
 
 ----
 
-◼ ここにtimesのような、環境が壊れないパターンのコードが欲しい
+<!--
+_class: pre-top20
+-->
+
+# Safe Pattern: Block Doesn't Outlive Method
+
+```ruby
+def greet(name)
+  3.times do |i|
+    puts "#{i}: Hello, #{name}!"
+    # `name` lives as long as `greet` → no capture needed
+  end
+end
+```
+
+- The block's lifetime ≤ the method's lifetime
+- Outer env is alive → **no copy needed**
 
 ----
 
@@ -454,7 +538,24 @@ Why? Because a closure's lifetime is usually shorter than the outer method's. As
 
 ----
 
-◼ ここに関数からlambdaを返して使わせるコードが欲しい
+<!--
+_class: pre-top20
+-->
+
+# Dangerous Pattern: Lambda Escapes
+
+```ruby
+def make_counter
+  count = 0
+  -> { count += 1; count }
+end
+
+c = make_counter
+p c.call  #=> 1
+p c.call  #=> 2
+# `make_counter` has already returned!
+# → must capture `count` before the frame ends
+```
 
 ----
 
@@ -475,7 +576,14 @@ Let's look at the inheritance tree. The RClass struct holds a method table. In R
 - Class `Bar` inherits from `Foo`
 - `Bar` has its own singleton class (eigenclass)
 
-◼ ここに普通のインスタンスのシングルトンクラスの継承ツリーの図が欲しい
+```ruby
+class Foo; end
+class Bar < Foo; end
+
+Bar.new.singleton_class.ancestors
+#=> [#<Class:#<Bar:0x...>>, Bar, Foo, Object, Kernel, BasicObject]
+# ↑ normal: singleton → class → parent → ... → BasicObject
+```
 
 ----
 
@@ -495,7 +603,15 @@ If class Bar inherits from Foo, what happens when you create an instance of Bar?
 
 ----
 
-◼ ここにClassクラスインスタンスの継承ツリーの図が欲しい
+```ruby
+Bar.singleton_class.ancestors
+#=> [#<Class:Bar>,
+#    #<Class:Foo>,
+#    #<Class:Object>,
+#    #<Class:BasicObject>,
+#    Class, Module, Object, Kernel, BasicObject]
+# ↑ each parent's singleton class appears in the chain!
+```
 
 ----
 
@@ -511,7 +627,28 @@ To accurately reproduce this complex chain in Rust, we modified the initializati
 
 ----
 
-◼ ここにコード例が欲しい
+<!--
+_class: pre-top20
+-->
+
+# Rust: Singleton Class for Class Instances
+
+```rust
+fn initialize_or_get_singleton_class_for_class(
+    self, vm
+) -> Rc<RClass> {
+    let super_class = match &class.super_class {
+        Some(parent) => {
+            let parent_obj = RObject::class(parent.clone(), vm);
+            // Recursively generate parent's singleton class!
+            parent_obj
+                .initialize_or_get_singleton_class_for_class(vm)
+        }
+        None => vm.get_class_by_name("Class"),
+    };
+    RClass::new_singleton(&class_name, Some(super_class), ...)
+}
+```
 
 ----
 
@@ -527,11 +664,48 @@ Finally, exceptions. When compiled into mruby bytecode, an exception is raised s
 
 ----
 
-◼ ここに例外のRubyコード
+<!--
+_class: pre-top20
+-->
+
+# Exception: Ruby Code
+
+```ruby
+begin
+  raise RuntimeError, "foobar"
+rescue ArgumentError => e
+  p e
+ensure
+  p "done"
+end
+```
 
 ----
 
-◼ ここにそれをコンパイルしたときのバイトコードが欲しい
+<!--
+_class: pre-top5
+-->
+
+# Compiled Bytecode
+
+```
+  SSEND    R2  :raise  n=2     ← exception raised!
+  JMP      043
+  EXCEPT   R2                  ← extract exception to R2
+  GETCONST R3  ArgumentError
+  RESCUE   R2  R3              ← R2.is_a?(R3)?
+  JMPIF    R3  028             ← match → goto rescue body
+  JMP      041                 ← no match → skip
+  MOVE     R1  R2              ← e = exception
+  SSEND    R2  :p  n=1         ← p(e)
+  JMP      043                 ← goto ensure
+  RAISEIF  R2                  ← unhandled → re-raise
+  EXCEPT   R4                  ← ensure: extract remaining exc
+  STRING   R6  "done"
+  SSEND    R5  :p  n=1         ← p("done")
+  RAISEIF  R4                  ← if exc remains, re-raise
+  RETURN   R2
+```
 
 ----
 
@@ -555,7 +729,18 @@ Execution then jumps to rescue. The VM extracts the active exception into a regi
 - While in this state: **skips regular instructions**
 - Traverses upward through blocks until handled
 
-◼ ここにVMに例外をセットするコードが欲しい
+```rust
+// vm.rs — when an instruction raises an error:
+match consume_expr(self, op.code, ...) {
+    Err(e) => {
+        self.exception = Some(
+            Rc::new(RException::from_error(self, &e))
+        );
+        continue; // jump to loop head
+        // → finds nearest catch target after current PC
+    }
+}
+```
 
 <!--
 When an exception occurs, the VM's state updates to indicate "an exception is active." While in this state, the VM skips regular instructions and traverses upwards through the blocks until the exception is handled. The implementation of break is quite similar. In mrubyEdge, break is implemented as a type of exception because it behaves identically, unwinding the call stack and tracing blocks upwards until it finds the invocation point.
@@ -568,7 +753,19 @@ When an exception occurs, the VM's state updates to indicate "an exception is ac
 - `break` is implemented as **a type of exception**
   - Same behavior: unwinds call stack upward
 
-◼ ここにError enumにBreakがあるコードが欲しい
+```rust
+pub enum Error {
+    RuntimeError(String),
+    ArgumentError(String),
+    NoMethodError(String),
+    NameError(String),
+    ZeroDivisionError,
+    // ...
+
+    Break(Rc<RObject>),         // ← break as exception!
+    BlockReturn(usize, Rc<RObject>),
+}
+```
 
 ----
 
@@ -592,7 +789,7 @@ By mid-November 2025, basic instructions were supported. About 84% of mruby 3.4'
 
 ----
 
-◼ ここにmruby/edgeの実装率テーブル
+<!-- TODO: ここに mruby 3.4 命令の実装率テーブルを貼る -->
 
 ----
 
@@ -624,7 +821,7 @@ By early February, my custom Ruby was running properly. I originally named the p
 
 ----
 
-◼ ここにCF Workersで動いた時のPRのスクリーンショットが欲しい
+<!-- TODO: ここに https://github.com/mrubyedge/uzumibi/pull/1 のスクリーンショットを貼る -->
 
 ----
 
@@ -667,7 +864,7 @@ Interestingly, it can even run on Web Workers or Service Workers—meaning you c
 
 ----
 
-◼ ここにサポート状況の表を貼る
+<!-- TODO: ここに Uzumibi の各プラットフォームサポート状況の表を貼る -->
 
 ----
 
@@ -692,7 +889,12 @@ I also integrated Cloudflare's rich services, like Durable Objects and Queues. T
 
 ----
 
-◼ ここにCFとGoogle Cloudの機能対応表を貼る
+| Feature | Cloudflare Workers | Cloud Run |
+|---|---|---|
+| KV | KV Namespace | Firestore |
+| Queue | Queues | Cloud Pub/Sub |
+| Access | Access (JWT) | IAP (JWT) |
+| HTTP | `fetch()` | `fetch()` |
 
 ----
 
@@ -791,24 +993,78 @@ let result = tokio::task::spawn_blocking(move || {
   - Not truly general-purpose
 
 <!--
-Furthermore, integrating with Rust's standard server libraries like Hyper and Tokio requires treating async as a first-class citizen. Currently, mrubyEdge compromises on Cloud Run by performing I/O operations on a single thread. While we can mitigate this bottleneck in Cloud Run by spinning up many single-threaded containers—a design strictly dedicated to serverless—it's not truly general-purpose. Therefore, I want to make mrubyEdge inherently async-compatible.
+You might think single-threaded I/O would be a bottleneck. But on Cloud Run, you can spin up many single-threaded containers instead of using multi-core within a single process. It works, but it's a serverless-specific workaround—not truly general-purpose. So I want to make mrubyEdge itself async-compatible.
 -->
 
 ----
 
-# Toward an Async VM
+# Current VM: A Simple Loop
 
-- VM is just a **state machine**
-  - Should have good affinity with async
-- A VM tailored for async:
-  - **Yield** and **resume** at arbitrary times
-- Currently exploring this implementation
-- Homework for **next year**
-
-◼ ここは進捗出たので更新
+- The VM runs a **synchronous instruction loop**
+  - Unchanged since 2024
+- But the VM is just a **state machine**
+  - Naturally suited for async: **pause** and **resume** at any point
 
 <!--
-Looking at the current VM, it runs a simple synchronous instruction loop. But since the VM is just a state machine, it shouldn't have a bad affinity with async. A VM tailored for async programming could yield and resume at arbitrary times. I am currently exploring this implementation, and I suppose a fully async VM is my homework for next year.
+Looking at the current VM, it runs a straightforward synchronous instruction loop—unchanged since 2024. But notice that the VM is essentially a state machine. If we design it to pause and resume at arbitrary points, it should integrate well with async programming.
+-->
+
+----
+
+<!--
+_class: hero
+-->
+
+# Demo: Async VM in the Browser
+
+<!--
+Let me demonstrate an async VM running in the browser. Just like two years ago, we'll execute a Fibonacci function.
+-->
+
+---
+
+# Demo movie 1
+
+----
+
+# Synchronous Execution
+
+- Compute Fibonacci in one shot
+- During computation: **browser UI freezes**
+  - No control returned to the event loop
+
+<!--
+First, let's compute Fibonacci all at once. In this case, the browser gets no control back during the computation—the UI completely freezes.
+-->
+
+---
+
+# Demo movie 2
+
+----
+
+# Async Execution: Yield per Instruction
+
+- Yield control back to the browser **after each instruction**
+- Browser UI remains **responsive** throughout
+- The instruction loop lives on the **browser side**
+  - Async function calls become feasible via glue code
+
+<!--
+Next, let's compute Fibonacci while yielding control back to the browser after each instruction. This time the UI stays responsive. Since the instruction loop runs on the browser side, we can insert async function calls with some glue code.
+-->
+
+----
+
+# Caveat: Granularity
+
+- Browser loop throughput: **~250 instructions/sec**
+- Yielding every single instruction is too fine-grained
+  - Need to find the right **batch size**
+- A production-ready async mruby is homework for the future
+
+<!--
+Here's one caveat: the browser loop maxes out at around 250 instructions per second, so yielding on every single instruction is too fine-grained. The right batch size needs further investigation. I wish I could show a fully production-ready async mruby here, but that remains homework for the future.
 -->
 
 ----
