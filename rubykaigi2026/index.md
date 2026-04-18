@@ -33,7 +33,7 @@ _backgroundImage: url(./bg-2026.003.png)
 # Hello, Hakodate!
 
 <!--
-I traveled here from Fukuoka, Kyushu. It's my first time in Hokkaido, and I'm thrilled to speak in this beautiful city.
+I traveled here from Fukuoka, Kyushu—about 1,700 km away, almost the full length of Japan. It's my first time in Hokkaido, and I'm thrilled to speak in this beautiful city.
 -->
 
 ----
@@ -87,10 +87,19 @@ It's a framework for developing applications on edge and serverless platforms us
 - Easy-to-remember, **Sinatra-like DSL**
 - Platform integration features
   - Durable Objects, Queues on Cloudflare
+
+<!--
+The key features of Uzumibi are: it has a generator and supports multiple platforms; it uses an easy-to-remember, Sinatra-like DSL; it supports platform integration features like Durable Objects and Queues on Cloudflare; 
+-->
+
+----
+
+# Special Key Feature
+
 - **Extremely lightweight** artifacts
 
 <!--
-The key features of Uzumibi are: it has a generator and supports multiple platforms; it uses an easy-to-remember, Sinatra-like DSL; it supports platform integration features like Durable Objects and Queues on Cloudflare; and above all, it is extremely lightweight.
+and above all, it is extremely lightweight.
 -->
 
 ----
@@ -103,16 +112,37 @@ _class: pre-top20
 
 ```bash
 $ cargo install uzumibi
-$ uzumibi new --platform cloudflare my_app
+$ uzumibi new --template cloudflare my-app
 ```
 
 <!--
-Let's see it in action. You can install Uzumibi using the cargo command, then generate a Cloudflare template via uzumibi new.
+Let's see it in action. You can install Uzumibi using the cargo command, 
 -->
 
 ----
 
-<!-- TODO: ここに uzumibi new で生成されたファイルツリーのスクリーンショットまたはテキストを貼る -->
+```
+my-app/
+├── Cargo.toml
+├── lib
+│   └── app.rb
+├── package.json
+├── src
+│   └── index.js
+├── vitest.config.js
+├── wasm-app
+│   ├── build.rs
+│   ├── Cargo.toml
+│   └── src
+│       └── lib.rs
+└── wrangler.jsonc
+
+5 directories, 9 files
+```
+
+<!--
+then generate a Cloudflare template via uzumibi new.
+-->
 
 ----
 
