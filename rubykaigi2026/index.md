@@ -147,23 +147,29 @@ then generate a Cloudflare template via uzumibi new.
 ----
 
 <!--
-_class: pre-top20
 -->
 
 # The Generated `app.rb`
 
+<br />
+<br />
+
 ```ruby
-app = Uzumibi::App.new
-
-app.get "/" do |req, res|
-  kv = Uzumibi::KV.new("MY_KV")
-  count = (kv.get("count") || 0).to_i + 1
-  kv.put("count", count.to_s)
-  res.text "Hello! Count: #{count}"
+# Any Rubyist can guess what this does...
+class App < Uzumibi::Router
+  get "/" do |req, res|
+    res.status_code = 200
+    res.headers = {
+      "content-type" => "text/plain",
+      "x-powered-by" => "#{RUBY_ENGINE} #{RUBY_VERSION}"
+    }
+    res.body = "It works!\n"
+    res
+  end
 end
-```
 
-- Any Rubyist can guess what this does
+$APP = App.new
+```
 
 <!--
 The important file generated is app.rb. If you open it, any Rubyist can guess what it does. I'll modify it slightly to access a Key-Value Store. Just like that, this code can be deployed immediately.
@@ -173,27 +179,46 @@ The important file generated is app.rb. If you open it, any Rubyist can guess wh
 
 # Artifact Size
 
-- WebAssembly file: **1.5MB** before compression
-- After gzip: **~500KB**
+- WebAssembly file: **1.2MiB** before compression
+- After gzip: **~370KiB**
 - Easily fits within **Cloudflare Workers free plan**
-- This is NOT a mockup — it actually connects to KVS as written in Ruby
 
 <!--
-Please look at the file size. The artifact generated contains a WebAssembly file that is 1.5MB before compression, and only about 500KB after compression. This easily fits well within the free plan limits of Cloudflare Workers. And this isn't just a mockup; if you actually access it, you can see it connects to the KVS exactly as written in Ruby.
+Please look at the file size. The artifact generated contains a WebAssembly file that is 1.5MB before compression, and only about 500KB after compression. This easily fits well within the free plan limits of Cloudflare Workers.
 -->
 
 ----
 
-<!-- TODO: ここにデプロイ時のコマンド出力のスクリーンショットを貼る -->
+```
+Total Upload: 1224.92 KiB / gzip: 369.05 KiB
+Your Worker has access to the following bindings:
+Binding                                    Resource            
+env.UZUMIBI_KV_DATA (UzumibiKVObject)      Durable Object      
+env.ASSETS                                 Assets              
+
+Uploaded sample-app-xxx (7.59 sec)
+Deployed sample-app-xxx triggers (1.53 sec)
+  https://sample-app-xxx.udzura.workers.dev
+Current Version ID: 2bfc85d2-7582-436a-98fd-xxxxxxxx
+
+```
+
+----
+
+# This is NOT a mockup!!!
+
+- It actually connects to real Cloudflare functions, e.g. KVS, Queue...
+
+<!--
+And this isn't just a mockup; if you actually access it, you can see it connects to the KVS exactly as written in Ruby.
+-->
 
 ----
 
 # Multi-Platform
 
-- Cloudflare Workers
-- Google Cloud Run
+- Cloudflare Workers or Google Cloud Run
 - Write similar code, runs the same way
-- Isn't this incredibly convenient?
 
 <!--
 Uzumibi proves you can comfortably develop edge applications in Ruby. While this example uses Cloudflare Workers, you can write similar code and run it exactly the same way on serverless environments like Google Cloud Run. Isn't this incredibly convenient?
@@ -205,27 +230,27 @@ Uzumibi proves you can comfortably develop edge applications in Ruby. While this
 _class: hero
 -->
 
-# The Magic Behind It: mrubyEdge
+# The Magic Behind It: mruby/edge
 
 <!--
-You might find this strange. ruby.wasm allows you to write applications in Ruby, but it usually generates much larger artifacts—around 10MB. So how is this magic possible? It's because Uzumibi is based on an entirely different mruby runtime I created, called mrubyEdge.
+You might find this strange. ruby.wasm allows you to write applications in Ruby, but it usually generates much larger artifacts—around 10MB. So how is this magic possible? It's because Uzumibi is based on an entirely different mruby runtime I created, called mruby/edge.
 -->
 
 ----
 
 # Why Not `ruby.wasm`?
 
-- `ruby.wasm` (CRuby-based) generates **~10MB** binaries
-  - Even gzipped: **~5MB**
-- Uzumibi is based on an entirely different runtime: **mrubyEdge**
+- `ruby.wasm` (CRuby-based) generates **30 ~ 60 MB** binaries
+  - Even gzipped: **~8.6MB** [ref](https://qiita.com/hiroeorz@github/items/a2aad2f3e9939a9c257b)
+- Uzumibi is based on an entirely different runtime: **mruby/edge**
 
 <!--
-My motivation was simple: generating small artifacts was too difficult with the CRuby-based ruby.wasm. Compiling CRuby to Wasm right now generates a binary of about 10MB before compression. Even gzipped, it's around 5MB.
+My motivation was simple: generating small artifacts was too difficult with the CRuby-based ruby.wasm. Compiling CRuby to Wasm right now generates a binary of about some tens of MB before compression. Even gzipped, it's around 8.6MB.
 -->
 
 ----
 
-# What is mrubyEdge?
+# What is mruby/edge?
 
 - A custom mruby runtime, developed since **2014**
 - Written entirely in **Rust**
@@ -233,7 +258,7 @@ My motivation was simple: generating small artifacts was too difficult with the 
 - Highly portable Wasm → runs everywhere, including the edge
 
 <!--
-Before you can understand Uzumibi's power, I need to explain mrubyEdge. It's a custom mruby runtime I've been developing since 2014, written entirely in Rust and designed from the ground up to be compiled into WebAssembly. Because it generates highly portable Wasm, it runs everywhere, including the edge.
+Before you can understand Uzumibi's power, I need to explain mruby/edge. It's a custom mruby runtime I've been developing since 2014, written entirely in Rust and designed from the ground up to be compiled into WebAssembly. Because it generates highly portable Wasm, it runs everywhere, including the edge.
 -->
 
 ----
@@ -281,12 +306,12 @@ _class: hero
   - Only capable of running a Fibonacci function for a demo
 
 <!--
-By 2024, a prototype of mrubyEdge was complete. Two years ago, I gave a presentation on it at RubyKaigi in Okinawa. However, it was strictly a Proof of Concept, only capable of running a Fibonacci function for a demo.
+By 2024, a prototype of mruby/edge was complete. Two years ago, I gave a presentation on it at RubyKaigi in Okinawa. However, it was strictly a Proof of Concept, only capable of running a Fibonacci function for a demo.
 -->
 
 ----
 
-<!-- TODO: ここに RubyKaigi 2024 Okinawa での発表スライドの画像を貼る -->
+![bg w:70%](./slide-2024.png)
 
 ----
 
@@ -296,11 +321,11 @@ By 2024, a prototype of mrubyEdge was complete. Two years ago, I gave a presenta
 - Relentless instruction implementation cycle:
   - Find a Ruby sample code
   - Compile to bytecode with existing `mruby`
-  - Make it run on mrubyEdge
+  - Make it run on mruby/edge
   - Add as E2E test
 
 <!--
-At the beginning of 2025, I resumed development. I deeply studied implementations like mruby/c and redesigned the VM. Once the VM was running, I relentlessly implemented instructions: find a Ruby sample code, confirm it with existing mruby, compile it to bytecode, make it run on mrubyEdge, and add it as an E2E test. Through this tedious repetition, mrubyEdge gradually matured.
+At the beginning of 2025, I resumed development. I deeply studied implementations like mruby/c and redesigned the VM. Once the VM was running, I relentlessly implemented instructions: find a Ruby sample code, confirm it with existing mruby, compile it to bytecode, make it run on mruby/edge, and add it as an E2E test. Through this tedious repetition, mruby/edge gradually matured.
 -->
 
 ----
@@ -325,12 +350,12 @@ _class: two-samples
 
 | CRuby (Stack Machine) | mruby (Register Machine) |
 |---|---|
-| `push 1` | `LOADI R1, 1` |
-| `push 2` | `LOADI R2, 2` |
-| `add` | `ADD R1, R2` |
+| `putobject 1` | `LOADI R1, 1` |
+| `putobject 2` | `LOADI R2, 2` |
+| `opt_plus` | `ADD R1, R2` |
 
-- CRuby: push operands onto a stack, consume with `add`
-- mruby: operands stored in registers, `add` specifies registers
+- CRuby: put operands onto a stack, consume with `opt_plus`
+- mruby: operands loaded in registers, `ADD` specifies registers
 
 <!--
 CRuby uses a stack machine, pushing operands onto a stack and consuming them with an add instruction. mruby, however, is a register machine. Operands are stored in registers like R1 and R2, and the add instruction specifies those registers and returns the result to one of them.
@@ -351,11 +376,9 @@ A register machine requires specific data structures: a container for registers,
 
 ----
 
-<!--
-_class: pre-top20
--->
-
 # VM Struct
+
+<br />
 
 ```rust
 pub struct VM {
@@ -373,17 +396,12 @@ pub struct VM {
 
 ----
 
-<!--
-_class: pre-top20
--->
-
-# IREP & CALLINFO
+## IREP & CALLINFO
 
 ```rust
 pub struct IREP {
     pub nlocals: usize,
     pub nregs: usize,
-    pub rlen: usize,
     pub code: Vec<Op>,
     pub syms: Vec<RSym>,
     pub pool: Vec<RPool>,
@@ -393,7 +411,6 @@ pub struct IREP {
 
 pub struct CALLINFO {
     pub prev: Option<Rc<CALLINFO>>,
-    pub method_id: RSym,
     pub pc_irep: Rc<IREP>,
     pub current_regs_offset: usize,
     pub target_class: TargetContext,
@@ -428,6 +445,24 @@ For memory efficiency and access speed, registers are not hash maps; they are in
 
 ----
 
+```rust
+pub struct VM {
+    // Only one array in the VM struct
+    regs: [Option<Rc<RObject>>; 256]
+    // Points to the "start of the current frame"
+    current_regs_offset: usize         
+}
+
+// Method call = shift the offset
+// Behavior model:
+
+vm.current_regs_offset += a as usize;  // Call → shift forward
+// ... method execution ...
+vm.current_regs_offset -= a as usize;  // Return → shift back
+```
+
+----
+
 <!--
 _class: hero
 -->
@@ -440,37 +475,38 @@ We also reused Rust's convenient traits wherever possible. For example, a struct
 
 ----
 
-<!--
-_class: pre-top20
--->
-
 # Ruby Hash → Rust HashMap
 
-```rust
-// ValueHasher implements Hash trait — acts as the key
-// Ruby key-value pair stored as tuple on the value side
-type InnerHash = HashMap<ValueHasher, (RValue, RValue)>;
+<br />
+<br />
 
-enum ValueHasher {
-    Bool(bool),     // natively implements Hash
-    Integer(i64),   // natively implements Hash
-    // ...
+```rust
+pub type RHash = HashMap<ValueHasher, (Rc<RObject>, Rc<RObject>)>;
+#[derive(Debug, Hash, Eq, /*...snip*/)]
+pub enum ValueHasher {
+    Bool(bool),
+    Integer(i64),
+    Float(Vec<u8>),
+    Symbol(String),
+    String(Vec<u8>),
+    Class(String),
 }
+
+// Each variant's content, such as bool, i64, String, Vec<u8>,
+// etc., all natively implement Hash + Eq in Rust,
+// so derive(Hash) automatically generates the implementation.
 ```
 
-- Result: `HashSet` internals become incredibly clean and simple
-
 <!--
-We map Ruby-level Hashes directly to Rust's standard HashMap. For the key in the Rust HashMap, we insert an enum called ValueHasher, which implements the Hash trait. The actual Ruby objects—key and value—are stored as a tuple on the value side. Because ValueHasher simply wraps booleans or integers that natively implement the Hash trait in Rust, it acts as a perfect hash key. As a result, internal functions like HashSet become incredibly clean and simple.
+We map Ruby-level Hashes directly to Rust's standard HashMap. For the key in the Rust HashMap, we insert an enum called ValueHasher, which implements the Hash trait. The actual Ruby objects—key and value—are stored as a tuple on the value side. Because ValueHasher simply wraps booleans or integers that natively implement the Hash trait in Rust, it acts as a perfect hash key. As a result, internal functions like `mrb_hash_set_index` become incredibly clean and simple.
 -->
 
 ----
 
-<!--
-_class: pre-top20
--->
+# `mrb_hash_set_index` — Clean & Simple
 
-# `hash_set` — Clean & Simple
+<br />
+<br />
 
 ```rust
 pub fn mrb_hash_set_index(
@@ -500,7 +536,7 @@ _class: hero
 # Struggle 3: Closures and Upvalues
 
 <!--
-Next: closures and upvalues. To capture the surrounding environment, we created an Env struct in mrubyEdge.
+Next: closures and upvalues. To capture the surrounding environment, we created an Env struct in mruby/edge.
 -->
 
 ----
@@ -512,10 +548,12 @@ _class: pre-top20
 # The `Env` Struct
 
 ```rust
-struct Env {
-    parent: Option<Box<Env>>,   // parent environment
-    captures: Vec<RValue>,      // captured variables
-}
+pub struct ENV {
+     pub upper: Option<Rc<ENV>>,
+     pub current_regs_offset: usize,
+     pub captured: RefCell<Option<Vec<Option<Rc<RObject>>>>>,
+     pub is_expired: Cell<bool>,
+ }
 ```
 
 - Created when a lambda/block is generated
@@ -554,6 +592,24 @@ end
 
 ----
 
+# 　How's this going?: Lambda Escapes
+
+<br />
+
+```ruby
+def make_counter
+  count = 0
+  -> { count += 1; count }
+end
+
+c = make_counter
+# method `make_counter` returns a lambda,
+# but method's env is destroyed
+p c.call  #=> ?
+```
+
+----
+
 # "Orphaned" Lambdas
 
 - Problem: returning a lambda as a value
@@ -563,29 +619,8 @@ end
   - Secures data when needed
 
 <!--
-Why? Because a closure's lifetime is usually shorter than the outer method's. As long as the outer method's environment is alive, the internal lambda is fine, so no capture is needed. But if you return a lambda as a value and use it elsewhere, the method's environment is destroyed, causing a problem. To solve this, mrubyEdge delays the process: it copies the register contents into the capture at the exact moment the frame ends. This avoids unnecessary copies but secures the data when needed. Since each Env holds a reference to its parent, getting an upvalue is just tracing through them.
+Why? Because a closure's lifetime is usually shorter than the outer method's. As long as the outer method's environment is alive, the internal lambda is fine, so no capture is needed. But if you return a lambda as a value and use it elsewhere, the method's environment is destroyed, causing a problem. To solve this, mruby/edge delays the process: it copies the register contents into the capture at the exact moment the frame ends. This avoids unnecessary copies but secures the data when needed. Since each Env holds a reference to its parent, getting an upvalue is just tracing through them.
 -->
-
-----
-
-<!--
-_class: pre-top20
--->
-
-# Dangerous Pattern: Lambda Escapes
-
-```ruby
-def make_counter
-  count = 0
-  -> { count += 1; count }
-end
-
-c = make_counter
-p c.call  #=> 1
-p c.call  #=> 2
-# `make_counter` has already returned!
-# → must capture `count` before the frame ends
-```
 
 ----
 
@@ -600,6 +635,9 @@ Let's look at the inheritance tree. The RClass struct holds a method table. In R
 -->
 
 ----
+<!--
+_class: pre-top20
+-->
 
 # Inheritance Tree with Singleton Classes
 
@@ -609,10 +647,20 @@ Let's look at the inheritance tree. The RClass struct holds a method table. In R
 ```ruby
 class Foo; end
 class Bar < Foo; end
+```
 
+----
+
+# Singleton Class of `Bar`
+
+```ruby
 Bar.new.singleton_class.ancestors
-#=> [#<Class:#<Bar:0x...>>, Bar, Foo, Object, Kernel, BasicObject]
-# ↑ normal: singleton → class → parent → ... → BasicObject
+#=> [
+#    #<Class:#<Bar:0x...>>,
+#    Bar,
+#    Foo,
+#    Object, Kernel, BasicObject
+#   ]
 ```
 
 ----
@@ -621,11 +669,10 @@ Bar.new.singleton_class.ancestors
 
 - `Bar` itself is a class instance → has a singleton class
 - Inheritance tree of `Bar` (as class instance):
-  1. `Bar`'s singleton class
-  2. `Foo`'s singleton class
-  3. `Object`'s singleton class
-  4. `BasicObject`'s singleton class
-  5. `Class`
+  - `Bar`'s singleton class
+  - `Foo`'s singleton class
+  - `Object/BasicObject`'s singleton class
+  - `Class`, ...
 
 <!--
 If class Bar inherits from Foo, what happens when you create an instance of Bar? Since Bar itself is a class instance, its inheritance tree is slightly unique: Bar's singleton class, then Foo's singleton, Object's singleton, BasicObject's singleton, and finally the Class class.
@@ -633,14 +680,17 @@ If class Bar inherits from Foo, what happens when you create an instance of Bar?
 
 ----
 
+# #\<Class:Bar\>'s Ancestors
+
 ```ruby
 Bar.singleton_class.ancestors
-#=> [#<Class:Bar>,
+#=> [
+#    #<Class:Bar>,
 #    #<Class:Foo>,
 #    #<Class:Object>,
 #    #<Class:BasicObject>,
-#    Class, Module, Object, Kernel, BasicObject]
-# ↑ each parent's singleton class appears in the chain!
+#    Class, Module, Object, Kernel, BasicObject
+#   ]
 ```
 
 ----
@@ -657,11 +707,10 @@ To accurately reproduce this complex chain in Rust, we modified the initializati
 
 ----
 
-<!--
-_class: pre-top20
--->
+# Impl of Singleton Class for Class Instances
 
-# Rust: Singleton Class for Class Instances
+<br />
+<br />
 
 ```rust
 fn initialize_or_get_singleton_class_for_class(
@@ -718,6 +767,37 @@ _class: pre-top5
 
 # Compiled Bytecode
 
+<br />
+
+```
+  SSEND    R2  :raise  n=2
+  JMP      043
+  EXCEPT   R2                  
+  GETCONST R3  ArgumentError
+  RESCUE   R2  R3             
+  JMPIF    R3  028             
+  JMP      041                 
+  MOVE     R1  R2              
+  SSEND    R2  :p  n=1         
+  JMP      043                 
+  RAISEIF  R2                  
+  EXCEPT   R4                  
+  STRING   R6  "done"
+  SSEND    R5  :p  n=1         
+  RAISEIF  R4                  
+  RETURN   R2
+```
+
+----
+
+<!--
+_class: pre-top5
+-->
+
+# Compiled Bytecode
+
+<br />
+
 ```
   SSEND    R2  :raise  n=2     ← exception raised!
   JMP      043
@@ -737,16 +817,6 @@ _class: pre-top5
   RETURN   R2
 ```
 
-----
-
-# Exceptions in mrubyEdge
-
-- Exception raised, then...
-- Execution jumps to `RESCUE`
-- VM extracts exception into a register
-- Checks for match → execute rescue or re-raise
-- Eventually hits `ensure` block
-
 <!--
 Execution then jumps to rescue. The VM extracts the active exception into a register, checks for a match, and either executes the rescue clause or re-raises the error, eventually hitting the ensure block.
 -->
@@ -758,6 +828,10 @@ Execution then jumps to rescue. The VM extracts the active exception into a regi
 - When exception occurs: VM updates to **"exception active"** state
 - While in this state: **skips regular instructions**
 - Traverses upward through blocks until handled
+
+----
+
+# Exception State in VM
 
 ```rust
 // vm.rs — when an instruction raises an error:
@@ -773,27 +847,41 @@ match consume_expr(self, op.code, ...) {
 ```
 
 <!--
-When an exception occurs, the VM's state updates to indicate "an exception is active." While in this state, the VM skips regular instructions and traverses upwards through the blocks until the exception is handled. The implementation of break is quite similar. In mrubyEdge, break is implemented as a type of exception because it behaves identically, unwinding the call stack and tracing blocks upwards until it finds the invocation point.
+When an exception occurs, the VM's state updates to indicate "an exception is active." While in this state, the VM skips regular instructions and traverses upwards through the blocks until the exception is handled. The implementation of break is quite similar. In mruby/edge, break is implemented as a type of exception because it behaves identically, unwinding the call stack and tracing blocks upwards until it finds the invocation point.
 -->
 
 ----
 
-# cf. `break` in mrubyEdge
+# cf. `break` in mruby/edge
 
 - `break` is implemented as **a type of exception**
   - Same behavior: unwinds call stack upward
 
+----
+
+<!--
+_class: pre-top5
+-->
+
+# Error Enum Type in Rust
+
+<br />
+
 ```rust
 pub enum Error {
+    General,
+    Internal(String),
+    InvalidOpCode,
     RuntimeError(String),
     ArgumentError(String),
+    RangeError(String),
+    TypeMismatch,
     NoMethodError(String),
     NameError(String),
-    ZeroDivisionError,
-    // ...
+    ZeroDivisionError, //...
 
-    Break(Rc<RObject>),         // ← break as exception!
-    BlockReturn(usize, Rc<RObject>),
+    Break(Rc<RObject>),              // ← break as exception!
+    BlockReturn(usize, Rc<RObject>), // and more...
 }
 ```
 
@@ -803,11 +891,11 @@ pub enum Error {
 _class: hero
 -->
 
-# The Breakthrough
+# After the Struggles
 
 ----
 
-# November 2025: Milestone
+# November 2025: Milestone Cleared
 
 - **84%** of mruby 3.4's instructions implemented
 - Foundational mechanisms to define classes and methods working
@@ -819,7 +907,9 @@ By mid-November 2025, basic instructions were supported. About 84% of mruby 3.4'
 
 ----
 
-<!-- TODO: ここに mruby 3.4 命令の実装率テーブルを貼る -->
+![alt text](./mruby-table.png)
+
+[https://mrubyedge.github.io/mrubyedge/table.html](https://mrubyedge.github.io/mrubyedge/table.html)
 
 ----
 
@@ -837,28 +927,62 @@ For the finishing touch, I needed a standard library. Since the foundation was s
 
 ----
 
+<!--
+_class: hero
+-->
+
+# Voyage for the True Edge
+
+----
+
 # Running on Cloudflare Workers
 
-- Originally named "mrubyEdge" for WasmEdge
+- Originally named "mruby/edge" for WasmEdge
   - Didn't actually expect it to run on serverless edge platforms!
 - Cloudflare Workers runs JavaScript → naturally executes Wasm
 - After just **a few days of trial and error** (December 2025):
   - mruby running on Cloudflare Workers
 
 <!--
-By early February, my custom Ruby was running properly. I originally named the project "mrubyEdge" because I intended to run it on WasmEdge. I honestly didn't expect it to run on serverless edge platforms. But since it was running everywhere, I decided to test it on Cloudflare Workers. Since Cloudflare Workers runs JavaScript, it can naturally execute Wasm. I implemented the necessary functions, built a bridge for the Wasm interface, and aligned the Ruby code. After just a few days of trial and error in December, I had mruby running on Cloudflare Workers.
+By early February, my custom Ruby was running properly. I originally named the project "mruby/edge" because I intended to run it on WasmEdge. I honestly didn't expect it to run on serverless edge platforms. But since it was running everywhere, I decided to test it on Cloudflare Workers. Since Cloudflare Workers runs JavaScript, it can naturally execute Wasm. I implemented the necessary functions, built a bridge for the Wasm interface, and aligned the Ruby code. After just a few days of trial and error in December, I had mruby running on Cloudflare Workers.
 -->
 
 ----
 
-<!-- TODO: ここに https://github.com/mrubyedge/uzumibi/pull/1 のスクリーンショットを貼る -->
+![bg h:80%](./first-pr-uzumibi.png)
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+[https://github.com/mrubyedge/uzumibi/pull/1](https://github.com/mrubyedge/uzumibi/pull/1)
 
 ----
 
-# The Size: Just ~400KB
+# First Deployment
 
-- Compiled mruby code: **~400KB**
-- Even with full standard library: **well under 1MB**
+```
+ ⛅️ wrangler 4.54.0 (update available 4.83.0)
+─────────────────────────────────────────────
+Total Upload: 303.82 KiB / gzip: 97.16 KiB
+```
+
+----
+
+# The Size: Just 300KiB
+
+- Compiled mruby code: **300KiB**
+    - Compressed to under **100KiB**
 - Effortlessly within free plan limits
 - This is when I knew: **it's viable**
 
@@ -872,7 +996,7 @@ Furthermore, when compiled, this mruby code fit into just about 400KB. Even anti
 _class: hero
 -->
 
-# Uzumibi: Building the Framework
+# Igniting Uzumibi
 
 <!--
 Convinced it was viable, I began developing in earnest. I wrote spike code and added support for Fastly and other frameworks.
@@ -894,7 +1018,14 @@ Interestingly, it can even run on Web Workers or Service Workers—meaning you c
 
 ----
 
-<!-- TODO: ここに Uzumibi の各プラットフォームサポート状況の表を貼る -->
+| Platform | Template Name | Status |
+|----------|--------------|--------|
+| Cloudflare Workers | `cloudflare` | Beta |
+| Fastly Compute@Edge | `fastly` | Experimental |
+| Spin (Fermyon Cloud) | `spin` | Experimental |
+| Google Cloud Run | `cloudrun` | Alpha |
+| Service Worker | `serviceworker` | Experimental |
+| Web Worker | `webworker` | Experimental |
 
 ----
 
@@ -921,10 +1052,10 @@ I also integrated Cloudflare's rich services, like Durable Objects and Queues. T
 
 | Feature | Cloudflare Workers | Cloud Run |
 |---|---|---|
-| KV | KV Namespace | Firestore |
+| KV | Durable Objects | Firestore |
 | Queue | Queues | Cloud Pub/Sub |
 | Access | Access (JWT) | IAP (JWT) |
-| HTTP | `fetch()` | `fetch()` |
+| HTTP | `fetch()` | library (reqwest-based) |
 
 ----
 
@@ -938,12 +1069,12 @@ _class: hero
 
 # The Framework Just Worked
 
-- mrubyEdge foundation was built so solidly
+- mruby/edge foundation was built so solidly
 - Uzumibi just worked **without much fuss**
 - Built what I wanted → inadvertently created a **framework useful for everyone**
 
 <!--
-I intended to talk mainly about Uzumibi today, but I spent most of the time on my struggles with mrubyEdge. The truth is, because the mrubyEdge foundation was built so solidly, Uzumibi just worked without much fuss. I built what I wanted, and inadvertently created a framework highly useful for everyone.
+I intended to talk mainly about Uzumibi today, but I spent most of the time on my struggles with mruby/edge. The truth is, because the mruby/edge foundation was built so solidly, Uzumibi just worked without much fuss. I built what I wanted, and inadvertently created a framework highly useful for everyone.
 -->
 
 ----
@@ -1002,18 +1133,6 @@ As a workaround, a tool called Asyncify emerged, allowing you to pseudo-pass asy
 
 ----
 
-```rust
-let mut uzumibi_request = uzumibi::build_uzumibi_request(&request);
-
-let result = tokio::task::spawn_blocking(move || {
-    uzumibi::uzumibi_handle_request(uzumibi_request)
-        .map_err(|e| e.to_string())
-})
-.await;
-```
-
-----
-
 # Cloud Run Compromise
 
 - Rust server libraries (Hyper, Tokio) require async as first-class
@@ -1023,8 +1142,22 @@ let result = tokio::task::spawn_blocking(move || {
   - Not truly general-purpose
 
 <!--
-You might think single-threaded I/O would be a bottleneck. But on Cloud Run, you can spin up many single-threaded containers instead of using multi-core within a single process. It works, but it's a serverless-specific workaround—not truly general-purpose. So I want to make mrubyEdge itself async-compatible.
+You might think single-threaded I/O would be a bottleneck. But on Cloud Run, you can spin up many single-threaded containers instead of using multi-core within a single process. It works, but it's a serverless-specific workaround—not truly general-purpose. So I want to make mruby/edge itself async-compatible.
 -->
+
+----
+
+# Blocking I/O on a Thread
+
+```rust
+let mut uzumibi_request = uzumibi::build_uzumibi_request(&request);
+
+let result = tokio::task::spawn_blocking(move || {
+    uzumibi::uzumibi_handle_request(uzumibi_request)
+        .map_err(|e| e.to_string())
+})
+.await;
+```
 
 ----
 
@@ -1038,6 +1171,55 @@ You might think single-threaded I/O would be a bottleneck. But on Cloud Run, you
 <!--
 Looking at the current VM, it runs a straightforward synchronous instruction loop—unchanged since 2024. But notice that the VM is essentially a state machine. If we design it to pause and resume at arbitrary points, it should integrate well with async programming.
 -->
+
+----
+
+# Currently
+
+<br />
+
+```rust
+loop {
+    let op = self.irep.code[self.pc.get()];
+    self.pc.set(self.pc.get() + 1);
+    match consume_expr(self, op.code, ...) {
+        Err(e) => {
+            self.exception = Some(
+                Rc::new(RException::from_error(self, &e))
+            );
+            continue;
+        }
+        Ok(_) => {}
+    }
+    // ...
+}
+```
+
+----
+
+# Maybe like this?
+
+<br />
+<br />
+
+```rust
+impl<'a> Future for VmFuture<'a> {
+    type Output = Value;
+
+    fn poll(self: Pin<&mut Self>, c: &mut Context<'_>) -> Poll<Value> {
+        let op = self.irep.code[self.pc.get()];
+        let inst = this.iseq.instructions[this.pc];
+        match consume_expr(self, op.code, ...) {
+            Pending => {
+                // Pause the VM and return Pending
+                Poll::Pending
+            }
+            Ok(value) => Poll::Ready(value.clone()),
+            Err(e) => { /*...*/ },
+        }
+    }
+}
+```
 
 ----
 
@@ -1123,15 +1305,21 @@ _class: hero
 
 # Conclusion
 
-- Introduced **mrubyEdge** and the **Uzumibi** framework
+- Introduced **mruby/edge** and the **Uzumibi** framework
 - Hurdles remain, but already has **practical quality**
 - From an exclusively Ruby-centric world:
   - Hard to step into serverless and edge computing
-  - With mrubyEdge: develop with **the language you love**
 
 <!--
-Today I introduced mrubyEdge and the Uzumibi framework. While hurdles remain, it already has quality sufficient for practical use. From an exclusively Ruby-centric world, it's often hard to step into serverless and edge computing. But with mrubyEdge, you can develop with high compatibility using the language you love. Please give it a try—I look forward to your feedback. Thank you very much.
+Today I introduced mruby/edge and the Uzumibi framework. While hurdles remain, it already has quality sufficient for practical use. From an exclusively Ruby-centric world, it's often hard to step into serverless and edge computing. But with mruby/edge, you can develop with high compatibility using the language you love. Please give it a try—I look forward to your feedback. Thank you very much.
 -->
+
+----
+<!--
+_class: hero
+-->
+
+# With mruby/edge:<br />Develop with the Language You Love
 
 ----
 
@@ -1139,7 +1327,7 @@ Today I introduced mrubyEdge and the Uzumibi framework. While hurdles remain, it
 _class: hero
 -->
 
-# lease give it a try!
+# Please Give it a Try!
 
 ----
 
@@ -1148,7 +1336,7 @@ _class: hero0
 _backgroundImage: url(./bg-2026.003.png)
 -->
 
-# Thank you!
+# Thank You!
 
 <!--
 Thank you very much!
