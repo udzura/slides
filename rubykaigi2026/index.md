@@ -1055,6 +1055,13 @@ Let me demonstrate an async VM running in the browser. Just like two years ago, 
 
 # Demo movie 1
 
+<br />
+<br />
+
+<video controls muted width="680">
+  <source src="./00_future-vm-run-all.mp4" type="video/mp4">
+</video>
+
 ----
 
 # Synchronous Execution
@@ -1070,6 +1077,13 @@ First, let's compute Fibonacci all at once. In this case, the browser gets no co
 ---
 
 # Demo movie 2
+
+<br />
+<br />
+
+<video controls muted width="680">
+  <source src="./01_future-vm-tick.mp4" type="video/mp4">
+</video>
 
 ----
 
