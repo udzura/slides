@@ -437,11 +437,8 @@ For memory efficiency and access speed, registers are not hash maps; they are in
 
 ----
 
-```
-[R0][R1][R2][R3][R4][R5][R6][R7][R8][R9]...
- ^                   ^
- frame 0 start       frame 1 start (after call)
-```
+
+![h:400](./regoffset.png)
 
 ----
 
