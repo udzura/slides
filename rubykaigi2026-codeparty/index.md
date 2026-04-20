@@ -3,10 +3,11 @@ marp: true
 theme: rubykaigi2026
 backgroundImage: url(./bg-2026.002.png)
 title: "コード懇親会 @ RubyKaigi 2026 / Ruby x Rust 分科会"
-paginate: true
+paginate: false
 style: |
     section.hero h1 { font-size: 64pt; }
     section.hero h2 { text-align: center; }
+    li { font-size: 24pt; }
 ---
 
 <!--
@@ -85,24 +86,30 @@ _backgroundImage: url(./bg-2026.003.png)
 
 ---
 
-# Cでdangling pointerになる例
-
 ```c
 #include <stdio.h>
 #include <stdlib.h>
 
-int *create_value() {
-    int x = 42;
+struct Data { int value; };
+
+struct Data *create_value()
+{
+    struct Data x = {42};
     return &x; // ローカル変数のアドレスを返している！
 }
 
-int main() {
-    int *p = create_value();
+int main()
+{
+    struct Data *p = create_value();
     // pはすでに無効なメモリを指している（dangling pointer）
-    printf("%d\n", *p); // 未定義動作！
+    printf("%d\n", p->value); // 未定義動作！
     return 0;
 }
 ```
+
+----
+
+# Cでdangling pointerになる例
 
 - `x` は関数を抜けるとスタックから消える
 - 返されたポインタはもう無効 → **未定義動作**
@@ -121,12 +128,22 @@ $ ./sample1.out
 
 ---
 
+<!--
+_class: hero
+-->
+
 # Rustなら大丈夫
 
+---
+
 ```rust
-fn create_value() -> &i32 {
-    let x = 42;
-    &x // コンパイルエラー！
+struct Data {
+    value: i32,
+}
+
+fn create_value<'a>() -> &'a Data {
+    let x = Data { value: 42 };
+    &x
 }
 ```
 
@@ -134,9 +151,9 @@ fn create_value() -> &i32 {
 
 ```
 error[E0515]: cannot return reference to local variable `x`
-  --> examples/sample1.rs:13:5
+  --> examples/sample1.rs:17:5
    |
-13 |     &x // コンパイルエラー
+17 |     &x // コンパイルエラー
    |     ^^ returns a reference to data owned by the current function
 ```
 
@@ -154,12 +171,15 @@ error[E0515]: cannot return reference to local variable `x`
 # さっきのコードをもう一度
 
 ```rust
-fn create_value<'a>() -> &'a i32 {
-//                        ^^^^ このライフタイムを満たすデータがない！
-    let x = 42; // xのライフタイムはこの関数内だけ
-    &x          // 関数の外まで生きる参照は作れない
+fn create_value<'a>() -> &'a Data {
+    //                   ^^^^ このライフタイムを満たすデータがない！
+    // xのライフタイムはこの関数内だけ
+    let x = Data { value: 42 };
+    &x // 関数の外まで生きる参照は作れない
 }
 ```
+
+---
 
 - `'a` = 「呼び出し元が期待する生存期間」
 - `x` は関数を抜けると破棄される → `'a` を満たせない → **コンパイルエラー**
@@ -169,19 +189,21 @@ fn create_value<'a>() -> &'a i32 {
 
 # 呼び出し元から見ると...
 
+<br />
+
 ```rust
 fn main() {
-    let p: &i32 = create_value();
-    //     ^^^^
+    let p: &Data = create_value();
+    //     ^^^^^
     // pはmain()のスコープが終わるまで有効な参照を期待している
-    // → ライフタイム 'a はmain()のスコープと同じ長さが必要
+    // → ライフタイム 'a2 はmain()のスコープと同じ長さが必要
 
-    println!("{}", p); // ← ここでまだ使いたい！
+    println!("{}", p.value); // ← ここでまだ使いたい！
 }
 
-fn create_value<'a>() -> &'a i32 {
-    let x = 42;
-    // xはここで破棄される... 'a（= main()のスコープ）より短い！
+fn create_value<'a>() -> &'a Data {
+    let x = Data { value: 42 };
+    // xはここで破棄される... 'a2（= main()のスコープ）より短い！
     &x // コンパイルエラー
 }
 ```
@@ -191,16 +213,18 @@ fn create_value<'a>() -> &'a i32 {
 # Rustで正しく書くなら
 
 ```rust
-fn create_value() -> i32 {
-    let x = 42;
+fn create_value() -> Data {
+    let x = Data { value: 42 };
     x // 値を返す（ムーブ）
 }
 
 fn main() {
     let v = create_value();
-    println!("{}", v); // 42 — 安全！
+    println!("{}", v.value); // 42 — 安全！
 }
 ```
+
+----
 
 - 参照ではなく値そのものを返す → 所有権がムーブされる
     - コンパイラがメモリ上の位置をいい感じにする
@@ -240,12 +264,11 @@ int main() {
     free(buf);
 
     // 解放済みメモリへアクセス（use-after-free）
+    // `free()` の後も `buf` はそのまま使えてしまう
     printf("%s\n", buf); // 未定義動作！
     return 0;
 }
 ```
-
-- `free()` の後も `buf` はそのまま使えてしまう
 
 ---
 
@@ -255,10 +278,11 @@ int main() {
 $ clang sample2.c -fsanitize=address -O0 -o sample2.out
 $ ./sample2.out
 =================================================================
-==14745==ERROR: AddressSanitizer: heap-use-after-free on address 0x606000000260 at pc 0x000101423808 bp 0x00016f092680 sp 0x00016f091e10
+==14745==ERROR: AddressSanitizer: heap-use-after-free on address 0x606000000260
+    at pc 0x000101423808 bp 0x00016f092680 sp 0x00016f091e10
 READ of size 2 at 0x606000000260 thread T0
-    #0 0x000101423804 in printf_common(void*, char const*, char*)+0x64c (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x1b804)
-    #1 0x0001014245c4 in printf+0x68 (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x1c5c4)
+    #0 0x000101423804 in printf_common(void*, char const*, char*)+0x64c(libclang_rt.asan_osx_dynamic.dylib:arm64e+0x1b804)
+    #1 0x0001014245c4 in printf+0x68(libclang_rt.asan_osx_dynamic.dylib:arm64e+0x1c5c4)
     #2 0x000100d6c838 in main+0x58 (sample2.out:arm64+0x100000838)
     #3 0x000182cf9d50  (<unknown module>)
 
@@ -274,12 +298,24 @@ previously allocated by thread T0 here:
     #2 0x000182cf9d50  (<unknown module>) ...
 ```
 
+----
+
+# Note:
+
 - 今回は、ASan（AddressSanitizer）に敢えて検出させて確認
 - ちなみにASan有効はオーバーヘッドがあり、一般に実行時間は x2 程度になるそう
 
 ---
 
+<!--
+_class: hero
+-->
+
 # Rustなら大丈夫
+
+---
+
+# 同等のコード
 
 ```rust
 fn main() {
@@ -294,6 +330,8 @@ fn main() {
 ---
 
 # コンパイラが教えてくれる：
+
+<br />
 
 ```
 error[E0382]: borrow of moved value: `buf`
@@ -346,77 +384,6 @@ fn main() {
 
 ---
 
-<!--
-_class: hero0
-_backgroundImage: url(./bg-2026.003.png)
--->
-
-# 借用規則でバグを防ぐ
-
----
-
-# 次はRubyのサンプルコード
-
-```ruby
-numbers = [1, 2, 3, 4, 5]
-
-numbers.each do |n|
-  puts "Processing: #{n}"
-  if n == 2
-    numbers.delete(n) # ループ中に要素を削除してしまうと...
-  end
-end
-```
-
----
-
-# 出力結果
-
-```
-Processing: 1
-Processing: 2
-Processing: 4
-Processing: 5
-# `3` が処理されていない！
-```
-
----
-
-# これは意図した挙動？
-
-- Array#each が内部でindexを保持している
-- `2` を処理している時は `index = 1`
-- `2` が消えることで `index = 2` の要素は `4` になり、次回の処理対象になる
-- 「それはそう」だがバグを誘発するコード！
-
----
-
-# Rustの借用規約で防ぐ例
-
-```rust
-fn main() {
-    let mut numbers = vec![1, 2, 3, 4, 5];
-
-    // ① ここで numbers の「不変の借用（読み取り専用のアクセス権）」がループ全体に渡って開始される
-    for n in &numbers {
-        println!("processing: {}", n);
-        
-        if *n == 2 {
-            // ② ループの途中で要素を削除しようとする
-            // remove() は numbers 全体を変更するため、「可変の借用（排他アクセス権）」を要求する
-            numbers.remove(2); 
-        }
-
-        // c.f. 参照のみは問題ない
-        println!("readonly: len = {}", numbers.len());
-    } // ③ 不変の借用はループが終わるここまで続く
-    // ここからは可変借用できます
-    // numbers.remove(2);
-}
-```
-
----
-
 # まとめ
 
 - あるデータ `Type` に対して:
@@ -426,6 +393,10 @@ fn main() {
     - 可変参照が残っていると不変参照は作れない
 
 ---
+
+<!--
+_class: hero
+-->
 
 # 一つ一つやることでバグを防ぐ！！！
 
@@ -455,7 +426,13 @@ _backgroundImage: url(./bg-2026.003.png)
 
 ---
 
-# 型の力（雰囲気）
+<!--
+_class: hero
+-->
+
+# 型の力（雰囲気）を感じよう
+
+---
 
 ```rust
 use magnus::{function, prelude::*, Error, Ruby};
@@ -493,7 +470,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
 # Rustのライブラリ・資産を使える
 
 - **crates.io** に10万以上のライブラリ
-- 例：
   - `serde` — 高速なマルチフォーマット対応のシリアライズ/デシリアライズ
   - `rayon` — お手軽データ並列処理
   - `tokio` — 非同期ランタイム
@@ -514,11 +490,14 @@ _class: hero0
 _backgroundImage: url(./bg-2026.003.png)
 -->
 
-# bundlerを使った手順
+# bundlerを使ったgem作成手順
 
 ---
 
 # Rust gem のプロジェクトを作る
+
+<br />
+<br />
 
 ```bash
 $ bundle gem my_rust_gem --ext=rust
@@ -529,7 +508,6 @@ $ bundle gem my_rust_gem --ext=rust
 
 ---
 
-# できるプロジェクト構造
 
 ```
 my_rust_gem/
@@ -561,9 +539,10 @@ my_rust_gem/
 
 ---
 
-# 生成されるRustコード (ext/my_rust_gem/src/lib.rs)
+# 生成されるRustコード
 
 ```rust
+// ext/my_rust_gem/src/lib.rs
 use magnus::{function, prelude::*, Error, Ruby};
 
 fn hello(subject: String) -> String {
@@ -578,6 +557,8 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
 }
 ```
 
+----
+
 - **magnus** クレート = RubyのC APIのRustバインディング
 - `#[magnus::init]` でRuby拡張のエントリポイントを定義
 - `define_module`, `define_global_function` など直感的なAPIが用意される
@@ -586,18 +567,22 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
 
 # ビルドして使う
 
-- もちろん、事前にRustとCargoをインストールしてください！
-
 ```bash
 # ビルド
 $ bundle install
 $ bundle exec rake compile
 
 # 試す
-$ bundle exec ruby -e "require 'my_rust_gem'; puts MyRustGem.hello('RubyKaigi')"
+$ bundle exec ruby -e "
+    require 'my_rust_gem'
+    puts MyRustGem.hello('RubyKaigi')
+  "
 Hello from Rust, RubyKaigi!
 ```
 
+----
+
+- もちろん、事前にRustとCargoをインストールしてください！
 - `rake compile` で Cargo → `.so` / `.bundle` をビルド
 - あとは普通のgemと同じように使える
 
@@ -635,6 +620,13 @@ _backgroundImage: url(./bg-2026.003.png)
 - [The Rust Programming Language (日本語)](https://doc.rust-jp.rs/book-ja/)
 - [bundler拡張ガイド](https://bundler.io/guides/creating_gem.html)
 - [RustでRuby gemを書くガイド (公式)](https://www.rust-lang.org/)
+
+---
+
+# おまけコンテンツ
+
+- RustでJSONパーサを書いてみよう:
+  - https://gist.github.com/udzura/b0ad405eeb3f799752f5ce9509aa3c64
 
 ---
 
