@@ -284,3 +284,7 @@ section.table-top15 table {
     margin-top: 17%;
     font-size: 24pt;
 }
+
+a {
+    text-decoration: underline;
+}
