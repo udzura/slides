@@ -120,14 +120,14 @@ struct Data { int value; };
 struct Data *create_value()
 {
     struct Data x = {42};
-    return &x; // ローカル変数のアドレスを返している！
+    return &x; // returns the address of a local variable!
 }
 
 int main()
 {
     struct Data *p = create_value();
-    // pはすでに無効なメモリを指している（dangling pointer）
-    printf("%d\n", p->value); // 未定義動作！
+    // p already points to invalid memory (dangling pointer)
+    printf("%d\n", p->value); // undefined behavior!
     return 0;
 }
 ```
@@ -184,7 +184,7 @@ The compiler tells you:
 error[E0515]: cannot return reference to local variable `x`
   --> examples/sample1.rs:17:5
    |
-17 |     &x // コンパイルエラー
+17 |     &x // compile error
    |     ^^ returns a reference to data owned by the current function
 ```
 
@@ -208,10 +208,10 @@ error[E0515]: cannot return reference to local variable `x`
 
 ```rust
 fn create_value<'a>() -> &'a Data {
-    //                   ^^^^ このライフタイムを満たすデータがない！
-    // xのライフタイムはこの関数内だけ
+    //                   ^^^^ there is no data that can satisfy this lifetime!
+    // x is only alive within this function
     let x = Data { value: 42 };
-    &x // 関数の外まで生きる参照は作れない
+    &x // you cannot create a reference that outlives this function
 }
 ```
 
@@ -235,16 +235,16 @@ fn create_value<'a>() -> &'a Data {
 fn main() {
     let p: &Data = create_value();
     //     ^^^^^
-    // pはmain()のスコープが終わるまで有効な参照を期待している
-    // → ライフタイム 'a2 はmain()のスコープと同じ長さが必要
+    // p expects a valid reference until the end of main() scope
+    // → lifetime 'a2 must be as long as main() scope
 
-    println!("{}", p.value); // ← ここでまだ使いたい！
+    println!("{}", p.value); // <- we still want to use it here!
 }
 
 fn create_value<'a>() -> &'a Data {
     let x = Data { value: 42 };
-    // xはここで破棄される... 'a2（= main()のスコープ）より短い！
-    &x // コンパイルエラー
+    // x is dropped here... shorter than 'a2 (= main() scope)!
+    &x // compile error
 }
 ```
 
@@ -256,12 +256,12 @@ fn create_value<'a>() -> &'a Data {
 ```rust
 fn create_value() -> Data {
     let x = Data { value: 42 };
-    x // 値を返す（ムーブ）
+    x // return the value (move)
 }
 
 fn main() {
     let v = create_value();
-    println!("{}", v.value); // 42 — 安全！
+    println!("{}", v.value); // 42 - safe!
 }
 ```
 
@@ -315,9 +315,9 @@ int main() {
 
     free(buf);
 
-    // 解放済みメモリへアクセス（use-after-free）
-    // `free()` の後も `buf` はそのまま使えてしまう
-    printf("%s\n", buf); // 未定義動作！
+    // access freed memory (use-after-free)
+    // `buf` still looks usable even after `free()`
+    printf("%s\n", buf); // undefined behavior!
     return 0;
 }
 ```
@@ -378,9 +378,9 @@ _class: hero
 fn main() {
     let buf = String::from("Hello, RubyKaigi!");
 
-    drop(buf); // 明示的に解放
+    drop(buf); // explicitly free
 
-    println!("{}", buf); // コンパイルエラー！
+    println!("{}", buf); // compile error！
 }
 ```
 
@@ -399,10 +399,10 @@ error[E0382]: borrow of moved value: `buf`
   |         --- move occurs because `buf` has type `String`,
   |             which does not implement the `Copy` trait
 3 |
-4 |     drop(buf); // 明示的に解放
+4 |     drop(buf); // explicitly free
   |          --- value moved here
 5 |
-6 |     println!("{}", buf); // コンパイルエラー！
+6 |     println!("{}", buf); // compile error！
   |                    ^^^ value borrowed here after move
 ```
 
@@ -428,14 +428,14 @@ error[E0382]: borrow of moved value: `buf`
 
 ```rust
 fn take_ownership(s: String) {
-    // s を使っていない、が...
-    // sはこのスコープで破棄される
+    // we do not use s here, but...
+    // s is dropped in this scope
 }
 
 fn main() {
     let buf = String::from("hello");
-    take_ownership(buf); // 所有権がムーブ
-    // println!("{}", buf); // コンパイルエラー！dropと同じ理由
+    take_ownership(buf); // ownership moves
+    // println!("{}", buf); // compile error! same reason as drop
 }
 ```
 
@@ -472,7 +472,7 @@ fn main() {
 _class: hero
 -->
 
-# Following these rules one by one prevents bugs!!!
+# Sharing one by one prevents bugs!!!
 
 <!-- 一つ一つやることでバグを防ぐ！！！ -->
 ---
@@ -521,9 +521,9 @@ _class: hero
 ```rust
 use magnus::{function, prelude::*, Error, Ruby};
 
-// 型シグネチャがそのままAPIドキュメントになる
+// type signatures directly serve as API docs
 fn fizzbuzz(n: u64) -> String {
-    // 型が強力＝パターンマッチが強力
+    // strong types = strong pattern matching
     match (n % 3, n % 5) {
         (0, 0) => "FizzBuzz".to_string(),
         (0, _) => "Fizz".to_string(),
@@ -676,11 +676,11 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
 # Build and use it
 
 ```bash
-# ビルド
+# Build
 $ bundle install
 $ bundle exec rake compile
 
-# 試す
+# Try
 $ bundle exec ruby -e "
     require 'my_rust_gem'
     puts MyRustGem.hello('RubyKaigi')
@@ -764,6 +764,12 @@ _backgroundImage: url(./bg-2026.003.png)
 -->
 
 # Defining types feels good...
+
+<center>
+
+(型を決めると気持ちいい...)
+
+</center>
 
 <!-- 型を決めると気持ちいい... -->
 ---
