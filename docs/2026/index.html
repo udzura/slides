@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026年のスライド一覧</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #a5d6a7 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1b5e20;
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slides-list {
+            list-style: none;
+        }
+
+        .slide-item {
+            background: white;
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .slide-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        .slide-item a {
+            display: block;
+            padding: 2rem;
+            color: #2e7d32;
+            text-decoration: none;
+            border-left: 5px solid #43a047;
+        }
+
+        .slide-item:hover a {
+            border-left-color: #2e7d32;
+        }
+
+        .slide-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #388e3c;
+        }
+
+        .slide-path {
+            font-size: 0.9rem;
+            color: #81c784;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .slide-item a {
+                padding: 1.5rem;
+            }
+
+            .slide-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2026年のスライド一覧</h1>
+        <ul class="slides-list">
+            <li class="slide-item">
+                <a href="rubykaigi/">
+                    <div class="slide-title">Uzumibi: Reinventing mruby for the Edges</div>
+                    <div class="slide-path">rubykaigi/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="rubykaigi-codeparty/">
+                    <div class="slide-title">Code Social @ RubyKaigi 2026 / Ruby x Rust Table</div>
+                    <div class="slide-path">rubykaigi-codeparty/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="fukuokark05-smarthr-lt/">
+                    <div class="slide-title">したっけRubyKaigiでもSmartHRをよろしく！</div>
+                    <div class="slide-path">fukuokark05-smarthr-lt/</div>
+                </a>
+            </li>
+            <li class="slide-item">
+                <a href="mirisira-3/">
+                    <div class="slide-title">ミリしらAI勉強会 #3 へようこそ！</div>
+                    <div class="slide-path">mirisira-3/</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
