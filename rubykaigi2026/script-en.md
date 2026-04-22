@@ -1,5 +1,3 @@
-# Script (English)
-
 Today, I'd like to talk about a product called Uzumibi.
 
 I traveled here from Fukuoka, Kyushu—about 1,700 km away, almost the full length of Japan. It's my first time in Hokkaido, and I'm thrilled to speak in this beautiful city.
@@ -140,9 +138,36 @@ similar functions are achieved using Firestore and Cloud Pub/Sub. I'd love to co
 
 Ok, I'm going to conclude this talk.
 
-I intended to talk mainly about Uzumibi today, but I spent most of the time on my struggles with mruby/edge. The truth is, because the mruby/edge foundation was built so solidly, Uzumibi just worked without much fuss. I built what I wanted, and eventually created a framework highly useful for everyone.
+You may be surprised by how small the footprints of mruby/edge and Uzumibi are. Why was I able to keep them this simple?
 
-A key takeaway is that my original approach was right: I wanted a portable Wasm binary with complete control over Wasm-specific features, and I wanted to keep the footprint as small as possible.
+Because This is Simple.
+
+The truth is that the mruby/edge foundation was built so solidly.
+And I have only implemented a carefully selected set of Ruby methods that are truly essential for most applications.
+The selection is on COVERAGE.md file in the mrubyedge repository.
+
+In other words, I implemented only the parts of Ruby that I personally wanted to use.
+
+Created my own ultimate Pokemon... Sorry, mruby!
+
+When I felt something was not core to mruby/edge, I actively split it into separate crates or excluded it with feature flags.
+Those units effectively became a gem-like concept.
+The policy is simple: do not include what an application does not use, and properly implement and include what it does use.
+
+In particular, Rust feature flags are extremely useful because they can fully eliminate unnecessary code from build artifacts. This level of granularity has been very effective for size control.
+
+Matz's mruby describes dependencies with a Ruby DSL. The flow is: download dependencies, compile Ruby to bytecode, and finally link with `ld`.
+This approach is not bad at all. In this project, however, I leaned toward a Rustacean style.
+
+In Rust projects that include mruby/edge, you can decide which gems to include using Cargo feature flags. On the implementation side, standard macros are enough to specify which code should be included for a gem and which should not. If you write Rust regularly, this API feels extremely rational.
+
+I will quote a line by Hijikata Toshizo, who is closely associated with Hakodate. Though to be fair, it is a fictional line from a novel.
+The objective should be simple. The guiding philosophy should be simple.
+I kept thinking about how to realize simplicity in the simplest possible way.
+
+Based on this simple mruby/edge, Uzumibi just worked without much fuss. I built what I wanted, and eventually created a framework highly useful for everyone.
+
+A key takeaway is that my original approach was right: I wanted a portable Wasm binary with complete control over Wasm-specific features, and I wanted to keep the footprint as small as possible. Also, I wanted to implement it in a straightforward way, following the Rust way.
 
 By achieving this, I believe we are opening up a new horizon on the Edge. Uzumibi is still a newborn framework, but it has the power to transform your development workflows.
 
