@@ -189,8 +189,33 @@ It's because Uzumibi is based on an entirely different mruby runtime I created, 
 <!--
 The mruby/edge's motivation was simple: generating small artifacts was too difficult with the CRuby-based ruby.wasm.
 
-Before you can understand Uzumibi's power, I need to explain mruby/edge. It's a custom mruby runtime I've been developing since 2014, written entirely in Rust and designed from the ground up to be compiled into WebAssembly. Because it generates highly portable Wasm, it runs everywhere, including the edge.
+Before you can understand Uzumibi's power, I need to explain mruby/edge. It's a custom mruby runtime I've been developing since 2014, written entirely in Rust and designed from the ground up to be compiled into WebAssembly.
 -->
+
+----
+
+# Playground
+
+![bg w:25%](./playground.png)
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+https://mrubyedge.github.io/playground/
+Works on mobile browsers
+
+<!--
+ Because it generates highly portable Wasm, it runs everywhere, including the edge.
+ This is a link to the playground -->
 
 ----
 
@@ -228,6 +253,18 @@ Lightweight implementations like mruby and mruby/c inherently follow a philosoph
 
 <!--
 Given this, I decided I couldn't simply rely on existing Ruby or mruby implementations, and chose to rewrite it from scratch in Rust. Rust offers distinct advantages: productivity and safety via its advanced type system, especially in memory safety, a powerful Wasm ecosystem. Plus, I personally wanted to implement a VM myself with this language.
+-->
+
+----
+
+# Note about dependencies
+
+- mruby/edge uses `mruby-compiler2` for compiler, which relies on `setjmp` / `longjmp`
+  - Wasm with mruby compiler **utilizes Emscripten** for now
+  - Wasm without compiler doesn't include Emscripten codes
+
+<!--
+Note that mruby/edge uses mruby-compiler2 for compiler, which relies on setjmp and longjmp. So, if you include the compiler in your Wasm, it will utilize Emscripten for now. However, if you don't include the compiler, the generated Wasm won't contain any Emscripten codes.
 -->
 
 ----
@@ -1032,12 +1069,13 @@ Convinced it was viable, I began developing in earnest. I wrote related librarie
 - Cloudflare Workers
 - Fastly Compute
 - Spin
-- Google Cloud Run
+- Google Cloud Run (Native!)
 - **Web Workers / Service Workers**
   - API completely self-contained within the browser!
 
 <!--
 Furthermore, I added support for Fastly Compute, Spin, and Google Cloud Run.
+What is interesting is that Uzumibi can also generate a native HTTP server, of course, so the Cloud Run framework uses that instead of a Wasm program.
 -->
 
 ----
@@ -1052,7 +1090,7 @@ Furthermore, I added support for Fastly Compute, Spin, and Google Cloud Run.
 | Web Worker | `webworker` | Experimental |
 
 <!--
-Interestingly, Uzumibi can even run on Web Workers or Service Workers—meaning you can implement an API completely self-contained within the browser.
+Uzumibi can even run on Web Workers or Service Workers—meaning you can implement an API completely self-contained within the browser.
 -->
 
 ----

@@ -163,7 +163,6 @@ section li ul li {
 section li ul li ul li {
     list-style-image: none;
     list-style-type: none;
-    margin-left: 1.5em;
     padding-top: 0.15em;
     font-size: 95%;
 }
