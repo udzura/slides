@@ -616,6 +616,44 @@ TODO: あとで実データ入りのスプシを...
 -->
 
 ---
+<!--
+_class: mermaid-slide
+style: |
+  section.mermaid-slide .mermaid svg { max-width: 100%; width: 100%; }
+  section.mermaid-slide .mermaid .nodeLabel { font-size: 11px; }
+  section.mermaid-slide .mermaid .edgeLabel { font-size: 10px; }
+  section.mermaid-slide .mermaid .cluster-label .nodeLabel { font-size: 11px; }
+-->
+
+# 実施時のアーキテクチャ（例）
+
+<!-- 
+TODO: 図
+-->
+
+<pre class="mermaid">
+%%{init: {'theme': 'default', 'flowchart': {'nodeSpacing': 20, 'rankSpacing': 40, 'useMaxWidth': true}, 'themeVariables': {'fontSize': '11px'}}}%%
+graph LR
+  subgraph Test Env
+    A[Locust master] --> B[Locust worker]
+    A --> C[Locust worker]
+    A --> D[Locust worker]
+  end
+  subgraph Test Target
+    E[Web App\nCloud Run x N]
+    F[(DB\nmaster)]
+    G[(DB\nreplica)]
+    H[(DB\nreplica 2,...)]
+    E --> F
+    E --> G
+    E --> H
+  end
+  B --> E
+  C --> E
+  D --> E
+</pre>
+
+---
 
 # 分析で見るもの
 
@@ -712,3 +750,10 @@ TODO: ここも実データ入りのスプシを...
 ということで、負荷試験はバックエンドエンジニアも詳しい方がいいと思っていて、今回はその入り口として紹介しました。興味があればぜひ自分のチームでも主導してみてください。ありがとうございました。
 （15秒）
 -->
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+
