@@ -13,6 +13,10 @@ style: |
   section pre { font-size: 16pt; }
   section.small-code pre { font-size: 13pt; }
   section.xsmall-code pre { font-size: 11pt; }
+  section.mermaid-slide .mermaid svg { max-width: 100%; width: 100%; }
+  section.mermaid-slide .mermaid .nodeLabel { font-size: 11px; }
+  section.mermaid-slide .mermaid .edgeLabel { font-size: 10px; }
+  section.mermaid-slide .mermaid .cluster-label .nodeLabel { font-size: 11px; }
 ---
 <!--
 _class: hero
@@ -618,11 +622,6 @@ TODO: あとで実データ入りのスプシを...
 ---
 <!--
 _class: mermaid-slide
-style: |
-  section.mermaid-slide .mermaid svg { max-width: 100%; width: 100%; }
-  section.mermaid-slide .mermaid .nodeLabel { font-size: 11px; }
-  section.mermaid-slide .mermaid .edgeLabel { font-size: 10px; }
-  section.mermaid-slide .mermaid .cluster-label .nodeLabel { font-size: 11px; }
 -->
 
 # 実施時のアーキテクチャ（例）
