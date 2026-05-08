@@ -1,8 +1,34 @@
-# The Box Barden 〜Since 2016〜
+---
+presentationID: ...
+codeBlockToImageCommand: "freeze --theme friendly --language {{lang}} -o {{output}} -r 5 --window"
+defaults:
+  - if: page == 1
+    layout: "タイトル_SmartBasic"
+  - if: speakerNote.contains("HERO")
+    layout: "チャプタータイトル_Emotional"
+  - if: speakerNote.contains("SKIP_UPDATE")
+    skip: true
+  - if: speakerNote.contains("QUOTE")
+    layout: "引用"
+  - if: speakerNote.contains("IMAGE_ONLY")
+    layout: "白紙"
+  - if: speakerNote.contains("GOODBYE")
+    layout: "見出しと本文_画像50%"
+  - if: true
+    layout: "見出しと本文"
+---
+
+# The Box Barden
+
+## 〜 Since 2016 〜
 
 ----
 
 # 2016年の話からします
+
+<!--
+HERO
+-->
 
 ----
 
@@ -28,6 +54,10 @@
 
 # 10年後
 
+<!--
+HERO
+-->
+
 ----
 
 # Uzumibi
@@ -43,7 +73,15 @@
 
 ----
 
-# Haconiwaは開発止まりましたが...
+# Haconiwaの学び
+
+<!--
+HERO
+-->
+
+----
+
+# 開発はもう止まりましたが...
 
 - OCI対応するとHaconiwaじゃなくね？というジレンマがね...
 - youkiは凄いですよ、ほんま
@@ -80,6 +118,9 @@
 
 # One More Thing...
 
+<!--
+HERO
+-->
 
 ----
 
