@@ -5,6 +5,7 @@ paginate: true
 title: "Goの紹介＋バックエンドエンジニアのための負荷試験"
 description: "@ Backendを語る会 in 福岡 #1"
 size: 16:9
+image: https://udzura.jp/slides/2026/backend-meetup-1/ogp.png
 style: |
   h1 { color: #2a5b8c; }
   h2 { color: #2a5b8c; }
