@@ -1973,9 +1973,9 @@ a { text-decoration: underline; }
 <li>計測結果から最大のボトルネックを特定、優先して対応</li>
 <li>レイテンシが大きいエンドポイントを眺める
 <ul>
-<li>N+1 がある → アプリで改善</li>
-<li>read heavy → レプリカ利用 or キャッシュ導入</li>
-<li>CPUバウンド → 台数を増やしてrpsの伸びを確認</li>
+<li>N+1 がある → クエリを確認して改善</li>
+<li>read heavy → キャッシュ導入</li>
+<li>CPUバウンド → プロファイルからCPUが重い処理を探す</li>
 </ul>
 </li>
 </ul>
@@ -2015,7 +2015,7 @@ a { text-decoration: underline; }
 </li>
 <li>Webアプリケーション基盤
 <ul>
-<li>CPU利用率が60%弱に収まる？ → 台数調整</li>
+<li>CPU利用率が全体に60%弱に収まる？ → 台数調整</li>
 <li>台数変更時のスケールアウトはスムーズか？
 <ul>
 <li>同時接続数 / 1インスタンスあたりのspecを調整</li>
@@ -2058,8 +2058,7 @@ a { text-decoration: underline; }
 <li>ときには仕様に踏み込んだ調整も必要</li>
 </ul>
 </li>
-<li>→ ドメインに詳しいバックエンドエンジニアが<br />
-対応した方がスピードが上がる</li>
+<li>→ ドメインに詳しいバックエンドエンジニアが対応した方がスピードが上がる</li>
 </ul>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="47" data-paginate="true" data-theme="default" data-style="h1 { color: #2a5b8c; }
