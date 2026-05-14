@@ -19,6 +19,8 @@ style: |
   section.mermaid-slide .mermaid .edgeLabel { font-size: 10px; }
   section.mermaid-slide .mermaid .cluster-label .nodeLabel { font-size: 11px; }
   a { text-decoration: underline; }
+  section.profile .profile-container img { float:right; border-radius: 50%; }
+  section.smarthr img { vertical-align: -18px; }
 ---
 <!--
 _class: hero
@@ -36,14 +38,24 @@ _class: hero
 -->
 
 ---
+<!--
+_class: profile
+-->
 
 # 自己紹介
+
+<div class="profile-container">
+
+![w:250](./image-5.png)
+
+</div>
 
 - 近藤うちお (@udzura)
 - 株式会社 SmartHR プロダクトエンジニア
 - 『入門eBPF』（オライリージャパン）共訳
 - バックエンド本職だった時期は短め＆かなり過去
-  - 直近はインフラ／プラットフォーム寄りの仕事が多めです
+  - 直近はインフラ／プラットフォーム寄りの仕事が多め
+
 
 <!--
 SmartHRでプロダクトエンジニアをしています。バックエンド本職の期間は短めですが、GoとRailsは業務で触ってきました。
@@ -67,7 +79,12 @@ TODO: 公開されたら更新
 
 ---
 
-# 宣伝 #2
+<!--
+_class: smarthr
+-->
+
+
+# ![h:70](./smarthr.png) の宣伝
 
 - [SmartHRではプロダクト（バックエンド多め）エンジニアを大・大・大募集中です！！](https://hello-world.smarthr.co.jp/)
 - 原則フルリモートです、福岡在住の人が多いらしい
