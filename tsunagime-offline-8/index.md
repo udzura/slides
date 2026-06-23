@@ -125,7 +125,13 @@ _class: hero
 _class: hero
 -->
 
-# Vivarium
+![bg w:500](image-3.png)
+
+<center style="font-size: 1.3em; padding-top: 14em;">
+
+[https://github.com/udzura/vivarium](https://github.com/udzura/vivarium)
+
+</center>
 
 ---
 
