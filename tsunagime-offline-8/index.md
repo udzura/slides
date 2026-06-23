@@ -392,7 +392,7 @@ _class: hero
 
 ---
 
-![bg w:1000](./arch.png)
+![bg w:900](image-5.png)
 
 ---
 
