@@ -324,8 +324,6 @@ uprobe で libc の ENV 操作関数を直接フック
 
 ## イベント: 権限・セキュリティ操作
 
-severity: **high** 判定になるイベント群
-
 | イベント名 | 意味 |
 |---|---|
 | `setid_change` | `setuid` / `setgid` による権限変更 |
@@ -343,6 +341,10 @@ severity: **high** 判定になるイベント群
 - Ruby の TracePoint を経由して指定したメソッドの呼び出しをトレースする
   - デフォルトでは `require`, `eval` などを捕捉
 - 素朴にやるとパフォーマンス影響が大きいので工夫している（後述）
+
+---
+
+![bg h:600](./Gemini_Generated_Image_52lulj52lulj52lu.png)
 
 ---
 
