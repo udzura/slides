@@ -24,7 +24,7 @@ style: |
     content: "";
     position: absolute;
     right: 16px;
-    bottom: 12px;
+    top: 12px;
     width: 100px;
     height: 100px;
     background: url("qrcode.png") center / contain no-repeat;
