@@ -5,11 +5,11 @@ paginate: true
 title: "Cloudflare って実際どんなサービスが使えるん？の話"
 description: "Fukuoka.edge Cloudflare services summary draft"
 style: |
-  h1 { color: #ea580c; }
-  h2 { color: #ea580c; }
-  section li { color: #3f3f46; }
+  h1 { color: #F38020; }
+  h2 { color: #F38020; }
+  section li { color: #404041; }
   section table { font-size: 20pt; }
-  section th { color: #9a3412; }
+  section th { color: #c1440e; }
   section.hero {
     display: flex;
     flex-direction: column;
