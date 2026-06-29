@@ -1,0 +1,21 @@
+{
+  "name": "fukuoka-edge-sample-pj",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Cloudflare の基本サービス (R2/KV/D1/Durable Objects/Queues/Access) をまとめて試せるサンプル Worker",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:apply": "wrangler d1 execute fukuoka-edge-db --local --file=./schema.sql",
+    "db:apply:remote": "wrangler d1 execute fukuoka-edge-db --remote --file=./schema.sql",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260601.0",
+    "typescript": "^5.5.0",
+    "wrangler": "^3.80.0"
+  },
+  "dependencies": {
+    "jose": "^5.9.0"
+  }
+}

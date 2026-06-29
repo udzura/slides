@@ -1,0 +1,66 @@
+{
+  // Cloudflare の基本サービスをまとめて bind したサンプル設定。
+  // 各 id / bucket_name は自分の環境の値に置き換えてください。
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fukuoka-edge-sample-pj",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "observability": {
+    "enabled": true
+  },
+
+  // --- KV: グローバルに読める key-value store ---
+  "kv_namespaces": [
+    { "binding": "MY_KV", "id": "<KV_NAMESPACE_ID>" }
+  ],
+
+  // --- R2: S3 互換オブジェクトストレージ ---
+  "r2_buckets": [
+    { "binding": "MY_BUCKET", "bucket_name": "fukuoka-edge-bucket" }
+  ],
+
+  // --- D1: SQLite ベースのサーバーレス DB ---
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fukuoka-edge-db",
+      "database_id": "<D1_DATABASE_ID>"
+    }
+  ],
+
+  // --- Durable Objects: 一貫性のある状態を持つオブジェクト ---
+  "durable_objects": {
+    "bindings": [
+      { "name": "COUNTER", "class_name": "Counter" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Counter"] }
+  ],
+
+  // --- Queues: 非同期ジョブ ---
+  // この Worker 自身が producer かつ consumer を兼ねる例。
+  "queues": {
+    "producers": [
+      { "queue": "fukuoka-edge-jobs", "binding": "MY_QUEUE" }
+    ],
+    "consumers": [
+      {
+        "queue": "fukuoka-edge-jobs",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+        "max_retries": 3
+      }
+    ]
+  },
+
+  // --- Access: 認証情報の検証に使う設定 ---
+  // TEAM_DOMAIN は https://<your-team>.cloudflareaccess.com
+  // POLICY_AUD は Access Application の AUD タグ。
+  "vars": {
+    "TEAM_DOMAIN": "https://<your-team>.cloudflareaccess.com",
+    "POLICY_AUD": "<ACCESS_APPLICATION_AUD>"
+  }
+}
