@@ -124,7 +124,7 @@ export default {
       }
     }
   },
-} satisfies ExportedHandler<Env>;
+} satisfies ExportedHandler<Env, JobMessage>;
 
 // Access の JWT を検証し、本人情報を返す。失敗時は null。
 async function verifyAccess(
