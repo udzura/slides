@@ -140,8 +140,8 @@ const { results } = await env.DB
   .all();
 
 // 書き込み
-await env.DB.prepare("INSERT INTO users (name) VALUES (?)")
-  .bind("udzura").run();
+await env.DB.prepare("INSERT INTO users (name, age) VALUES (?, ?)")
+  .bind("udzura", 41).run();
 ```
 
 ---
@@ -188,12 +188,13 @@ export default {
 # Durable Objects のコード例
 
 ```ts
-export class Counter {
-  constructor(state, env) { this.state = state; }
+import { DurableObject } from "cloudflare:workers";
+
+export class Counter extends DurableObject {
   async fetch(req) {
-    let v = (await this.state.storage.get("v")) ?? 0;
-    await this.state.storage.put("v", ++v); // 単一インスタンスで整合
-    return new Response(String(v));
+    let v = (await this.ctx.storage.get("v")) ?? 0;
+    await this.ctx.storage.put("v", ++v); // 単一インスタンスで整合
+    return Response.json({ counter: v });
   }
 }
 
@@ -260,16 +261,18 @@ export default {
 
 ```ts
 // 同じ Worker に queue ハンドラを生やす
-async queue(batch, env) {
-  for (const msg of batch.messages) {
-    try {
-      await doHeavyJob(msg.body);
-      msg.ack();          // 成功したら確定
-    } catch {
-      msg.retry();        // 失敗したら後で再配信
+export default {
+  async queue(batch, env) {
+    for (const msg of batch.messages) {
+      try {
+        await doHeavyJob(msg.body);
+        msg.ack();          // 成功したら確定
+      } catch {
+        msg.retry();        // 失敗したら後で再配信
+      }
     }
   }
-}
+};
 ```
 
 ---
@@ -362,7 +365,7 @@ const matches = await env.VECTORIZE.query(queryVector, { topK: 5 });
 - 各サービスの動作をまとめて試せる Worker を用意
   - `fukuoka-edge/fukuoka-edge-sample-pj`
 - 1 つの Worker に R2 / KV / D1 / DO / Queues / Access を同居
-  - `GET /kv`, `GET /d1`, `PUT /r2/:key`, `GET /counter` ...
+  - `GET /kv`, `GET /d1`, `PUT /r2/:key`, `GET /counter/:room` ...
 - `wrangler dev` でローカル起動 → 各エンドポイントを叩くだけ
 
 ---
