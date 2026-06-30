@@ -286,6 +286,10 @@ export default {
 
 ---
 
+![bg h:600](./access.png)
+
+---
+
 # Access: 認証情報の受け取り方
 
 - Access を通過したリクエストには JWT が付く
@@ -324,8 +328,8 @@ export default {
 
 # その他気になる・試したい
 
-- Flagship ← 特に気になる
-- Vectorize ← 特に気になる
+- Flagship
+- Vectorize
 - AI Gateway / Workers AI
 - Workflows
 
@@ -335,10 +339,16 @@ export default {
 
 - Cloudflare 製の **フィーチャーフラグ** サービス（2026〜, beta）
 - コードを再デプロイせずに機能の ON/OFF・段階的ロールアウト
-- 評価が **エッジの isolate 内で完結**（ネットワークホップなし）
+- 評価が **エッジのリクエストで完結**（通信オーバヘッドなし）
   - 内部実装が Workers + Durable Objects + KV で構成
   - 設定は DO に書き込み → KV に配布 → 各エッジでローカル評価
-- **OpenFeature 準拠**（`@cloudflare/flagship`）
+
+---
+
+# ちなみに
+
+- **[OpenFeature](https://www.cncf.io/projects/openfeature/) 準拠**（`@cloudflare/flagship`）
+  - CNCF(Cloud Native Computing Foundation)が定める標準
   - boolean / 文字列 / 数値 / JSON を返せる
   - ターゲティングルール、割合ロールアウトに対応
 
