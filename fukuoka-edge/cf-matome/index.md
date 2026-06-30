@@ -363,10 +363,11 @@ const matches = await env.VECTORIZE.query(queryVector, { topK: 5 });
 # サンプルプロジェクト
 
 - 各サービスの動作をまとめて試せる Worker を用意
-  - `fukuoka-edge/fukuoka-edge-sample-pj`
+  - https://github.com/udzura/slides/tree/master/fukuoka-edge/fukuoka-edge-sample-pj
 - 1 つの Worker に R2 / KV / D1 / DO / Queues / Access を同居
   - `GET /kv`, `GET /d1`, `PUT /r2/:key`, `GET /counter/:room` ...
 - `wrangler dev` でローカル起動 → 各エンドポイントを叩くだけ
+  - READMEを見て設定してください
 
 ---
 
@@ -383,7 +384,7 @@ const matches = await env.VECTORIZE.query(queryVector, { topK: 5 });
 _class: hero
 -->
 
-# まずは Workers から
+# まずは触ってみよう！！！１;
 
 ---
 
