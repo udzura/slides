@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 size: 16:9
-title: "Uzumibiの紹介: Rubyを書けばCloudflare Workerにそのままデプロイできるってマ！？"
+title: "Uzumibiの紹介: Rubyを書けばCloudflare Workersにそのままデプロイできるってマ！？"
 description: "Cloudflare Tech Talk in Fukuoka rehearsal"
 style: |
   :root {
@@ -42,17 +42,125 @@ style: |
     padding-bottom: 0;
   }
   .sub { color: #6b7280; font-size: 26px; }
+  .profile-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    align-items: center;
+    gap: 52px;
+    margin-top: 28px;
+  }
+  .profile-image {
+    display: block;
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border: 5px solid #fed7aa;
+    border-radius: 50%;
+  }
+  .profile-name {
+    margin: 0;
+    color: var(--ink);
+    font-size: 39px;
+    font-weight: bold;
+  }
+  .profile-handle {
+    margin: 4px 0 20px;
+    color: #9a3412;
+    font-size: 25px;
+  }
+  .profile-details {
+    margin: 0;
+    font-size: 26px;
+  }
+  .promo-card {
+    border: 2px solid #fed7aa;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+    padding: 34px 40px;
+    margin-top: 34px;
+    box-shadow: 0 10px 24px rgba(154, 52, 18, 0.08);
+  }
+  .promo-kicker {
+    color: #9a3412;
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 1.3;
+    margin: 0 0 24px;
+  }
+  .promo-card ul {
+    margin: 0;
+    font-size: 25px;
+  }
+  .promo-grid {
+    display: grid;
+    grid-template-columns: 58% 42%;
+    align-items: center;
+    gap: 30px;
+    margin-top: 28px;
+  }
+  .promo-visual {
+    overflow: hidden;
+    border: 4px solid #dbeafe;
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(30, 64, 175, 0.13);
+  }
+  .promo-visual img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .promo-copy {
+    border-left: 5px solid #3b82f6;
+    border-radius: 8px;
+    background: #f8fafc;
+    padding: 26px 26px 24px;
+  }
+  .promo-copy .promo-kicker {
+    color: #1e3a8a;
+    font-size: 30px;
+    margin-bottom: 24px;
+  }
+  .promo-qr-row {
+    display: grid;
+    grid-template-columns: 158px 1fr;
+    align-items: center;
+    gap: 18px;
+  }
+  .promo-qr {
+    display: block;
+    width: 158px;
+    height: 158px;
+    object-fit: contain;
+    border: 1px solid #dbeafe;
+    background: #ffffff;
+  }
+  .promo-copy ul {
+    margin: 0;
+    padding-left: 1.15em;
+    font-size: 23px;
+  }
+  .promo-copy a {
+    font-size: 19px;
+    overflow-wrap: anywhere;
+  }
   .toc {
-    display: flex;
-    gap: 28px;
-    margin-top: 42px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    margin-top: 30px;
   }
   .toc-block {
-    flex: 1;
     border: 2px solid #d1d5db;
     border-radius: 14px;
     background: #ffffff;
-    padding: 28px 30px;
+    padding: 22px 30px;
+  }
+  .toc-block.intro {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    align-items: center;
+    background: #f8fafc;
   }
   .toc-block.front {
     border-color: #fed7aa;
@@ -77,7 +185,7 @@ style: |
     line-height: 1.3;
     margin: 0;
   }
-  .toc-block.intro .toc-title { font-size: 26px; }
+  .toc-block.intro .toc-label { margin: 0; }
   .toc-note {
     color: #6b7280;
     font-size: 22px;
@@ -118,6 +226,7 @@ style: |
     background: #faf5ff;
     color: #5b21b6;
   }
+  .node.logo-node { flex-direction: column; }
   .node.list { font-size: 23px; }
   .arrow {
     flex: 0 0 26px;
@@ -171,15 +280,77 @@ style: |
     font-size: 22px;
     text-align: center;
   }
+  .gh-note {
+    position: absolute;
+    right: 76px;
+    bottom: 54px;
+    left: 76px;
+    box-sizing: border-box;
+    border-left: 4px solid #0969da;
+    border-radius: 6px;
+    background: #f6f8fa;
+    padding: 12px 16px;
+    margin: 0;
+  }
+  section:has(.gh-note) { padding-bottom: 180px; }
+  .gh-note-title {
+    color: #0969da;
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .gh-note-body {
+    color: #24292f;
+    font-size: 22px;
+    line-height: 1.4;
+  }
+  .cloudflare-logo {
+    display: block;
+    width: 190px;
+    height: 190px;
+    object-fit: contain;
+    margin: 36px auto 0;
+  }
+  .wasm-logo {
+    display: block;
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    margin: 34px auto 0;
+  }
+  section.uzumibi-intro h1 { margin-bottom: 10px; }
+  .uzumibi-logo {
+    display: block;
+    width: auto;
+    height: 430px;
+    max-width: 100%;
+    object-fit: contain;
+    margin: 12px auto 0;
+  }
+  .rack-logo {
+    display: block;
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    margin: 0 auto 4px;
+  }
+  .rack-response { font-size: 20px; line-height: 1.15; }
+  .sinatra-logo {
+    display: block;
+    width: 520px;
+    max-height: 164px;
+    object-fit: contain;
+    margin: 28px auto 0;
+  }
 ----
 
 <!--
 _class: hero
 -->
 
-# Uzumibiの紹介, そしてUzumibi2 ...？
+# Rubyを書けばCloudflare Workersに<br />そのままデプロイできるってマ⁉️
 
-## Rubyを書けばCloudflare Workerにそのままデプロイできるってマ⁉️
+## Uzumibiの紹介, そしてUzumibi2の展望（？）
 
 <br>
 
@@ -188,12 +359,65 @@ Cloudflare Tech Talk in Fukuoka<br>
 
 ---
 
+# 自己紹介
+
+<div class="profile-layout">
+  <img class="profile-image" src="./profile.png" alt="Uchio Kondo">
+  <div>
+    <p class="profile-name">Uchio Kondo</p>
+    <p class="profile-handle">@udzura</p>
+    <ul class="profile-details">
+      <li>株式会社SmartHR プロダクトエンジニア</li>
+      <li>Fukuoka.rb オーガナイザー</li>
+      <li>エンジニアカフェ ハッカーサポーター</li>
+      <li>Ruby / mruby / Rust / Wasm</li>
+      <li>『入門eBPF』（オライリージャパン）翻訳</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+# 宣伝その1
+
+<div class="promo-card">
+  <p class="promo-kicker">Fukuoka.wasm をやります！！！！！！！！１</p>
+  <ul>
+    <li>7月に<a href="https://engineercafe.connpass.com/event/396418/">Fukuoka.edge</a> と言う勉強会をやってみたんだが、<br>実はWasmの話をしたい人が多いかも？（感想）</li>
+    <li>なので11月ぐらいになりますが、<strong>何かします！！！！！！！！！</strong></li>
+    <li>何かしたい方、ぜひお声がけください</li>
+  </ul>
+</div>
+
+---
+
+# 宣伝その2
+
+<div class="promo-grid">
+  <div class="promo-visual">
+    <img src="./mirisira5.png" alt="イメージ">
+  </div>
+  <div class="promo-copy">
+    <p class="promo-kicker">9/17 にもくもく会をします。</p>
+    <div class="promo-qr-row">
+      <img class="promo-qr" src="./connpass-404554-qr.png" alt="connpassイベントページのQRコード">
+      <ul>
+        <li>ちょうど来週</li>
+        <li>AIよろずもくもく会です。きてね</li>
+        <li><a href="https://engineercafe.connpass.com/event/404554/">https://engineercafe.connpass.com/event/404554/</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+---
+
 # 今日のトピック
 
 <div class="toc">
   <div class="toc-block intro">
     <p class="toc-label">はじめに</p>
-    <p class="toc-title">Cloudflare Workersで<br>Rubyを動かすモチベ</p>
+    <p class="toc-title">Cloudflare WorkersでRubyを動かすモチベって？</p>
   </div>
   <div class="toc-block front">
     <p class="toc-label">前半</p>
@@ -202,7 +426,7 @@ Cloudflare Tech Talk in Fukuoka<br>
   </div>
   <div class="toc-block later">
     <p class="toc-label">後半</p>
-    <p class="toc-title">今開発しているもの<br>（「Uzumibi2」）</p>
+    <p class="toc-title">今開発しているもの<br>「Uzumibi2(仮)」</p>
   </div>
 </div>
 
@@ -210,96 +434,111 @@ Cloudflare Tech Talk in Fukuoka<br>
 
 # Cloudflare WorkersでRubyを動かしたい！
 
-- Cloudflare WorkersでRubyのコードを動かしたい
+- 「何言ってんの？」と思われそうなのでまずその話をしますね...
 
 ---
 
 # Cloudflareは激アツプラットフォーム
 
-- Cloudflare Workersがフロントエンドの人を中心に大流行
+- Cloudflare Workersが大流行
+- 速い、軽い、簡単。無料枠も充実
+
+<img class="cloudflare-logo" src="./cloudflare.png" alt="Cloudflare">
 
 ---
 
-# Rubyコミュニティからあまり注目されていなくて、勿体無い
+# Rubyコミュニティからあまり注目されていない
 
-- Rubyを書きたいので、これらの技術に触れることが難しい
-
----
-
-# 令和の時代、Railsをデプロイする先の選定は大変
-
-- デプロイ先をどう選ぶか
+- 勿体無い！！！！
+- しかし、なるべくRuby書きたいので、まあ今度...ってなりがち
 
 ---
 
-# 無料でサクッと始められるCloudflare Workersは「強い」です
+# ところで令和の時代、Rubyアプリケーションを<br>デプロイする先の選定は大変
 
-- 無料で始められる
-
----
-
-# `ruby.wasm`は動かせるらしい
-
-- RubyをWasmで動かす取り組みはある
+- Railsに限らずそんな感じ
+- 結局ECSとかCloud Runとか大手クラウドを利用
+- Kamal... いや〜
 
 ---
 
-# しかし、10MB近くの容量になるとのことで敷居が高い
+# 無料でサクッと始められるCloudflare Workersは...
 
-- 無料枠では動かせない
-- 課金したプランで無理やり使うことになる
+- 「強い」です by AI
+
+<div class="gh-note">
+  <div class="gh-note-title">💭&nbsp; 心の声</div>
+  <div class="gh-note-body">往時のHer ⭕️ &nbsp;ku ブームを思い出す。だがもっとすごいと個人的には思う</div>
+</div>
+
+---
+
+# Cloudflare Workersでも`ruby.wasm`はOK
+
+- RubyをWasmで動かす取り組みは結構前からある
+
+---
+
+# しかし、10MB近くの容量に...
+
+- 例えば: [Cloudflare Workers で Ruby Assembly (ruby.wasm) を Hono から呼び出してみたメモ](https://zenn.dev/hiroe_orz17/articles/2ab00c03a66078#5.-%E3%82%B5%E3%82%A4%E3%82%BA%E5%88%B6%E9%99%90%E3%81%A8%E3%83%97%E3%83%A9%E3%83%B3%E3%81%AE%E8%A9%B1)
+
+> ruby+stdlib.wasm はおよそ 9 MB (gzip) 程度あるため、無料プラン (Free) の 3 MiB バンドル上限を超えてしまいます。
 
 ---
 
 # もっとサクッとRubyのコードを動かしたい
 
-- Rubyのコードをサクッと動かしたい
-
 ---
 
-# 今できていることの軸
+<!-- _class: uzumibi-intro -->
 
-- Uzumibiの紹介
-- 仕組み
-- すぐに試せること
+# そこで... Uzumibi
+
+<img class="uzumibi-logo" src="./uzumibi.png" alt="Uzumibi">
 
 ---
 
 # Uzumibiの紹介
 
 - Uzumibi is 何
+- できること
+- 仕組み
+- すぐに試せるよ！ (demo)
 
 ---
 
 # Uzumibi is 何
 
-- Cloudflare WorkersでRubyのコードを動かすためのもの
+- Cloudflare WorkersでRubyのコードを動かしたい！を叶えるフレームワーク
+- コードジェネレータ付きですぐできる
 
 ---
 
 # Uzumibi: Rubyをいろいろな場所へ
 
 <div class="diagram">
-  <div class="node">Ruby app</div>
+  <div class="node">Ruby code</div>
   <div class="arrow">→</div>
   <div class="node core">Uzumibi</div>
   <div class="arrow">→</div>
-  <div class="node">Cloudflare Workers<br>Fastly Compute<br>Google Cloud Run</div>
+  <div class="node">Cloudflare Workers<br>Fastly Compute<br>Google Cloud Run...</div>
 </div>
 
 <p class="caption">プラットフォームごとに adapter / template を用意する</p>
 
 ---
 
-# できること（Cloudflare限定で）
+# できること（Cloudflareでの対応状況）
 
 - Cloudflare WorkersでRubyアプリケーションを実行する
+- KV, Queue, Accessなどなども使える・連携できる
 
 ---
 
 # ライブデモでデプロイしちゃう
 
-- デプロイしちゃう
+- うまくいくんかな... 😅
 
 ---
 
@@ -315,27 +554,42 @@ Cloudflare Tech Talk in Fukuoka<br>
 # 独自のmruby VM（Rust）
 
 - `mruby/edge`
+- 「Rustでmruby VM作りてぇな〜」と思って作ったやつを利用
+- cf. RubyKaigi
+  - 2024: [An mruby for WebAssembly](https://rubykaigi.org/2024/presentations/udzura.html)
+  - 2026: [Uzumibi: Reinventing mruby for the Edges](https://rubykaigi.org/2026/presentations/udzura.html)
 
 ---
 
 # RustなのでWasmにできる
 
-- RustからWebAssemblyを生成する
+- RustからWebAssemblyを生成するのはかなり「楽」で、「刺さる」用途です。 by AI
 
 ---
 
-# WasmはCloudflare WorkersのV8で動く
+# WasmならCloudflare WorkersのV8で動く
 
-- Cloudflare WorkersのV8でWasmを実行する
+```js
+import wasmModule from "./app.wasm";
+
+const instance = await WebAssembly.instantiate(
+  wasmModule,
+  { env: { /* Ruby向けのhost functions */ } },
+);
+const wasm = instance.exports;
+```
+
+<img class="wasm-logo" src="./wa.png" alt="WebAssembly">
 
 ---
 
 # リクエストをWasmに渡して、Rubyを実行する
 
-- HTTPリクエストをエンコードしてWasmに渡す
-- Rubyバイトコードを実行する
-- Rubyがリクエストを解釈する
-- RubyのレスポンスをWorkersへ返却する
+- ざっくり:
+  - HTTPリクエストをエンコードしてWasmに渡す
+  - Ruby(mruby)バイトコードを実行する
+  - Rubyでリクエストを解釈する
+  - レスポンスのRubyオブジェクトを再エンコード、Workersへ返却する
 
 ---
 
@@ -367,31 +621,68 @@ Cloudflare Tech Talk in Fukuoka<br>
 
 # すぐに試せますし、無料枠で動きます
 
-- Uzumibiを試せる
+- [Uzumibi入門](https://zenn.dev/udzura/books/532f38f73fe4e9)でUzumibiを試せる（一部内容編集中）
 
 ---
 
-# これからやろうとしていることの軸
+# よろしくね！
 
-- せっかくなので、エコシステムが強いPicoRubyも動かしたい
+---
+
+# One more thing...
+
+---
+
+# Uzumibi2（？？？）
+
+---
+
+# Uzumibi で問題だな〜と思ってること
+
+- mrubyのVMが独自実装であること
+  - 「いつものRubyかと思ったらそうじゃない」場面が引っ掛かるかも
+  - AIがあるとはいえ、ライブラリをひたすら再発明はなんか...
+
+<div class="gh-note">
+  <div class="gh-note-title">💭&nbsp; 心の声</div>
+  <div class="gh-note-body">AI時代って、車輪の再発明はすぐできるけど、「本当にユーザが欲しくて使われるもの」を作るのは難しい。</div>
+</div>
+
+---
+
+# エコシステムが強いPicoRubyも動かしたい
+
+- CRubyは複雑だし、今回の用途に合わせるのはそもそも困難そう
+
+<div class="gh-note">
+  <div class="gh-note-title">💭&nbsp; 心の声</div>
+  <div class="gh-note-body">「組み込み向け」と言うのは本質的にWasm向けなのである</div>
+</div>
 
 ---
 
 # PicoRubyをCloudflare Workersで動かしたい
 
-- PicoRubyには強いエコシステムがある
+- PicoRubyには強いエコシステム・ユーザ・ファンがある
+- Cloudflare Workersでも動かせると面白がってもらえそう
 
 ---
 
 # やっていること
 
 - PicoRubyをCloudflare Workersで動くWasmにビルドした
-- Rack互換レイヤを実装した
-- `app.rb` の開発時自動リロードも実装しておいた
+- 一緒に
+  - Rack互換レイヤを実装した
+  - `app.rb` の開発時自動リロードも実装しておいた
+
+<div class="gh-note">
+  <div class="gh-note-title">💭&nbsp; 心の声</div>
+  <div class="gh-note-body">せっかくなのでベターなエコシステムにしたい</div>
+</div>
 
 ---
 
-# PicoRubyをWorkersで動かす構成
+# PicoRubyをWorkersで動かす概要図
 
 <div class="stack compact-stack">
   <div class="layer">Cloudflare Workers<br><span class="caption">request / response</span></div>
@@ -407,14 +698,27 @@ Cloudflare Tech Talk in Fukuoka<br>
 
 # Rack互換レイヤを実装した
 
-- Rack互換レイヤを実装した
+- Rack互換なので、こういうアプリが動く:
+
+```ruby
+app = Proc.new do |env|
+  [
+    200,
+    { "content-type" => "text/plain" },
+    ["Hello, world!\n"]
+  ]
+end
+Picoruby.run app
+```
 
 ---
 
-# Rack互換の考え方
+# Rackとは何か？
 
-- PerlのPSGI
-- PythonのWSGI
+- RubyのWebサーバとWebアプリケーションをつなぐ共通インターフェース
+- 他の言語で言うと
+  - PerlのPSGI
+  - PythonのWSGI
 
 ---
 
@@ -423,7 +727,7 @@ Cloudflare Tech Talk in Fukuoka<br>
 <div class="diagram">
   <div class="node list">Server<br><br>Puma<br>Unicorn<br>WEBrick<br>CGI<br>...</div>
   <div class="arrow">↔</div>
-  <div class="node core">Rack<br><br><code>env</code><br><code>[status, headers, body]</code></div>
+  <div class="node core logo-node"><img class="rack-logo" src="./rack.png" alt="Rack">Rack</div>
   <div class="arrow">↔</div>
   <div class="node list">Framework<br><br>Rails<br>Sinatra<br>Hanami<br>Roda<br>...</div>
 </div>
@@ -432,54 +736,146 @@ Cloudflare Tech Talk in Fukuoka<br>
 
 ---
 
-# `app.rb` の開発時自動リロードも実装しておいた
+# `app.rb` の開発時自動リロードも実装
 
-- おまけ的な機能
-
----
-
-# さらに…
-
-- Rackをサポートした
-- 「Rubyで有名な」フレームワークを動かしたい
+- 実は既存のUzumibiでできていなかった...
+- やっぱあると便利
 
 ---
 
-# Railsは流石に無理…
+# Rackをサポートしたからには、な...
 
-- Railsは流石に無理
+- Rubyの「有名な」フレームワークを動かしたい
+- Railsは流石に無理なので、少しずつな...
 
 ---
 
-# 現状、ワイのプロジェクトではSinatraが動いている
+# 現状
 
+---
+
+# ワイの手元ではSinatraが動いている
+
+- 1行も本体コードにはパッチを当てていない
 - 本物のSinatraを動かしている
+  - version `4.2.1`
+- Mustermann（重要なルータライブラリ）もそのまま動かせている
+
+<img class="sinatra-logo" src="./sinatra.png" alt="Sinatra">
 
 ---
 
 # 容量も余裕がある
 
-- 非圧縮で700KiB台
-- 圧縮後は300KiB以下
+- デプロイもできていて、動いているのを確認
+- 非圧縮で700KiB台、圧縮後は300KiB以下
+
+```console
+$ npm run check
+Total Upload: 734.10 KiB / gzip: 292.33 KiB
+--dry-run: exiting now.
+```
 
 ---
 
-# ただし、まだバグがある
+# ただし、まだ若干非互換が
 
-- 正規表現のバグ
-- バイトコードコンパイラのバグ
+- mruby 4.0 相当を使っているが、このバージョンでは以下のCRuby非互換がある:
+  - 正規表現の非互換（バグ）
+  - バイトコードコンパイラの非互換（バグ）
+  - `bare raise` の非互換
+
+---
+
+# 正規表現の非互換（バグ）
+
+- mruby-regexp のバックトラッキングエンジンが `\Z` を処理しておらず、lazy quantifier、後方参照、lookaroundなどと組み合わせると、CRubyと異なるマッチ結果になっていた
+
+```ruby
+match = /\A(?<path>.*?)\Z/.match("a/b")
+match["path"] # CRubyでは "a/b", mruby では nil
+```
+
+- [mruby/mruby #7257 — mruby-regexp: match \Z under the backtracking engine](https://github.com/mruby/mruby/pull/7257) で対応(2026年8月18日)
+
+---
+
+# バイトコードコンパイラの非互換（バグ）
+
+- ensure 内にローカル変数の `||=` `&&=` があると、不要なVMレジスタが確保され、returnすべきレジスタがズレた
+
+```ruby
+def example
+  result = :result
+  begin
+    result
+  ensure
+    value ||= []
+  end
+end
+example # CRubyでは :result、修正前mrubyでは nil
+```
+
+- [mruby/mruby #7390 — mruby-compiler: avoid pushing discarded local assignment values](https://github.com/mruby/mruby/pull/7390) で**ワイが**対応(2026年8月27日)
 
 ---
 
 # upstreamではいずれも修正済み
 
-- upstreamではいずれも修正済み
+- ここまでは、upstreamではいずれも修正済み/picoruby取り込み済み
+- Hasumikinさんは神
 
 ---
 
-# 逆に言えば、今やこれだけの非互換しかない
+# `bare raise` の非互換
 
-- mrubyすごっ
+```ruby
+class FooError < StandardError; end
+begin
+  raise FooError, "bar"
+rescue
+  raise
+end
+```
+
+- CRubyでは、rescue 内の引数なし `raise` は現在処理している例外を再送出
+  - Sinatraのエラーハンドリングがこの仕様に依存する😥
+- mrubyではメッセージのない新しい `RuntimeError`
+
+---
+
+# これは「意図した非互換」っぽくて悩む
+
+- mrubyの仕様を決めてるのもMatzなので...
+  - Matzが `bare raise` の挙動を嫌って無くしたんじゃないかって思ってるんすよね...（まつもとさん、見てたら教えてください）
+- Sinatra upstreamにあるべき状態のPRを送ってみてるが、どうなるか
+  - [sinatra/sinatra #2190 — Avoid bare raise for maintainability and compatibility](https://github.com/sinatra/sinatra/pull/2190)
+
+```ruby
+begin
+  raise FooError, "bar"
+rescue => e
+  raise e # これだけで対応できる
+end
+```
+
+---
+
+# 逆に言えば、今やこれだけの非互換しかない感じ
+
+- 見つかってる範囲では。
+- mrubyすごくね？
+
+---
+
+# 今後のアクション
+
+- Sinatra のアプリユースケースのコードを書き、その挙動をCRuby / PicoRuby で比較する基盤を作ってる
+- シナリオが増えれば増えるほど非互換がなくなる/できることがわかる
+
+---
+
+# Conclusion
 
 ---
 
@@ -494,4 +890,6 @@ Cloudflare Tech Talk in Fukuoka<br>
 # お試しください
 
 - Uzumibi
-- PicoRuby on Cloudflare Workers
+  - すぐにでも触りたい人は、もう触れます
+- PicoRuby on Cloudflare Workers w/ Sinatra!!
+  - 期待して待ってて！
