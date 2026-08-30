@@ -6,7 +6,7 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 SLIDES_PORT=${SLIDES_PORT:-8080}
 TERMINAL_PORT=7681
 TMUX_SESSION=uzumibi-demo
-DECK_SOURCE=${DECK_SOURCE:-index-rehearsal.md}
+DECK_SOURCE=${DECK_SOURCE:-index-with-demo.md}
 DECK_OUTPUT=${DECK_OUTPUT:-demo.html}
 HTTP_PID=
 TTYD_PID=
