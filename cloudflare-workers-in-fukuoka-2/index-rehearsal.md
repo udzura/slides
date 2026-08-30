@@ -488,6 +488,51 @@ style: |
   }
   section.code-pair-slide pre:nth-of-type(1) { grid-column: 1; }
   section.code-pair-slide pre:nth-of-type(2) { grid-column: 2; }
+  section.terminal-slide { padding-bottom: 42px; }
+  .terminal-window {
+    overflow: hidden;
+    height: 438px;
+    margin-top: 20px;
+    border: 2px solid #374151;
+    border-radius: 14px;
+    background: #0b1020;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.24);
+  }
+  .terminal-toolbar {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #374151;
+    background: #1f2937;
+    padding: 0 14px;
+  }
+  .terminal-dots {
+    display: flex;
+    gap: 7px;
+  }
+  .terminal-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+  .terminal-dot.red { background: #fb7185; }
+  .terminal-dot.yellow { background: #facc15; }
+  .terminal-dot.green { background: #4ade80; }
+  .terminal-location {
+    flex: 1;
+    color: #d1d5db;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 16px;
+    text-align: center;
+  }
+  .terminal-frame {
+    display: block;
+    width: 100%;
+    height: 400px;
+    border: 0;
+    background: #0b1020;
+  }
 ----
 
 <!--
@@ -722,9 +767,24 @@ Cloudflare Tech Talk in Fukuoka<br>
 
 ---
 
+<!-- _class: terminal-slide -->
+
+
 # ライブデモでデプロイしちゃう
 
 - うまくいくんかな... 😅
+
+<div class="terminal-window">
+  <div class="terminal-toolbar">
+    <div class="terminal-dots">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+    </div>
+    <div class="terminal-location">LOCAL · 127.0.0.1:7681 · uzumibi-demo</div>
+  </div>
+  <iframe class="terminal-frame" src="http://127.0.0.1:7681/" title="Uzumibi live demo terminal"></iframe>
+</div>
 
 ---
 
