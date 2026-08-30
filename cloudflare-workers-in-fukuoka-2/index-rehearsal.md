@@ -42,6 +42,47 @@ style: |
     padding-bottom: 0;
   }
   .sub { color: #6b7280; font-size: 26px; }
+  .toc {
+    display: flex;
+    gap: 28px;
+    margin-top: 42px;
+  }
+  .toc-block {
+    flex: 1;
+    border: 2px solid #d1d5db;
+    border-radius: 14px;
+    background: #ffffff;
+    padding: 28px 30px;
+  }
+  .toc-block.front {
+    border-color: #fed7aa;
+    background: #fffaf5;
+  }
+  .toc-block.later {
+    border-color: #c4b5fd;
+    background: #faf5ff;
+  }
+  .toc-label {
+    color: #4b5563;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 0 16px;
+  }
+  .toc-block.front .toc-label { color: #9a3412; }
+  .toc-block.later .toc-label { color: #5b21b6; }
+  .toc-title {
+    color: var(--ink);
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 1.3;
+    margin: 0;
+  }
+  .toc-block.intro .toc-title { font-size: 26px; }
+  .toc-note {
+    color: #6b7280;
+    font-size: 22px;
+    margin: 18px 0 0;
+  }
   ul { margin-top: 0.9em; }
   li { line-height: 1.45; margin: 0.3em 0; }
   li::marker { color: var(--cf); }
@@ -144,6 +185,26 @@ _class: hero
 
 Cloudflare Tech Talk in Fukuoka<br>
 <span class="sub">Uchio Kondo / @udzura</span>
+
+---
+
+# 今日のトピック
+
+<div class="toc">
+  <div class="toc-block intro">
+    <p class="toc-label">はじめに</p>
+    <p class="toc-title">Cloudflare Workersで<br>Rubyを動かすモチベ</p>
+  </div>
+  <div class="toc-block front">
+    <p class="toc-label">前半</p>
+    <p class="toc-title">Uzumibiの紹介</p>
+    <p class="toc-note">すぐ試せます</p>
+  </div>
+  <div class="toc-block later">
+    <p class="toc-label">後半</p>
+    <p class="toc-title">今開発しているもの<br>（「Uzumibi2」）</p>
+  </div>
+</div>
 
 ---
 
