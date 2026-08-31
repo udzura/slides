@@ -4,7 +4,8 @@ theme: default
 paginate: true
 size: 16:9
 title: "Uzumibiの紹介: Rubyを書けばCloudflare Workersにそのままデプロイできるってマ！？"
-description: "Cloudflare Tech Talk in Fukuoka rehearsal"
+description: "Cloudflare Tech Talk in Fukuoka #2 / Uzumibiの紹介"
+image: "https://udzura.jp/slides/2026/cloudflare-workers-in-fukuoka-2/ogp.png"
 style: |
   :root {
     --cf: #f38020;
