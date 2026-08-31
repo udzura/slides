@@ -143,6 +143,43 @@ style: |
     font-size: 19px;
     overflow-wrap: anywhere;
   }
+  section.share-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #fffdf9 0%, #fff3e8 100%);
+  }
+  section.share-slide h1 {
+    margin: 0 0 12px;
+    border-bottom: none;
+    padding-bottom: 0;
+    font-size: 52px;
+  }
+  .share-message {
+    margin: 0 0 18px;
+    color: #6b7280;
+    font-size: 25px;
+  }
+  .share-qr {
+    display: block;
+    width: 300px;
+    height: 300px;
+    padding: 12px;
+    border: 2px solid #fed7aa;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 12px 28px rgba(154, 52, 18, 0.12);
+  }
+  .share-url {
+    margin: 16px 0 0;
+    font-size: 20px;
+  }
+  .share-url a {
+    color: #9a3412;
+    text-decoration: none;
+  }
   .toc {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1206,3 +1243,15 @@ end
   - すぐにでも触りたい人は、もう触れます
 - PicoRuby on Cloudflare Workers w/ Sinatra!!
   - 期待して待ってて！
+
+---
+
+<!-- _class: share-slide -->
+
+# スライドはこちら！
+
+<p class="share-message">発表後もご覧いただけます</p>
+
+<a href="https://udzura.jp/slides/2026/cloudflare-workers-in-fukuoka-2/"><img class="share-qr" src="./slides-url-qr.png" alt="公開スライドのQRコード"></a>
+
+<p class="share-url"><a href="https://udzura.jp/slides/2026/cloudflare-workers-in-fukuoka-2/">udzura.jp/slides/2026/cloudflare-workers-in-fukuoka-2/</a></p>
