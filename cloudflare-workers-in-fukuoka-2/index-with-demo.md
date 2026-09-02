@@ -625,7 +625,7 @@ Cloudflare Tech Talk in Fukuoka<br>
   <p class="promo-kicker">Fukuoka.wasm をやります！！！！！！！！１</p>
   <div class="fukuoka-wasm-body">
     <ul>
-      <li>7月に<a href="https://engineercafe.connpass.com/event/396418/">Fukuoka.edge</a> と言う勉強会をやってみたんだが、<br>実はWasmの話をしたい人が多いかも？（感想）</li>
+      <li>7月に<a href="https://engineercafe.connpass.com/event/396418/">Fukuoka.edge</a> と言う勉強会をやってみたが、<br>実はWasmの話をしたい人が多い？（感想）</li>
       <li>なので11月ぐらいになりますが、<strong>何かします！！！！！！！！！</strong></li>
       <li>何かしたい方、ぜひお声がけください</li>
     </ul>
