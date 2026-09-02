@@ -91,6 +91,19 @@ style: |
     margin: 0;
     font-size: 25px;
   }
+  .fukuoka-wasm-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    align-items: center;
+    gap: 32px;
+  }
+  .fukuoka-wasm-logo {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  .fukuoka-wasm-body strong { display: inline-block; }
   .promo-grid {
     display: grid;
     grid-template-columns: 58% 42%;
@@ -610,11 +623,14 @@ Cloudflare Tech Talk in Fukuoka<br>
 
 <div class="promo-card">
   <p class="promo-kicker">Fukuoka.wasm をやります！！！！！！！！１</p>
-  <ul>
-    <li>7月に<a href="https://engineercafe.connpass.com/event/396418/">Fukuoka.edge</a> と言う勉強会をやってみたんだが、<br>実はWasmの話をしたい人が多いかも？（感想）</li>
-    <li>なので11月ぐらいになりますが、<strong>何かします！！！！！！！！！</strong></li>
-    <li>何かしたい方、ぜひお声がけください</li>
-  </ul>
+  <div class="fukuoka-wasm-body">
+    <ul>
+      <li>7月に<a href="https://engineercafe.connpass.com/event/396418/">Fukuoka.edge</a> と言う勉強会をやってみたんだが、<br>実はWasmの話をしたい人が多いかも？（感想）</li>
+      <li>なので11月ぐらいになりますが、<strong>何かします！！！！！！！！！</strong></li>
+      <li>何かしたい方、ぜひお声がけください</li>
+    </ul>
+    <img class="fukuoka-wasm-logo" src="./fukuoka-wasm-tran.png" alt="Fukuoka.wasm ロゴ">
+  </div>
 </div>
 
 ---
