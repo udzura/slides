@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f6f4ee"/>
+  <g font-family="Helvetica, Arial, sans-serif">
+    <text x="72" y="72" font-size="22" fill="#252924">Uchio Kondo <tspan fill="#686c63">/ Slides</tspan></text>
+    <text x="1128" y="70" text-anchor="end" font-size="13" letter-spacing="2" fill="#686c63">PRESENTATION ARCHIVE</text>
+    <path d="M72 102H1128" stroke="#252924"/>
+    <text x="72" y="190" font-size="16" letter-spacing="4" fill="#b53d27">YEAR / 2026</text>
+    <text x="62" y="390" font-size="190" font-weight="bold" letter-spacing="-10" fill="#252924">Slides<tspan fill="#b53d27">.</tspan></text>
+    <text x="1128" y="390" text-anchor="end" font-size="100" letter-spacing="-5" fill="#b53d27">2026</text>
+    <path d="M72 478H1128" stroke="#252924"/>
+    <text x="72" y="542" font-size="22" fill="#686c63">8 presentations</text>
+    <text x="1128" y="542" text-anchor="end" font-size="19" fill="#686c63">udzura.jp/slides/2026</text>
+  </g>
+</svg>

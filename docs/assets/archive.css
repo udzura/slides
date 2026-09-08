@@ -1,0 +1,83 @@
+:root {
+    color-scheme: light;
+    --paper: #f6f4ee;
+    --ink: #252924;
+    --muted: #686c63;
+    --line: #d5d7cd;
+    --accent: #b53d27;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+.container { width: min(1120px, calc(100% - 96px)); margin: 0 auto; }
+.masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 30px 0;
+    border-bottom: 1px solid var(--ink);
+}
+.brand { font-size: 15px; font-weight: 650; text-decoration: none; }
+.brand span { color: var(--muted); font-weight: 400; }
+.masthead-note, .eyebrow, .slide-path, .year-subtitle {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+.masthead-note { color: var(--muted); font-size: 10px; letter-spacing: .14em; }
+.page-heading { padding: 70px 0 52px; }
+.eyebrow { margin: 0 0 22px; color: var(--accent); font-size: 11px; letter-spacing: .18em; }
+h1 { margin: 0; font-size: clamp(64px, 10vw, 128px); line-height: 1.05; letter-spacing: -.065em; font-weight: 650; }
+.title-dot { color: var(--accent); }
+.year-list { display: grid; grid-template-columns: repeat(3, 1fr); list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.year-item + .year-item { border-left: 1px solid var(--line); }
+.year-item a { display: block; position: relative; padding: 36px 28px 72px; text-decoration: none; transition: background .18s ease; }
+.year-item:first-child a { padding-left: 0; }
+.year-title { font-size: clamp(40px, 5vw, 64px); letter-spacing: -.055em; font-weight: 500; }
+.year-subtitle { margin-top: 12px; color: var(--muted); font-size: 12px; }
+.year-item a::after { content: "↗"; position: absolute; right: 28px; bottom: 24px; font-size: 26px; color: var(--accent); }
+.year-item a:hover, .slide-item a:hover { background: #eeeee4; }
+.year-2026 .year-title { color: var(--accent); }
+body:has(.slides-list) h1 { font-size: clamp(30px, 4.5vw, 56px); letter-spacing: -.045em; line-height: 1.35; }
+.slides-list { list-style: none; padding: 0; margin: 0; counter-reset: slides; border-top: 1px solid var(--ink); }
+.slide-item { border-bottom: 1px solid var(--line); counter-increment: slides; }
+.slide-item:last-child { border-bottom-color: var(--ink); }
+.slide-item a { position: relative; display: block; padding: 28px 64px 28px 64px; text-decoration: none; transition: background .18s ease; }
+.slide-item a::before { content: counter(slides, decimal-leading-zero); position: absolute; left: 0; top: 33px; font: 12px ui-monospace, SFMono-Regular, Consolas, monospace; color: var(--accent); }
+.slide-item a::after { content: "↗"; position: absolute; right: 8px; top: 30px; font-size: 22px; color: var(--accent); }
+.slide-title { font-size: 19px; font-weight: 550; line-height: 1.65; overflow-wrap: anywhere; }
+.slide-path { margin-top: 8px; font-size: 11px; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; }
+footer { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; padding: 30px 0 40px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+footer p { margin: 0; }
+footer a { text-underline-offset: 4px; }
+footer a:hover { color: var(--accent); }
+
+@media (max-width: 600px) {
+    .container { width: calc(100% - 40px); }
+    .masthead { padding: 22px 0; }
+    .masthead-note { display: none; }
+    .page-heading { padding: 48px 0 36px; }
+    .year-list { grid-template-columns: 1fr; }
+    .year-item + .year-item { border-left: 0; border-top: 1px solid var(--line); }
+    .year-item a, .year-item:first-child a { padding: 24px 44px 24px 0; }
+    .year-item a::after { right: 8px; bottom: 36px; }
+    .year-title { font-size: 48px; }
+    .year-subtitle { margin-top: 6px; }
+    .slide-item a { padding: 22px 28px 22px 34px; }
+    .slide-item a::before { top: 28px; font-size: 10px; }
+    .slide-item a::after { right: 0; top: 24px; font-size: 18px; }
+    .slide-title { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+}
