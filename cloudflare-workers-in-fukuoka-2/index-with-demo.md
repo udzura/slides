@@ -538,6 +538,15 @@ style: |
   }
   section.code-pair-slide pre:nth-of-type(1) { grid-column: 1; }
   section.code-pair-slide pre:nth-of-type(2) { grid-column: 2; }
+  section.generator-quickstart pre {
+    margin: 12px 0 8px;
+    font-size: 19px;
+    line-height: 1.25;
+  }
+  section.generator-quickstart ul {
+    margin-top: 6px;
+    font-size: 22px;
+  }
   section.terminal-slide { padding-bottom: 42px; }
   .terminal-window {
     overflow: hidden;
@@ -1237,6 +1246,21 @@ scenario "GET route" do
   assert_body "Sinatra 4.2.1"
 end
 ```
+
+---
+
+# プロジェクトジェネレータも開発中
+
+- [`picoruby-cloudflare-template`](https://github.com/udzura/picoruby-cloudflare-template) **RC版です！**
+
+```sh
+gem install picoruby-cloudflare-template --pre
+picoruby-cloudflare new ./my-mruby-worker
+cd ./my-mruby-worker && bundle install && npm install
+PICORUBY_ROOT=/path/to/picoruby npm run dev
+```
+
+- 詳細はREADMEで！
 
 ---
 
