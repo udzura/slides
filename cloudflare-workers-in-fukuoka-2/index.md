@@ -242,6 +242,87 @@ style: |
   li { line-height: 1.45; margin: 0.3em 0; }
   li::marker { color: var(--cf); }
   section::after { color: #9a3412; font-size: 16px; }
+  .http-flow {
+    display: grid;
+    grid-template-columns: 240px 110px 240px 198px 340px;
+    grid-template-rows: 88px 156px 28px;
+    margin: 32px 0 24px;
+  }
+  .http-flow .flow-box {
+    box-sizing: border-box;
+    grid-row: 2;
+    width: 240px;
+    height: 156px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    border: 2px solid #fed7aa;
+    border-radius: 12px;
+    background: #ffffff;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .http-flow .flow-box strong { font-size: 27px; }
+  .http-flow .flow-box span { font-size: 23px; }
+  .http-flow .flow-link {
+    grid-row: 2;
+    align-self: center;
+    position: relative;
+    margin: 0 14px;
+    border-top: 3px solid var(--cf);
+  }
+  .http-flow .flow-link::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: -8px;
+    width: 12px;
+    height: 12px;
+    border-top: 3px solid var(--cf);
+    border-right: 3px solid var(--cf);
+    transform: rotate(45deg);
+  }
+  .http-flow.returning .flow-link::after {
+    right: auto;
+    left: 0;
+    transform: rotate(-135deg);
+  }
+  .http-flow .flow-link span {
+    position: absolute;
+    bottom: 18px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 22px;
+    line-height: 1.4;
+  }
+  .http-flow .flow-runtime {
+    grid-column: 5;
+    grid-row: 1 / 4;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-rows: 86px 156px 26px;
+    justify-items: center;
+    border: 2px solid #8b5cf6;
+    border-radius: 16px;
+    background: #faf5ff;
+  }
+  .http-flow .runtime-label {
+    align-self: center;
+    text-align: center;
+    color: #5b21b6;
+    line-height: 1.3;
+  }
+  .http-flow .runtime-label strong { display: block; font-size: 30px; }
+  .http-flow .runtime-label span { font-size: 23px; }
+  .http-flow .flow-runtime .flow-box {
+    border-color: var(--cf);
+    background: #fff3e8;
+  }
+  .http-flow-note { margin: 0; font-size: 27px; }
   .diagram {
     display: flex;
     align-items: center;
@@ -821,29 +902,37 @@ const wasm = instance.exports;
 
 ---
 
-# HTTP request → Ruby → HTTP response
+# リクエストはWasmの中のRubyへ
 
-<div class="diagram">
-  <div class="node">HTTP<br>request</div>
-  <div class="arrow">→</div>
-  <div class="node">Worker<br>JavaScript</div>
-  <div class="arrow">→</div>
-  <div class="node wasm">encoded<br>request</div>
-  <div class="arrow">→</div>
-  <div class="node core">Wasm<br>Ruby bytecode</div>
-  <div class="arrow">→</div>
-  <div class="node">Ruby<br>router</div>
+<div class="http-flow">
+  <div class="flow-box"><strong>HTTP Request</strong><span>リクエスト</span></div>
+  <div class="flow-link"></div>
+  <div class="flow-box"><strong>Worker JavaScript</strong><span>リクエストを<br>エンコード</span></div>
+  <div class="flow-link"><span>エンコードした<br>リクエスト</span></div>
+  <div class="flow-runtime">
+    <div class="runtime-label"><strong>Wasm</strong><span>mruby/edge（Ruby VM）</span></div>
+    <div class="flow-box"><strong>Rubyアプリ</strong><span>リクエストを解釈<br>処理を実行</span></div>
+  </div>
 </div>
 
-<div class="diagram">
-  <div class="node">HTTP response</div>
-  <div class="arrow">←</div>
-  <div class="node">Worker JavaScript</div>
-  <div class="arrow">←</div>
-  <div class="node wasm">Wasm response</div>
-  <div class="arrow">←</div>
-  <div class="node core">Ruby response</div>
+<p class="http-flow-note">Rubyアプリは、Wasm化したmruby/edge（Ruby VM）の上で動く</p>
+
+---
+
+# Rubyの実行結果をHTTPレスポンスに戻す
+
+<div class="http-flow returning">
+  <div class="flow-box"><strong>HTTP Response</strong><span>レスポンス</span></div>
+  <div class="flow-link"></div>
+  <div class="flow-box"><strong>Worker JavaScript</strong><span>デコードして<br>Responseを作る</span></div>
+  <div class="flow-link"><span>エンコードした<br>レスポンス</span></div>
+  <div class="flow-runtime">
+    <div class="runtime-label"><strong>Wasm</strong><span>mruby/edge（Ruby VM）</span></div>
+    <div class="flow-box"><strong>Rubyアプリ</strong><span>Rubyオブジェクトを<br>返す</span></div>
+  </div>
 </div>
+
+<p class="http-flow-note">Rubyの返り値をエンコードしてWasmから渡し、JavaScriptで復元する</p>
 
 ---
 
