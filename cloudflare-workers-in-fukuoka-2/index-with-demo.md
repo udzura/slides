@@ -994,6 +994,14 @@ const wasm = instance.exports;
 
 ---
 
+# そこでPicoRuby
+
+- [PicoRuby](https://github.com/picoruby/picoruby)は、mrubyをより小さくポータブルにしたもの
+  - 実践的に組み込みに使えるようなエコシステムが育っている
+- PicoRuby 4.xの主力はmruby VM版。mruby本体やmruby-compilerの資産を使う
+
+---
+
 # エコシステムが強いPicoRubyを動かしたい
 
 - CRubyは複雑だし、今回の用途に合わせるのはそもそも困難そう
