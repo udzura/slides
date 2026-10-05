@@ -18,7 +18,7 @@ size: 16:9
 <!-- _class: title -->
 <!-- _paginate: false -->
 
-# Zen and the Art of<br>File Upload Maintenance
+# Zen and the Art of<br><strong style='color: var(--kor-magenta);'>File Upload</strong> Maintenance
 
 ## An Inquiry into Legacies
 
@@ -30,8 +30,9 @@ size: 16:9
 
 - 近藤うちお / @udzura
 - 株式会社SmartHR
-- ❓ 担当・肩書きを入れる
-- ❓ 好きなもの・最近やっていること
+  - 技術基盤部所属
+  - 好きなRustの型は `Cell<T>`
+- Fukuoka.rb / Fukuoka.wasm
 
 ---
 
@@ -62,7 +63,7 @@ size: 16:9
 
 <!-- _class: section-plain -->
 
-# そして10年後、<br>それが一番の悩みの種になっている
+# 今日はファイルアップロードについて語ろう
 
 ---
 
@@ -72,7 +73,7 @@ size: 16:9
 
 ---
 
-# ファイルアップロードとは
+# ファイルアップロード、知ってる？
 
 - Webサービスの最も基本的な要件の一つ
 - 今のRailsには **ActiveStorage** がある
@@ -106,7 +107,7 @@ size: 16:9
 
 ---
 
-# 実は、一度移行している
+# 余談: 一度移行している
 
 - 最初は **Paperclip** を使っていた
 - 2017年5月にCarrierWaveへ移行
