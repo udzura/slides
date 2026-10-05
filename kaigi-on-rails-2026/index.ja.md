@@ -718,6 +718,15 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 <!-- _class: title -->
 <!-- _paginate: false -->
 
+<style scoped>
+h1 { top: 100px; }
+h2 { top: 525px; }
+</style>
+
 # Thank you!
 
-## TBA: 連絡先・資料URL
+<a href="https://udzura.jp/slides/2026/kaigionrails" style="position: absolute; top: 230px; left: 532px; display: block; width: 216px; height: 216px;">
+<img src="assets/slides-qr.png" alt="資料URLのQRコード" width="216" height="216">
+</a>
+
+## [udzura.jp/slides/2026/kaigionrails](https://udzura.jp/slides/2026/kaigionrails)
