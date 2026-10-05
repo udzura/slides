@@ -72,7 +72,9 @@ size: 16:9
 # The Situation at SmartHR
 
 ---
-
+<!--
+_footer: aaa
+-->
 # When something is done
 
 - The HR/labor management application at SmartHR got its first commit around 2015.
