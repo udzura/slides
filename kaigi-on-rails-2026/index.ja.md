@@ -705,7 +705,7 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 
 <!-- _class: quote -->
 
-# “The real cycle you’re working on is a cycle called yourself.”
+# “The real cycle you’re working on is a cycle<br>called yourself.”
 
 ## Robert M. Pirsig, <i>Zen and the Art of Motorcycle Maintenance</i>
 
