@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
+<title id="title">ストーリーから構造化シナリオ・実行・観測結果・レポートへ</title>
+<desc id="desc">人間が書いたストーリーをAIが可読性を保ってscenario.ymlに構造化。別のAIが実行し、確認事項と観測結果をobservation.ymlに記録する。レポート役のAIが期待値と照合し、人が読める判定・根拠付きレポートにまとめ、人がPRでレビューする。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05"/></marker></defs>
+<rect width="1100" height="460" rx="16" fill="#202020"/>
+<g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff" text-anchor="middle">
+<text x="125" y="57" font-size="21" fill="#ffffff" font-weight="700">人間</text>
+<rect x="255" y="15" width="565" height="67" rx="9" fill="#2f2f2f" stroke="#ffffff" stroke-width="2"/>
+<text x="537" y="44" font-size="25" font-weight="700" fill="#ffffff">ストーリーを書く</text>
+<text x="537" y="70" font-size="18">前提・操作・期待値を、人の言葉で記述</text>
+<text x="955" y="55" font-size="18" fill="#ddd">入力</text>
+<path d="M537 82 V97" stroke="#ceff05" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="125" y="141" font-size="21" fill="#ceff05" font-weight="700">構造化するAI</text>
+<rect x="255" y="99" width="565" height="67" rx="9" fill="#2f2f2f" stroke="#ceff05" stroke-width="2"/>
+<text x="537" y="128" font-size="25" font-weight="700" fill="#ceff05">読みやすさを保って構造化</text>
+<text x="537" y="154" font-size="18">scenario.yml：手順・確認事項・期待値</text>
+<text x="955" y="139" font-size="18" fill="#ddd">曖昧なら推測せず止まる</text>
+<path d="M537 166 V181" stroke="#ceff05" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="125" y="225" font-size="21" fill="#ff58af" font-weight="700">別のAI（実行役）</text>
+<rect x="255" y="183" width="565" height="67" rx="9" fill="#2f2f2f" stroke="#ff58af" stroke-width="2"/>
+<text x="537" y="212" font-size="25" font-weight="700" fill="#ff58af">シナリオを受け取り、実行する</text>
+<text x="537" y="238" font-size="18">ブラウザ操作・DOM・通信ログ・スクリーンショット</text>
+<text x="955" y="223" font-size="18" fill="#ddd">ファイルとスキーマで渡す</text>
+<path d="M537 250 V265" stroke="#ceff05" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="125" y="309" font-size="21" fill="#ff58af" font-weight="700">実行役の出力</text>
+<rect x="255" y="267" width="565" height="67" rx="9" fill="#2f2f2f" stroke="#ff58af" stroke-width="2"/>
+<text x="537" y="296" font-size="25" font-weight="700" fill="#ff58af">確認事項・観測結果を構造化</text>
+<text x="537" y="322" font-size="18">observation.yml：観測した事実と証跡</text>
+<text x="955" y="307" font-size="18" fill="#ddd">ここでは判定しない</text>
+<path d="M537 334 V349" stroke="#ceff05" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="125" y="393" font-size="21" fill="#ceff05" font-weight="700">レポート役のAI</text>
+<rect x="255" y="351" width="565" height="67" rx="9" fill="#2f2f2f" stroke="#ceff05" stroke-width="2"/>
+<text x="537" y="380" font-size="25" font-weight="700" fill="#ceff05">人が読めるレポートにまとめる</text>
+<text x="537" y="406" font-size="18">期待値と照合し、判定と根拠を記述</text>
+<text x="955" y="391" font-size="18" fill="#ddd">人がPRで証跡をレビュー</text>
+<text x="550" y="445" font-size="20" fill="#ceff05">人が読める入力 → 構造化して受け渡す → 人が読める結果</text></g></svg>
