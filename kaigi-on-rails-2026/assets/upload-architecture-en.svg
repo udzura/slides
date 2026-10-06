@@ -1,34 +1,43 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
 <title id="title">Design draft: routing processing from the app by dependency</title>
 <desc id="desc">The application branches in two directions. Processing that depends on CarrierWave’s internal behavior is contained in the compatibility layer, which calls the storage library. Resizing and EXIF processing, which do not depend on internal behavior, are delegated to an external service without going through the layer.</desc>
-<defs>
-<marker id="lime" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05"/></marker>
-<marker id="pink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff58af"/></marker>
+<style>
+/* Hover effect: works only when embedded as an object element in a browser. Static in PDF and images. */
+.box { --glow: #ceff05; --hover-fill: #3a4422; transform-box: fill-box; transform-origin: center; transition: transform .2s ease, filter .2s ease; }
+.box.gray { --glow: #ffffff; --hover-fill: #444444; }
+.box.pink { --glow: #ff58af; --hover-fill: #4a2a3f; }
+.box rect { transition: fill .2s ease; }
+.box:hover { transform: scale(1.04); filter: drop-shadow(0 0 10px var(--glow)); }
+.box:hover rect { fill: var(--hover-fill); }
+@media (prefers-reduced-motion: reduce) { .box, .box rect { transition: none; } .box:hover { transform: none; } }
+</style><defs>
+<marker id="lime" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05" /></marker>
+<marker id="pink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff58af" /></marker>
 </defs>
-<rect width="1100" height="460" rx="16" fill="#202020"/>
+<rect width="1100" height="460" rx="16" fill="#202020" />
 <g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff" text-anchor="middle">
-<rect x="230" y="18" width="640" height="76" rx="10" fill="#333" stroke="#aaa" stroke-width="2"/>
+<g class="box gray"><rect x="230" y="18" width="640" height="76" rx="10" fill="#333" stroke="#aaa" stroke-width="2" />
 <text x="550" y="50" font-size="29" font-weight="700">Application</text>
 <text x="550" y="79" font-size="21" fill="#ddd">Business logic / history / recorded paths</text>
-<path d="M390 94 V117 H285 V188" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#lime)"/>
-<path d="M710 94 V117 H815 V188" fill="none" stroke="#ff58af" stroke-width="3" marker-end="url(#pink)"/>
-<rect x="65" y="132" width="440" height="34" fill="#202020"/>
-<rect x="595" y="132" width="440" height="34" fill="#202020"/>
+</g><path d="M390 94 V117 H285 V188" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#lime)" />
+<path d="M710 94 V117 H815 V188" fill="none" stroke="#ff58af" stroke-width="3" marker-end="url(#pink)" />
+<rect x="65" y="132" width="440" height="34" fill="#202020" />
+<rect x="595" y="132" width="440" height="34" fill="#202020" />
 <text x="285" y="157" font-size="22" fill="#ceff05" font-weight="700">Depends on internal behavior</text>
 <text x="815" y="157" font-size="22" fill="#ff58af" font-weight="700">Independent of internal behavior</text>
-<rect x="45" y="191" width="480" height="87" rx="10" fill="#30391c" stroke="#ceff05" stroke-width="2"/>
+<g class="box"><rect x="45" y="191" width="480" height="87" rx="10" fill="#30391c" stroke="#ceff05" stroke-width="2" />
 <text x="285" y="227" font-size="27" font-weight="700" fill="#ceff05">CarrierWaveCompatLayer</text>
 <text x="285" y="258" font-size="21">Keeps behavior; contains internal dependencies</text>
-<path d="M285 278 V311" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#lime)"/>
-<rect x="45" y="314" width="480" height="85" rx="10" fill="#30391c" stroke="#ceff05" stroke-width="2"/>
+</g><path d="M285 278 V311" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#lime)" />
+<g class="box"><rect x="45" y="314" width="480" height="85" rx="10" fill="#30391c" stroke="#ceff05" stroke-width="2" />
 <text x="285" y="346" font-size="25" font-weight="700">Storage library</text>
 <text x="285" y="370" font-size="18" fill="#ceff05">CarrierWave for now</text>
 <text x="285" y="392" font-size="19">Puts bytes at a fixed path</text>
-<rect x="575" y="191" width="480" height="151" rx="10" fill="#432539" stroke="#ff58af" stroke-width="2"/>
+</g><g class="box pink"><rect x="575" y="191" width="480" height="151" rx="10" fill="#432539" stroke="#ff58af" stroke-width="2" />
 <text x="815" y="228" font-size="27" font-weight="700">Delegate to an external service</text>
 <text x="815" y="263" font-size="23" fill="#ff58af">Resizing service</text>
 <text x="815" y="295" font-size="21">Generates resized images on demand</text>
 <text x="815" y="324" font-size="21">Also removes EXIF on output</text>
-<text x="815" y="380" font-size="21" fill="#ddd">Used without going through the layer</text>
+</g><text x="815" y="380" font-size="21" fill="#ddd">Used without going through the layer</text>
 <text x="550" y="439" font-size="24" font-weight="700">Contain what depends; move out what can stand alone</text>
 </g></svg>

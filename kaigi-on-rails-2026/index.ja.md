@@ -148,7 +148,7 @@ section { padding-right: 510px; }
 # バイテンポラルデータモデル
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/bitemporal-history.svg" alt="横軸はトランザクション時間、縦軸は有効時間。10/17に10/1からの所在地を修正し、旧記録を残してTokyoとHakataの2行を追加する。" width="1100">
+<object type="image/svg+xml" data="assets/bitemporal-history.svg" width="1100" height="460" aria-label="横軸はトランザクション時間、縦軸は有効時間。10/17に10/1からの所在地を修正し、旧記録を残してTokyoとHakataの2行を追加する。"><img src="assets/bitemporal-history.svg" alt="横軸はトランザクション時間、縦軸は有効時間。10/17に10/1からの所在地を修正し、旧記録を残してTokyoとHakataの2行を追加する。" width="1100"></object>
 </div>
 
 <!-- 日付は説明用。期間は開始を含み終了を含まない [from, to)。
@@ -246,7 +246,7 @@ section { padding-right: 510px; }
 # まず前提: CarrierWaveのライフサイクル
 
 <div style="position: absolute; top: 155px; left: 90px; width: 1100px;">
-<img src="assets/carrierwave-lifecycle.svg" alt="cache!で一時保存、cache_nameを保持、store!で永続化、identifierを取得。その後はretrieve_from_store!で参照を復元。再開時はretrieve_from_cache!にcache_nameを渡す。" width="1100">
+<object type="image/svg+xml" data="assets/carrierwave-lifecycle.svg" width="1100" height="470" aria-label="cache!で一時保存、cache_nameを保持、store!で永続化、identifierを取得。その後はretrieve_from_store!で参照を復元。再開時はretrieve_from_cache!にcache_nameを渡す。"><img src="assets/carrierwave-lifecycle.svg" alt="cache!で一時保存、cache_nameを保持、store!で永続化、identifierを取得。その後はretrieve_from_store!で参照を復元。再開時はretrieve_from_cache!にcache_nameを渡す。" width="1100"></object>
 </div>
 
 <!-- 概念図。cache_name = cache_id / original_filename。モデルのIDとは別。
@@ -444,7 +444,7 @@ CarrierWaveCompatLayer.attached?(user, :avatar)  # after（❓ API案）
 # 複雑性の削減のために目指す姿
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/upload-architecture.svg" alt="アプリから二方向へ分岐。CarrierWaveの内部挙動に依存する処理は互換レイヤに集め、依存しない画像処理は外部サービスに任せる設計案。" width="1100">
+<object type="image/svg+xml" data="assets/upload-architecture.svg" width="1100" height="460" aria-label="アプリから二方向へ分岐。CarrierWaveの内部挙動に依存する処理は互換レイヤに集め、依存しない画像処理は外部サービスに任せる設計案。"><img src="assets/upload-architecture.svg" alt="アプリから二方向へ分岐。CarrierWaveの内部挙動に依存する処理は互換レイヤに集め、依存しない画像処理は外部サービスに任せる設計案。" width="1100"></object>
 </div>
 
 <!-- 計画段階の責務・依存関係の図。矢印は画像データの転送経路ではない。
@@ -489,7 +489,7 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 # 変更以前
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/cache-path-before.svg" alt="同じキャッシュIDでも、復元時の再計算結果が変わると実際の保存先とは別のパスを参照してしまう。" width="1100">
+<object type="image/svg+xml" data="assets/cache-path-before.svg" width="1100" height="460" aria-label="同じキャッシュIDでも、復元時の再計算結果が変わると実際の保存先とは別のパスを参照してしまう。"><img src="assets/cache-path-before.svg" alt="同じキャッシュIDでも、復元時の再計算結果が変わると実際の保存先とは別のパスを参照してしまう。" width="1100"></object>
 </div>
 
 <!--
@@ -503,7 +503,7 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 # 変更以後
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/cache-path-after.svg" alt="cache作成時にIDとパスの対応をKVSへ記録。復元時は再計算せず、KVSから同じパスを取得する。" width="1100">
+<object type="image/svg+xml" data="assets/cache-path-after.svg" width="1100" height="460" aria-label="cache作成時にIDとパスの対応をKVSへ記録。復元時は再計算せず、KVSから同じパスを取得する。"><img src="assets/cache-path-after.svg" alt="cache作成時にIDとパスの対応をKVSへ記録。復元時は再計算せず、KVSから同じパスを取得する。" width="1100"></object>
 </div>
 
 <!--
@@ -619,7 +619,7 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 # Step 2: AIがシナリオにして、実行する
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/ai-qa-flow.svg" alt="人間のストーリーをAIが読みやすさを保って構造化し、別のAIが実行。確認事項と観測結果も構造化し、レポート役のAIが人の読める判定・根拠付きレポートにまとめる。" width="1100">
+<object type="image/svg+xml" data="assets/ai-qa-flow.svg" width="1100" height="460" aria-label="人間のストーリーをAIが読みやすさを保って構造化し、別のAIが実行。確認事項と観測結果も構造化し、レポート役のAIが人の読める判定・根拠付きレポートにまとめる。"><img src="assets/ai-qa-flow.svg" alt="人間のストーリーをAIが読みやすさを保って構造化し、別のAIが実行。確認事項と観測結果も構造化し、レポート役のAIが人の読める判定・根拠付きレポートにまとめる。" width="1100"></object>
 </div>
 
 <!-- 実行役のAIをAIの中で起動。やり取りはファイルとスキーマ。

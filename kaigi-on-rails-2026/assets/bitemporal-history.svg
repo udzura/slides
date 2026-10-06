@@ -1,27 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
 <title id="title">有効時間とトランザクション時間による履歴の分割</title>
 <desc id="desc">9月1日にTokyoを登録。10月17日に、10月1日からHakataだったと記録する。更新前のTokyoの行はトランザクション終了時刻を10月17日にして保持し、更新後は有効時間で分けたTokyoとHakataの2行を追加する。横軸がトランザクション時間、縦軸が有効時間。上と右は未来へ続く。</desc>
-<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#fff"/></marker></defs>
-<rect width="1100" height="460" rx="16" fill="#202020"/>
+<style>
+/* Hover effect: works only when embedded as an object element in a browser. Static in PDF and images. */
+.box { --glow: #ceff05; --hover-fill: #3a4422; transform-box: fill-box; transform-origin: center; transition: transform .2s ease, filter .2s ease; }
+.box.gray { --glow: #ffffff; --hover-fill: #444444; }
+.box.pink { --glow: #ff58af; --hover-fill: #4a2a3f; }
+.box rect { transition: fill .2s ease; }
+.box:hover { transform: scale(1.04); filter: drop-shadow(0 0 10px var(--glow)); }
+.box:hover rect { fill: var(--hover-fill); }
+@media (prefers-reduced-motion: reduce) { .box, .box rect { transition: none; } .box:hover { transform: none; } }
+</style><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#fff" /></marker></defs>
+<rect width="1100" height="460" rx="16" fill="#202020" />
 <g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff">
 <text x="550" y="35" text-anchor="middle" font-size="25">10/17に「10/1からHakataだった」と記録する</text>
 <text x="24" y="82" font-size="24" fill="#ff58af" font-weight="700">有効時間</text>
 <text x="24" y="110" font-size="17">業務上いつ有効か</text>
 <text x="24" y="135" font-size="15" fill="#ccc">[valid_from, valid_to)</text>
-<path d="M190 350 V72 M190 350 H1040" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-<path d="M190 90 V72" stroke="#fff" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="211" y="90" width="340" height="260" rx="6" fill="#333" stroke="#aaa" stroke-width="2"/>
+<path d="M190 350 V72 M190 350 H1040" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+<path d="M190 90 V72" stroke="#fff" stroke-width="2" marker-end="url(#arrow)" />
+<g class="box gray"><rect x="211" y="90" width="340" height="260" rx="6" fill="#333" stroke="#aaa" stroke-width="2" />
 <text x="381" y="181" text-anchor="middle" font-size="21" fill="#ccc">更新前の記録 / 行A</text>
 <text x="381" y="224" text-anchor="middle" font-size="30" font-weight="700">location = Tokyo</text>
 <text x="381" y="264" text-anchor="middle" font-size="20" fill="#ccc">過去の認識として残る</text>
-<rect x="569" y="90" width="436" height="130" rx="6" fill="#432539" stroke="#ff58af" stroke-width="2"/>
+</g><g class="box pink"><rect x="569" y="90" width="436" height="130" rx="6" fill="#432539" stroke="#ff58af" stroke-width="2" />
 <text x="787" y="132" text-anchor="middle" font-size="20" fill="#ff58af">新しい行C：10/1以降</text>
 <text x="787" y="179" text-anchor="middle" font-size="30" font-weight="700">location = Hakata</text>
-<rect x="569" y="232" width="436" height="118" rx="6" fill="#30391c" stroke="#ceff05" stroke-width="2"/>
+</g><g class="box"><rect x="569" y="232" width="436" height="118" rx="6" fill="#30391c" stroke="#ceff05" stroke-width="2" />
 <text x="787" y="271" text-anchor="middle" font-size="20" fill="#ceff05">新しい行B：9/1〜10/1未満</text>
 <text x="787" y="315" text-anchor="middle" font-size="30" font-weight="700">location = Tokyo</text>
-<path d="M175 226 H1020" stroke="#ff58af" stroke-width="2" stroke-dasharray="5 6"/>
-<path d="M560 75 V365" stroke="#ceff05" stroke-width="2" stroke-dasharray="5 6"/>
+</g><path d="M175 226 H1020" stroke="#ff58af" stroke-width="2" stroke-dasharray="5 6" />
+<path d="M560 75 V365" stroke="#ceff05" stroke-width="2" stroke-dasharray="5 6" />
 <text x="175" y="234" text-anchor="end" font-size="23" fill="#ff58af">10/1</text>
 <text x="175" y="350" text-anchor="end" font-size="23">9/1</text>
 <text x="210" y="381" text-anchor="middle" font-size="22">9/1 登録</text>

@@ -1,6 +1,7 @@
 # 日本語版 SVG から英語版 (*-en.svg) を生成する。
 # 使い方: cd assets && python3 svg_en.py
 # 日本語の SVG を直したら、ここの対応表も直して再生成する。
+# 新しい図を足すときの全体の手順は add_hover.py の冒頭を参照。
 import re
 
 T = {

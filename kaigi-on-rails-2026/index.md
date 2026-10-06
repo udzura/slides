@@ -148,7 +148,7 @@ section { padding-right: 510px; }
 # Bitemporal Data Model
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/bitemporal-history-en.svg" alt="The horizontal axis is transaction time and the vertical axis is valid time. On 10/17, the location since 10/1 is corrected; the old record is kept and two rows, Tokyo and Hakata, are added." width="1100">
+<object type="image/svg+xml" data="assets/bitemporal-history-en.svg" width="1100" height="460" aria-label="The horizontal axis is transaction time and the vertical axis is valid time. On 10/17, the location since 10/1 is corrected; the old record is kept and two rows, Tokyo and Hakata, are added."><img src="assets/bitemporal-history-en.svg" alt="The horizontal axis is transaction time and the vertical axis is valid time. On 10/17, the location since 10/1 is corrected; the old record is kept and two rows, Tokyo and Hakata, are added." width="1100"></object>
 </div>
 
 <!-- The dates are for illustration. Periods are half-open [from, to).
@@ -246,7 +246,7 @@ Reference: https://github.com/kufu/activerecord-bitemporal -->
 # First, the Basics: CarrierWave's Lifecycle
 
 <div style="position: absolute; top: 155px; left: 90px; width: 1100px;">
-<img src="assets/carrierwave-lifecycle-en.svg" alt="cache! stores the file temporarily and keeps a cache_name; store! persists it and returns an identifier. After that, retrieve_from_store! restores the reference. When resuming, retrieve_from_cache! takes the cache_name." width="1100">
+<object type="image/svg+xml" data="assets/carrierwave-lifecycle-en.svg" width="1100" height="470" aria-label="cache! stores the file temporarily and keeps a cache_name; store! persists it and returns an identifier. After that, retrieve_from_store! restores the reference. When resuming, retrieve_from_cache! takes the cache_name."><img src="assets/carrierwave-lifecycle-en.svg" alt="cache! stores the file temporarily and keeps a cache_name; store! persists it and returns an identifier. After that, retrieve_from_store! restores the reference. When resuming, retrieve_from_cache! takes the cache_name." width="1100"></object>
 </div>
 
 <!-- A conceptual diagram. cache_name = cache_id / original_filename, which is different from the model's ID.
@@ -444,7 +444,7 @@ CarrierWaveCompatLayer.attached?(user, :avatar)  # after (❓ API draft)
 # The Goal: Less Complexity
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/upload-architecture-en.svg" alt="The app branches in two directions. Processing that depends on CarrierWave's internal behavior goes into the compatibility layer, and image processing that does not depend on it goes to an external service." width="1100">
+<object type="image/svg+xml" data="assets/upload-architecture-en.svg" width="1100" height="460" aria-label="The app branches in two directions. Processing that depends on CarrierWave's internal behavior goes into the compatibility layer, and image processing that does not depend on it goes to an external service."><img src="assets/upload-architecture-en.svg" alt="The app branches in two directions. Processing that depends on CarrierWave's internal behavior goes into the compatibility layer, and image processing that does not depend on it goes to an external service." width="1100"></object>
 </div>
 
 <!-- A planning-stage diagram of responsibilities and dependencies. The arrows do not show how image data is transferred.
@@ -489,7 +489,7 @@ Narrow the Uploader's job down to "putting bytes at a fixed path," and separate 
 # Before the Change
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/cache-path-before-en.svg" alt="Even with the same cache ID, if the recalculated path changes at restore time, the app looks at a path different from where the file was actually saved." width="1100">
+<object type="image/svg+xml" data="assets/cache-path-before-en.svg" width="1100" height="460" aria-label="Even with the same cache ID, if the recalculated path changes at restore time, the app looks at a path different from where the file was actually saved."><img src="assets/cache-path-before-en.svg" alt="Even with the same cache ID, if the recalculated path changes at restore time, the app looks at a path different from where the file was actually saved." width="1100"></object>
 </div>
 
 <!--
@@ -503,7 +503,7 @@ Narrow the Uploader's job down to "putting bytes at a fixed path," and separate 
 # After the Change
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/cache-path-after-en.svg" alt="When the cache is created, the mapping from ID to path is recorded in a KVS. At restore time, the same path is read from the KVS without recalculation." width="1100">
+<object type="image/svg+xml" data="assets/cache-path-after-en.svg" width="1100" height="460" aria-label="When the cache is created, the mapping from ID to path is recorded in a KVS. At restore time, the same path is read from the KVS without recalculation."><img src="assets/cache-path-after-en.svg" alt="When the cache is created, the mapping from ID to path is recorded in a KVS. At restore time, the same path is read from the KVS without recalculation." width="1100"></object>
 </div>
 
 <!--
@@ -619,7 +619,7 @@ Narrow the Uploader's job down to "putting bytes at a fixed path," and separate 
 # Step 2: AI Builds and Runs Scenarios
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/ai-qa-flow-en.svg" alt="An AI structures the human-written story while keeping it readable, and another AI runs it. Open questions and observations are also structured, and a reporting AI turns them into a human-readable report with verdicts and reasons." width="1100">
+<object type="image/svg+xml" data="assets/ai-qa-flow-en.svg" width="1100" height="460" aria-label="An AI structures the human-written story while keeping it readable, and another AI runs it. Open questions and observations are also structured, and a reporting AI turns them into a human-readable report with verdicts and reasons."><img src="assets/ai-qa-flow-en.svg" alt="An AI structures the human-written story while keeping it readable, and another AI runs it. Open questions and observations are also structured, and a reporting AI turns them into a human-readable report with verdicts and reasons." width="1100"></object>
 </div>
 
 <!-- The executor AI is launched from within another AI. They communicate only through files and schemas.
