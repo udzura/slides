@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
+<title id="title">Splitting history by valid time and transaction time</title>
+<desc id="desc">Tokyo is registered on 9/1. On 10/17, we record that the location has been Hakata since 10/1. The old Tokyo row is kept with its transaction end set to 10/17, and two new rows, Tokyo and Hakata, split by valid time, are added. The horizontal axis is transaction time and the vertical axis is valid time. Both continue into the future.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#fff"/></marker></defs>
+<rect width="1100" height="460" rx="16" fill="#202020"/>
+<g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff">
+<text x="550" y="35" text-anchor="middle" font-size="25">On 10/17, record “It has been Hakata since 10/1”</text>
+<text x="24" y="82" font-size="24" fill="#ff58af" font-weight="700">Valid time</text>
+<text x="24" y="110" font-size="17">When it is valid</text>
+<text x="24" y="135" font-size="15" fill="#ccc">[valid_from, valid_to)</text>
+<path d="M190 350 V72 M190 350 H1040" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M190 90 V72" stroke="#fff" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="211" y="90" width="340" height="260" rx="6" fill="#333" stroke="#aaa" stroke-width="2"/>
+<text x="381" y="181" text-anchor="middle" font-size="21" fill="#ccc">Record before update / Row A</text>
+<text x="381" y="224" text-anchor="middle" font-size="30" font-weight="700">location = Tokyo</text>
+<text x="381" y="264" text-anchor="middle" font-size="20" fill="#ccc">Kept as past knowledge</text>
+<rect x="569" y="90" width="436" height="130" rx="6" fill="#432539" stroke="#ff58af" stroke-width="2"/>
+<text x="787" y="132" text-anchor="middle" font-size="20" fill="#ff58af">New row C: from 10/1</text>
+<text x="787" y="179" text-anchor="middle" font-size="30" font-weight="700">location = Hakata</text>
+<rect x="569" y="232" width="436" height="118" rx="6" fill="#30391c" stroke="#ceff05" stroke-width="2"/>
+<text x="787" y="271" text-anchor="middle" font-size="20" fill="#ceff05">New row B: 9/1 to before 10/1</text>
+<text x="787" y="315" text-anchor="middle" font-size="30" font-weight="700">location = Tokyo</text>
+<path d="M175 226 H1020" stroke="#ff58af" stroke-width="2" stroke-dasharray="5 6"/>
+<path d="M560 75 V365" stroke="#ceff05" stroke-width="2" stroke-dasharray="5 6"/>
+<text x="175" y="234" text-anchor="end" font-size="23" fill="#ff58af">10/1</text>
+<text x="175" y="350" text-anchor="end" font-size="23">9/1</text>
+<text x="210" y="381" text-anchor="middle" font-size="22">9/1 Created</text>
+<text x="560" y="381" text-anchor="middle" font-size="22" fill="#ceff05">10/17 Updated</text>
+<text x="990" y="381" text-anchor="end" font-size="18" fill="#ccc">Future →</text>
+<text x="189" y="62" text-anchor="middle" font-size="16" fill="#ccc">Future</text>
+<text x="550" y="419" text-anchor="middle" font-size="24" fill="#ceff05" font-weight="700">Transaction time: when the DB treated the content as correct</text>
+<text x="550" y="447" text-anchor="middle" font-size="17" fill="#ccc">[transaction_from, transaction_to)  /  Each rectangle = one record (top and right edges omitted)</text>
+</g></svg>

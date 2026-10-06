@@ -553,10 +553,10 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 
 | ステップ | write | read | 備考 |
 |---|---|---|---|
-| 1 | 一部ON | OFF | 一部テナントでdouble write。参照は従来どおり |
-| 2 | 全体ON | OFF | 全体でdouble write。参照は従来どおり |
-| 3 | 全体ON | 一部ON | 一部テナントでdouble writeした固定パスによる参照を開始 |
-| 4 | 全体ON | 全体ON | 全体で固定パスによる参照へ切り替え |
+| 1 | <span style='color: var(--kor-lime);'>一部ON</span> | OFF | 一部テナントでdouble write。参照は従来どおり |
+| 2 | _全体ON_ | OFF | 全体でdouble write。参照は従来どおり |
+| 3 | _全体ON_ | <span style='color: var(--kor-lime);'>一部ON</span> | 一部テナントでdouble writeした固定パスによる参照を開始 |
+| 4 | _全体ON_ | _全体ON_ | 全体で固定パスによる参照へ切り替え |
 
 ---
 
