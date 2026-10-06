@@ -214,11 +214,11 @@ section { padding-right: 510px; }
 
 # 3つの課題
 
-| | 課題 | 備考 |
-|---|---|---|
-| ① | 障害が起きやすい（パスが不安定） | 信頼に関わる。<strong>まずはこれをなんとかしたい</strong> |
-| ② | バージョンアップができていない | 何があるか分からず、将来の足かせ |
-| ③ | パフォーマンス・生産性の問題 | 開発者にとって使いにくい。中長期でなんとかしたい |
+| 課題 | 関係する性質（-ility） |
+|---|---|
+| ① 障害が起きやすい（パスが不安定） | 信頼性（Reliability） |
+| ② バージョンアップができていない | 保守性・セキュリティ（Maintainability / Security） |
+| ③ パフォーマンス・生産性の問題 | 利用容易性（Usability） |
 
 <!-- ①②③は課題の番号。この後は①の実践を中心に話し、②③は「今後の展望」で扱う。 -->
 
@@ -226,11 +226,13 @@ section { padding-right: 510px; }
 
 # なぜ性質で分けるのか
 
-- 性質ごとに、**打ち手も急ぎ具合も違う**
-    - ① 障害は、今すぐ止めたい
-    - ② バージョンアップは、準備に時間がかかる
-    - ③ 性能・生産性は、腰を据えて改善したい
-- 一つずつなら、**着手も検証もできる大きさ** になる
+- **どの性質を改善したいか** で、打ち手と確かめることが変わる
+    - ① 信頼性：ファイルを安定して参照できるか
+    - ② 保守性・セキュリティ：安全に更新し、脆弱性に対応できるか
+    - ③ 利用容易性：待ち時間や実装の手間を減らせるか
+- 性質ごとに目標を定め、**着手も検証もできる大きさ** に分ける
+
+<!-- ③は利用者・開発者双方の使いやすさとして整理。性能そのものをUsabilityと同義にはせず、待ち時間が使いやすさに与える影響として扱う。 -->
 
 ---
 
@@ -263,16 +265,25 @@ section { padding-right: 510px; }
 
 ---
 
-# まず前提: CarrierWaveのライフサイクル
+# CarrierWave：書き込み
 
 <div style="position: absolute; top: 155px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/carrierwave-lifecycle.svg" width="1100" height="470" aria-label="cache!で一時保存、cache_nameを保持、store!で永続化、identifierを取得。その後はretrieve_from_store!で参照を復元。再開時はretrieve_from_cache!にcache_nameを渡す。"><img src="assets/carrierwave-lifecycle.svg" alt="cache!で一時保存、cache_nameを保持、store!で永続化、identifierを取得。その後はretrieve_from_store!で参照を復元。再開時はretrieve_from_cache!にcache_nameを渡す。" width="1100"></object>
+<object type="image/svg+xml" data="assets/carrierwave-lifecycle-write.svg" width="1100" height="470" aria-label="cache!で一時保存し、cache_nameを保持。store!で画像を永続化し、identifierをDBに保存する。保存再開時はretrieve_from_cache!でキャッシュから復元する。"><img src="assets/carrierwave-lifecycle-write.svg" alt="cache!で一時保存し、cache_nameを保持。store!で画像を永続化し、identifierをDBに保存する。保存再開時はretrieve_from_cache!でキャッシュから復元する。" width="1100"></object>
 </div>
 
-<!-- 細部は追わず、「cacheとstoreの2段階がある」ことだけ伝える。Shrineなど他のライブラリも似た状態遷移を持つ。
-概念図。cache_name = cache_id / original_filename。モデルのIDとは別。
-identifierは保存先の識別子で、ランダムなIDを新規発行する意味ではない。
-retrieve_from_store!は参照を復元する処理で、常に画像の全バイトを取得するわけではない。
+<!-- cache_name = cache_id / original_filename。モデルのIDとは別。
+画像の永続化とidentifierのDB保存は役割を示した概念図で、厳密なコールバック順序ではない。 -->
+
+---
+
+# CarrierWave：読み出し・参照
+
+<div style="position: absolute; top: 155px; left: 90px; width: 1100px;">
+<object type="image/svg+xml" data="assets/carrierwave-lifecycle-read.svg" width="1100" height="470" aria-label="DBからidentifierを読み出し、retrieve_from_store!へ渡す。store_dirなどの情報と合わせてパスを計算し、保存済み画像への参照を復元する。"><img src="assets/carrierwave-lifecycle-read.svg" alt="DBからidentifierを読み出し、retrieve_from_store!へ渡す。store_dirなどの情報と合わせてパスを計算し、保存済み画像への参照を復元する。" width="1100"></object>
+</div>
+
+<!-- identifierはランダムなIDを新規発行する意味ではない。
+retrieve_from_store!は参照の復元で、常に画像の全バイトを取得するわけではない。
 参考: https://github.com/carrierwaveuploader/carrierwave/tree/master/lib/carrierwave/uploader -->
 
 ---
@@ -282,7 +293,15 @@ retrieve_from_store!は参照を復元する処理で、常に画像の全バイ
 - **cache_path**: storeするまでの一時置き場
     - バリデーションエラーでフォームが戻っても、再アップロードせずに再開できる
 - **store_path**: 永続化された、本来の保存先
-- そして、**どちらのパスも毎回計算されている**
+
+---
+
+# パスは「メソッド」で決まる
+
+- `cache_path` / `store_path` は、**保存先の文字列を組み立てるメソッド**
+- 開発者はこれらや `cache_dir` / `store_dir` などを上書きし、ルールを変えられる
+- 自由に変えられる一方、**過去のファイルの場所も再現し続ける必要がある**
+    - 例外や古いルールを捨てられず、負債として積み重なる
 
 ---
 
@@ -407,12 +426,12 @@ end
 # 変更以後
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/cache-path-after.svg" width="1100" height="460" aria-label="cache作成時にIDとパスの対応をKVSへ記録。復元時は再計算せず、KVSから同じパスを取得する。"><img src="assets/cache-path-after.svg" alt="cache作成時にIDとパスの対応をKVSへ記録。復元時は再計算せず、KVSから同じパスを取得する。" width="1100"></object>
+<object type="image/svg+xml" data="assets/cache-path-after.svg" width="1100" height="460" aria-label="cache作成時にIDとパスの対応をRedisへ記録。復元時は再計算せず、Redisから同じパスを取得する。"><img src="assets/cache-path-after.svg" alt="cache作成時にIDとパスの対応をRedisへ記録。復元時は再計算せず、Redisから同じパスを取得する。" width="1100"></object>
 </div>
 
 <!--
-- cache作成のタイミングで、ID → cache_pathをKVSに保持
-    - 取り出すときは再計算せず、KVSから取得
+- cache作成のタイミングで、ID → cache_pathをRedisに保持
+    - 取り出すときは再計算せず、Redisから取得
 - シンプルに！
 - 対応表はあくまでキャッシュなので、1〜2週間ほどで消える。1ヶ月後の再開は対象外（質疑用）
 -->
@@ -586,7 +605,7 @@ end
 - 判定役のAIが、観測結果と期待値を照合
     - PASS / FAIL / ERROR / NEEDS_REVIEW
     - すべてのステップに **判定の根拠** を書く
-- レポートと証跡をDraft PRにまとめる
+- レポートと証跡をPRにまとめる
 - 人はPRで証跡をレビューし、最終承認する
 
 ---
@@ -747,6 +766,15 @@ CarrierWaveCompatLayer.attached?(user, :avatar)  # after（❓ API案）
 - 同期で走っていた処理がなくなれば速くなるのも嬉しい
 - 現在、**PoCを開発中**。まずは実現性を確かめる
 - TODO: ローカルでの簡単な計測結果を掲載する
+
+---
+
+# もう一つの性能改善: 再アップロードを防ぐ
+
+- バイテンポラルデータモデル周辺には、パッチによる改善も行った
+- 履歴を複製するときに **「履歴複製中」のマーク** を付ける
+    - その間はアップロードを回避し、同じファイルを再アップロードしない
+- フック内部にもこの状態を伝えるため、`CurrentAttributes` が役に立った
 
 ---
 

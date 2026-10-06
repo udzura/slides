@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
 <title id="title">有効時間とトランザクション時間による履歴の分割</title>
-<desc id="desc">9月1日にTokyoを登録。10月17日に、10月1日からHakataだったと記録する。更新前のTokyoの行はトランザクション終了時刻を10月17日にして保持し、更新後は有効時間で分けたTokyoとHakataの2行を追加する。横軸がトランザクション時間、縦軸が有効時間。上と右は未来へ続く。</desc>
+<desc id="desc">横軸は有効時間で左から右、縦軸はトランザクション時間で上から下へ進む。9/1にTokyoを登録。10/17に10/1からHakataだったと記録する。上段の旧行Aを残し、下段に9/1から10/1未満のTokyoの行Bと10/1以降のHakataの行Cを追加する。</desc>
 <style>
 /* Hover effect: works only when embedded as an object element in a browser. Static in PDF and images. */
 .box { --glow: #ceff05; --hover-fill: #3a4422; transform-box: fill-box; transform-origin: center; transition: transform .2s ease, filter .2s ease; }
@@ -10,33 +10,40 @@
 .box:hover { transform: scale(1.04); filter: drop-shadow(0 0 10px var(--glow)); }
 .box:hover rect { fill: var(--hover-fill); }
 @media (prefers-reduced-motion: reduce) { .box, .box rect { transition: none; } .box:hover { transform: none; } }
-</style><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#fff" /></marker></defs>
+</style>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#fff" /></marker></defs>
 <rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.75" />
-<g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff">
-<text x="550" y="35" text-anchor="middle" font-size="25">10/17に「10/1からHakataだった」と記録する</text>
-<text x="24" y="82" font-size="24" fill="#ff58af" font-weight="700">有効時間</text>
-<text x="24" y="110" font-size="17">業務上いつ有効か</text>
-<text x="24" y="135" font-size="15" fill="#ccc">[valid_from, valid_to)</text>
-<path d="M190 350 V72 M190 350 H1040" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
-<path d="M190 90 V72" stroke="#fff" stroke-width="2" marker-end="url(#arrow)" />
-<g class="box gray"><rect x="211" y="90" width="340" height="260" rx="6" fill="#333" stroke="#aaa" stroke-width="2" />
-<text x="381" y="181" text-anchor="middle" font-size="21" fill="#ccc">更新前の記録 / 行A</text>
-<text x="381" y="224" text-anchor="middle" font-size="30" font-weight="700">location = Tokyo</text>
-<text x="381" y="264" text-anchor="middle" font-size="20" fill="#ccc">過去の認識として残る</text>
-</g><g class="box pink"><rect x="569" y="90" width="436" height="130" rx="6" fill="#432539" stroke="#ff58af" stroke-width="2" />
-<text x="787" y="132" text-anchor="middle" font-size="20" fill="#ff58af">新しい行C：10/1以降</text>
-<text x="787" y="179" text-anchor="middle" font-size="30" font-weight="700">location = Hakata</text>
-</g><g class="box"><rect x="569" y="232" width="436" height="118" rx="6" fill="#30391c" stroke="#ceff05" stroke-width="2" />
-<text x="787" y="271" text-anchor="middle" font-size="20" fill="#ceff05">新しい行B：9/1〜10/1未満</text>
-<text x="787" y="315" text-anchor="middle" font-size="30" font-weight="700">location = Tokyo</text>
-</g><path d="M175 226 H1020" stroke="#ff58af" stroke-width="2" stroke-dasharray="5 6" />
-<path d="M560 75 V365" stroke="#ceff05" stroke-width="2" stroke-dasharray="5 6" />
-<text x="175" y="234" text-anchor="end" font-size="23" fill="#ff58af">10/1</text>
-<text x="175" y="350" text-anchor="end" font-size="23">9/1</text>
-<text x="210" y="381" text-anchor="middle" font-size="22">9/1 登録</text>
-<text x="560" y="381" text-anchor="middle" font-size="22" fill="#ceff05">10/17 更新</text>
-<text x="990" y="381" text-anchor="end" font-size="18" fill="#ccc">未来へ →</text>
-<text x="189" y="62" text-anchor="middle" font-size="16" fill="#ccc">未来へ</text>
-<text x="550" y="419" text-anchor="middle" font-size="24" fill="#ceff05" font-weight="700">トランザクション時間：DB上でその内容を正しいと扱った期間</text>
-<text x="550" y="447" text-anchor="middle" font-size="17" fill="#ccc">[transaction_from, transaction_to)　／　各矩形＝1レコード（上端・右端は表示を省略）</text>
+<g font-family="'Funnel Display','Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff">
+<text x="550" y="32" text-anchor="middle" font-size="25" fill="#fff" font-weight="400">10/17に「10/1からHakataだった」と記録する</text>
+<text x="670" y="70" text-anchor="middle" font-size="24" fill="#ff58af" font-weight="700">有効時間 → 業務上いつ有効か</text>
+<text x="670" y="94" text-anchor="middle" font-size="17" fill="#ccc" font-weight="400">[valid_from, valid_to)</text>
+<text x="20" y="174" text-anchor="start" font-size="22" fill="#ceff05" font-weight="700">トランザクション時間</text>
+<text x="20" y="203" text-anchor="start" font-size="18" fill="#fff" font-weight="400">DB上でその内容を</text>
+<text x="20" y="228" text-anchor="start" font-size="18" fill="#fff" font-weight="400">正しいと扱った期間</text>
+<text x="20" y="320" text-anchor="start" font-size="16" fill="#ccc" font-weight="400">[transaction_from,</text>
+<text x="20" y="343" text-anchor="start" font-size="16" fill="#ccc" font-weight="400"> transaction_to)</text>
+<path d="M310 120 H1060 M310 120 V420" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+<path d="M1030 120 H1060" stroke="#fff" stroke-width="2" marker-end="url(#arrow)" />
+<g class="box gray"><rect x="323" y="140" width="707" height="117" rx="6" fill="#333" stroke="#aaa" stroke-width="2" />
+<text x="676" y="170" text-anchor="middle" font-size="21" fill="#ccc" font-weight="400">更新前の記録 / 行A</text>
+<text x="676" y="206" text-anchor="middle" font-size="30" fill="#fff" font-weight="700">location = Tokyo</text>
+<text x="676" y="240" text-anchor="middle" font-size="20" fill="#ccc" font-weight="400">過去の認識として残る</text>
+</g>
+<g class="box"><rect x="323" y="283" width="327" height="112" rx="6" fill="#30391c" stroke="#ceff05" stroke-width="2" />
+<text x="486" y="320" text-anchor="middle" font-size="20" fill="#ceff05" font-weight="400">行B：9/1〜10/1未満</text>
+<text x="486" y="366" text-anchor="middle" font-size="28" fill="#fff" font-weight="700">location = Tokyo</text>
+</g>
+<g class="box pink"><rect x="668" y="283" width="362" height="112" rx="6" fill="#432539" stroke="#ff58af" stroke-width="2" />
+<text x="849" y="320" text-anchor="middle" font-size="20" fill="#ff58af" font-weight="400">行C：10/1以降</text>
+<text x="849" y="366" text-anchor="middle" font-size="28" fill="#fff" font-weight="700">location = Hakata</text>
+</g>
+<path d="M300 270 H1040" stroke="#ceff05" stroke-width="2" stroke-dasharray="5 6" />
+<path d="M659 125 V140 M659 257 V401" stroke="#ff58af" stroke-width="2" stroke-dasharray="5 6" />
+<text x="323" y="113" text-anchor="middle" font-size="20" fill="#fff" font-weight="400">9/1</text>
+<text x="659" y="113" text-anchor="middle" font-size="20" fill="#ff58af" font-weight="400">10/1</text>
+<text x="296" y="148" text-anchor="end" font-size="20" fill="#fff" font-weight="400">9/1 登録</text>
+<text x="296" y="277" text-anchor="end" font-size="20" fill="#ceff05" font-weight="400">10/17 更新</text>
+<text x="1045" y="110" text-anchor="middle" font-size="16" fill="#ccc" font-weight="400">未来へ</text>
+<text x="295" y="414" text-anchor="end" font-size="16" fill="#ccc" font-weight="400">未来へ ↓</text>
+<text x="550" y="449" text-anchor="middle" font-size="17" fill="#ccc" font-weight="400">各矩形＝1レコード ／ 右端・下端は表示を省略（未来へ続く）</text>
 </g></svg>
