@@ -387,7 +387,10 @@ section.section-plain h1 {
  * 10 — body: bullets only, no title
  * ------------------------------------------------------------------ */
 
-section.body { padding-top: 95.5px; }
+section.body {
+  padding-top: 95.5px;
+  font-size: calc(36px * var(--kor-type-scale));
+}
 
 /* ------------------------------------------------------------------ *
  * 06 — split: title, bullets left, square image right

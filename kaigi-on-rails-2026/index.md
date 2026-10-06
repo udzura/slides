@@ -18,38 +18,11 @@ English version of index.ja.md. The slide structure and layout directives match 
 <!-- _class: title -->
 <!-- _paginate: false -->
 
-# Zen and the Art of<br><strong style='color: var(--kor-magenta);'>File Upload</strong> Maintenance
+# Zen and the Art of<br>File Upload Maintenance
 
 ## An Inquiry into Legacies
 
 <i>Presentation by Uchio Kondo</i>
-
----
-
-<style scoped>
-section { padding-right: 510px; }
-.profile-photo {
-  position: absolute;
-  top: 230px;
-  right: 140px;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--kor-lime);
-}
-</style>
-
-# About Me
-
-- Uchio Kondo / @udzura
-- SmartHR, Inc.
-  - Technology Platform Division
-  - Favorite SmartHR feature: Personnel Orders
-  - Favorite Rust type: `Cell<T>`
-- Fukuoka.rb / Fukuoka.wasm
-
-<img class="profile-photo" src="assets/uchio-kondo.png" alt="Photo of Uchio Kondo" width="300" height="300">
 
 ---
 
@@ -80,7 +53,34 @@ section { padding-right: 510px; }
 
 <!-- _class: section-plain -->
 
-# Today, let's talk about file upload
+# Let's talk about _file upload_ today.
+
+---
+
+<style scoped>
+section { padding-right: 510px; }
+.profile-photo {
+  position: absolute;
+  top: 230px;
+  right: 140px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--kor-lime);
+}
+</style>
+
+# About Me
+
+- Uchio Kondo / @udzura
+- SmartHR, Inc.
+  - Technology Platform Division
+  - Favorite SmartHR feature: Personnel Orders
+  - Favorite Rust type: `Cell<T>`
+- Fukuoka.rb / Fukuoka.wasm
+
+<img class="profile-photo" src="assets/uchio-kondo.png" alt="Photo of Uchio Kondo" width="300" height="300">
 
 ---
 
@@ -753,3 +753,14 @@ h2 { top: 525px; }
 </a>
 
 ## [udzura.jp/slides/2026/kaigionrails](https://udzura.jp/slides/2026/kaigionrails)
+
+---
+
+<!-- _class: full -->
+<!-- _paginate: false -->
+
+<style scoped>
+img { object-fit: contain; }
+</style>
+
+![We are Hiring! Scan the QR code for career opportunities](assets/hiring.png)
