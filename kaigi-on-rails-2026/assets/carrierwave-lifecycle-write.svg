@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="470" viewBox="0 0 1100 470" role="img" aria-labelledby="title desc"><title id="title">書き込み：キャッシュから永続化へ</title><desc id="desc">書き込み：キャッシュから永続化へ</desc>
+<style>
+/* Hover effect: works only when embedded as an object element in a browser. Static in PDF and images. */
+.box { --glow: #ceff05; --hover-fill: #3a4422; transform-box: fill-box; transform-origin: center; transition: transform .2s ease, filter .2s ease; }
+.box.gray { --glow: #ffffff; --hover-fill: #444444; }
+.box.pink { --glow: #ff58af; --hover-fill: #4a2a3f; }
+.box rect { transition: fill .2s ease; }
+.box:hover { transform: scale(1.04); filter: drop-shadow(0 0 10px var(--glow)); }
+.box:hover rect { fill: var(--hover-fill); }
+@media (prefers-reduced-motion: reduce) { .box, .box rect { transition: none; } .box:hover { transform: none; } }
+</style>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05"/></marker><marker id="pink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff58af"/></marker></defs><rect width="1100" height="470" rx="16" fill="#202020" fill-opacity="0.75"/><g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff" text-anchor="middle">
+<g class="box"><rect x="35" y="20" width="590" height="80" rx="9" fill="#30391c" stroke="#ceff05" stroke-width="2"/>
+<text x="330.0" y="52" font-size="25" fill="#ceff05" font-weight="700">① cache!：画像を一時保存</text>
+<text x="330.0" y="82" font-size="20" fill="#fff" font-weight="400">cache_id を生成し、cache_path に保存</text>
+</g>
+<g class="box"><rect x="35" y="128" width="590" height="80" rx="9" fill="#30391c" stroke="#ceff05" stroke-width="2"/>
+<text x="330.0" y="160" font-size="25" fill="#ceff05" font-weight="700">② cache_name を保持</text>
+<text x="330.0" y="190" font-size="20" fill="#fff" font-weight="400">cache_id / 元ファイル名（再開に使う）</text>
+</g>
+<g class="box"><rect x="35" y="248" width="590" height="80" rx="9" fill="#30391c" stroke="#ceff05" stroke-width="2"/>
+<text x="330.0" y="280" font-size="25" fill="#ceff05" font-weight="700">③ store!：画像を永続化</text>
+<text x="330.0" y="310" font-size="20" fill="#fff" font-weight="400">キャッシュから store_path へコピー・移動等</text>
+</g>
+<g class="box"><rect x="35" y="356" width="590" height="80" rx="9" fill="#30391c" stroke="#ceff05" stroke-width="2"/>
+<text x="330.0" y="388" font-size="25" fill="#ceff05" font-weight="700">④ identifier をDBに保存</text>
+<text x="330.0" y="418" font-size="20" fill="#fff" font-weight="400">例：photo.jpg（画像本体ではなく識別子）</text>
+</g>
+<path d="M330 100 V126" fill="none" stroke="#ceff05" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M330 208 V246" fill="none" stroke="#ceff05" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M330 328 V354" fill="none" stroke="#ceff05" stroke-width="2" marker-end="url(#arrow)"/>
+<g class="box pink"><rect x="690" y="128" width="375" height="110" rx="9" fill="#432539" stroke="#ff58af" stroke-width="2"/>
+<text x="877.5" y="160" font-size="25" fill="#ff58af" font-weight="700">保存を再開するとき</text>
+<text x="877.5" y="190" font-size="20" fill="#fff" font-weight="400">retrieve_from_cache!(cache_name)</text>
+</g>
+<text x="877" y="218" font-size="20" fill="#fff" font-weight="400">キャッシュ済み画像を復元</text>
+<path d="M625 168 H688" fill="none" stroke="#ff58af" stroke-width="2" marker-end="url(#pink)" stroke-dasharray="5 5"/>
+<path d="M690 222 H660 V228 H332" fill="none" stroke="#ff58af" stroke-width="2" marker-end="url(#pink)"/>
+<text x="870" y="300" font-size="23" fill="#ceff05" font-weight="700">cacheとstoreは別の段階</text>
+<text x="870" y="340" font-size="22" fill="#fff" font-weight="400">画像本体 → ストレージ</text>
+<text x="870" y="379" font-size="22" fill="#fff" font-weight="400">identifier → DB</text>
+<text x="550" y="460" font-size="16" fill="#ccc" font-weight="400">概念図：DBへの書き込みとstore!の厳密な順序は、モデル連携のコールバックによる</text>
+</g></svg>
