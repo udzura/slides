@@ -11,7 +11,7 @@
 .box:hover rect { fill: var(--hover-fill); }
 @media (prefers-reduced-motion: reduce) { .box, .box rect { transition: none; } .box:hover { transform: none; } }
 </style>
-<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff58af"/></marker></defs><rect width="1100" height="460" rx="16" fill="#202020"/><g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" text-anchor="middle" fill="#fff">
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff58af"/></marker></defs><rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.75"/><g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" text-anchor="middle" fill="#fff">
 <text x="155" y="43" font-size="25" fill="#ceff05" font-weight="700">① On cache creation</text>
 <text x="155" y="241" font-size="25" fill="#ff58af" font-weight="700">② On restore</text>
 <path d="M265 115 H361" fill="none" stroke="#ff58af" stroke-width="3" marker-end="url(#arrow)"/>

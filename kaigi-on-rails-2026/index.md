@@ -730,7 +730,11 @@ The diagram shows the whole flow, including Step 3. Observation and judgment are
 
 <!-- _class: quote -->
 
-# “The real cycle you’re working on is a cycle<br>called yourself.”
+<style scoped>
+h1 { top: 220px; font-size: 60px; line-height: 1.15; }
+</style>
+
+# “The real cycle you’re working on<br>is a cycle called <strong>yourself.</strong>”
 
 ## Robert M. Pirsig, <i>Zen and the Art of Motorcycle Maintenance</i>
 

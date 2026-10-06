@@ -14,15 +14,15 @@
 <marker id="lime" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05" /></marker>
 <marker id="pink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff58af" /></marker>
 </defs>
-<rect width="1100" height="460" rx="16" fill="#202020" />
+<rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.75" />
 <g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff" text-anchor="middle">
 <g class="box gray"><rect x="230" y="18" width="640" height="76" rx="10" fill="#333" stroke="#aaa" stroke-width="2" />
 <text x="550" y="50" font-size="29" font-weight="700">アプリケーション</text>
 <text x="550" y="79" font-size="21" fill="#ddd">業務ロジック・履歴管理・記録したパス</text>
-</g><path d="M390 94 V117 H285 V188" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#lime)" />
-<path d="M710 94 V117 H815 V188" fill="none" stroke="#ff58af" stroke-width="3" marker-end="url(#pink)" />
-<rect x="65" y="132" width="440" height="34" fill="#202020" />
-<rect x="595" y="132" width="440" height="34" fill="#202020" />
+</g><path d="M390 94 V117 H285 V132" fill="none" stroke="#ceff05" stroke-width="3" />
+<path d="M285 166 V188" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#lime)" />
+<path d="M710 94 V117 H815 V132" fill="none" stroke="#ff58af" stroke-width="3" />
+<path d="M815 166 V188" fill="none" stroke="#ff58af" stroke-width="3" marker-end="url(#pink)" />
 <text x="285" y="157" font-size="22" fill="#ceff05" font-weight="700">内部挙動に依存する処理</text>
 <text x="815" y="157" font-size="22" fill="#ff58af" font-weight="700">内部挙動に依存しない処理</text>
 <g class="box"><rect x="45" y="191" width="480" height="87" rx="10" fill="#30391c" stroke="#ceff05" stroke-width="2" />

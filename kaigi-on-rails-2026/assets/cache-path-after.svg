@@ -10,7 +10,7 @@
 .box:hover { transform: scale(1.04); filter: drop-shadow(0 0 10px var(--glow)); }
 .box:hover rect { fill: var(--hover-fill); }
 @media (prefers-reduced-motion: reduce) { .box, .box rect { transition: none; } .box:hover { transform: none; } }
-</style><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05" /></marker></defs><rect width="1100" height="460" rx="16" fill="#202020" /><g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" text-anchor="middle" fill="#fff">
+</style><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05" /></marker></defs><rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.75" /><g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" text-anchor="middle" fill="#fff">
 <text x="155" y="43" font-size="25" fill="#ceff05" font-weight="700">① cache作成時</text>
 <text x="155" y="241" font-size="25" fill="#ceff05" font-weight="700">② 復元時</text>
 <g class="box gray"><rect x="35" y="65" width="230" height="100" rx="10" fill="#2f2f2f" stroke="#aaa" stroke-width="2" />
