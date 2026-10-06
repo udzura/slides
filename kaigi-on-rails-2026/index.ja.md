@@ -9,7 +9,7 @@ size: 16:9
 <!-- _paginate: false -->
 
 <!--
-叩き台（outline.md ベース）。index.md（英語版）はまだ旧構成のまま。
+構成: 課題を分割 → ①障害に絞る → パスの決まり方 → cache_path固定の実績 → store_path固定の実践 → 今後の展望 → まとめ
 📊 = 公開前に数字を検証 / ❓ = 未決
 -->
 
@@ -147,9 +147,11 @@ section { padding-right: 510px; }
 
 # バイテンポラルデータモデル
 
-<div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/bitemporal-history.svg" width="1100" height="460" aria-label="横軸はトランザクション時間、縦軸は有効時間。10/17に10/1からの所在地を修正し、旧記録を残してTokyoとHakataの2行を追加する。"><img src="assets/bitemporal-history.svg" alt="横軸はトランザクション時間、縦軸は有効時間。10/17に10/1からの所在地を修正し、旧記録を残してTokyoとHakataの2行を追加する。" width="1100"></object>
+<div style="position: absolute; top: 150px; left: 180px; width: 920px;">
+<object type="image/svg+xml" data="assets/bitemporal-history.svg" width="920" height="385" aria-label="横軸はトランザクション時間、縦軸は有効時間。10/17に10/1からの所在地を修正し、旧記録を残してTokyoとHakataの2行を追加する。"><img src="assets/bitemporal-history.svg" alt="横軸はトランザクション時間、縦軸は有効時間。10/17に10/1からの所在地を修正し、旧記録を残してTokyoとHakataの2行を追加する。" width="920"></object>
 </div>
+
+<!-- _footer: 『[履歴 on Rails](https://kaigionrails.org/2025/talks/hypermkt/)』 (KoR 2025) も参照してください -->
 
 <!-- 日付は説明用。期間は開始を含み終了を含まない [from, to)。
 行Aのtransaction_toを更新時刻で閉じ、行B・Cを追加する。旧行を削除して2行にするわけではない。
@@ -167,8 +169,9 @@ section { padding-right: 510px; }
 # バイテンポラルとファイルの困り事 (2)
 
 - 履歴分割のたびに、同じファイルを持つ行が複製される
-    - 実装的には「前の履歴」の値コピーだが、副作用で...
-    - 不幸な組み合わせで、アップロードが再度走ることも
+    - 実装的には「前の履歴」の値コピー
+    - ところがCarrierWaveは、**値を代入しただけでアップロード（`cache!`）が走る**
+    - 見えない副作用として、不要なアップロードが走ってしまう
 
 ---
 
@@ -182,6 +185,7 @@ section { padding-right: 510px; }
 # 症状
 
 - パスの計算ロジックが複雑化し、何度も壊れた
+    - 実際に、ファイルアップロード起因の障害が何度も起きていた
 - サイズ違い画像（`version`）を同期的に生成している
 - アップロード時にEXIFを同期処理している
 - 履歴分割と組み合わさって、1回のupdateで大量のアップロードが走る
@@ -214,9 +218,19 @@ section { padding-right: 510px; }
 |---|---|---|
 | ① | 障害が起きやすい（パスが不安定） | 信頼に関わる。<strong>まずはこれをなんとかしたい</strong> |
 | ② | バージョンアップができていない | 何があるか分からず、将来の足かせ |
-| ③ | パフォーマンス・生産性の問題 | ユーザとしては不満点。中長期でなんとかしたい |
+| ③ | パフォーマンス・生産性の問題 | 開発者にとって使いにくい。中長期でなんとかしたい |
 
-<!-- ①②③は課題の番号。計画・設計で全体像を示し、実践・結果は①に絞る。 -->
+<!-- ①②③は課題の番号。この後は①の実践を中心に話し、②③は「今後の展望」で扱う。 -->
+
+---
+
+# なぜ性質で分けるのか
+
+- 性質ごとに、**打ち手も急ぎ具合も違う**
+    - ① 障害は、今すぐ止めたい
+    - ② バージョンアップは、準備に時間がかかる
+    - ③ 性能・生産性は、腰を据えて改善したい
+- 一つずつなら、**着手も検証もできる大きさ** になる
 
 ---
 
@@ -237,9 +251,15 @@ section { padding-right: 510px; }
 
 ---
 
+<!-- _class: section-plain -->
+
+# まずは ① 障害に絞る
+
+---
+
 <!-- _class: section -->
 
-# 4. 計画・設計<br>① パスを固定する
+# 4. 障害の原因は<br>パスの決まり方にある
 
 ---
 
@@ -249,10 +269,20 @@ section { padding-right: 510px; }
 <object type="image/svg+xml" data="assets/carrierwave-lifecycle.svg" width="1100" height="470" aria-label="cache!で一時保存、cache_nameを保持、store!で永続化、identifierを取得。その後はretrieve_from_store!で参照を復元。再開時はretrieve_from_cache!にcache_nameを渡す。"><img src="assets/carrierwave-lifecycle.svg" alt="cache!で一時保存、cache_nameを保持、store!で永続化、identifierを取得。その後はretrieve_from_store!で参照を復元。再開時はretrieve_from_cache!にcache_nameを渡す。" width="1100"></object>
 </div>
 
-<!-- 概念図。cache_name = cache_id / original_filename。モデルのIDとは別。
+<!-- 細部は追わず、「cacheとstoreの2段階がある」ことだけ伝える。Shrineなど他のライブラリも似た状態遷移を持つ。
+概念図。cache_name = cache_id / original_filename。モデルのIDとは別。
 identifierは保存先の識別子で、ランダムなIDを新規発行する意味ではない。
 retrieve_from_store!は参照を復元する処理で、常に画像の全バイトを取得するわけではない。
 参考: https://github.com/carrierwaveuploader/carrierwave/tree/master/lib/carrierwave/uploader -->
+
+---
+
+# cache_path と store_path
+
+- **cache_path**: storeするまでの一時置き場
+    - バリデーションエラーでフォームが戻っても、再アップロードせずに再開できる
+- **store_path**: 永続化された、本来の保存先
+- そして、**どちらのパスも毎回計算されている**
 
 ---
 
@@ -276,7 +306,6 @@ end
 - パスの計算が、テナント・テーブル・idなどモデルの状態に依存する
 - ファイル名にも、更新日時を混ぜたハッシュが入る
 - Uploaderのサブクラスごとにパス計算を上書きしている
-- バイテンポラルでは、基準になるidそのものが揺れる
 
 ---
 
@@ -288,7 +317,7 @@ end
 
 ---
 
-# 時刻によるif文
+# 複雑さゆえに: 時刻によるif文
 
 ```ruby
 def store_dir
@@ -302,21 +331,29 @@ end
 
 - ロジックを直したくても、過去のファイルは過去のロジックで計算されたパスを持つ
 
+<!-- 振り分けの基準は created_at ではなく「更新日時」。話すときも更新日時と言う。 -->
+
 ---
 
-# 何が起きたか
+# 結局何に困っているか
 
 - ロジックを少し変えただけで、過去のファイルが参照できなくなる
     - 実装が複雑で、影響が読みきれない
 - インシデントにも繋がっていた
+- しかもこれは、cache_path と store_path の **両方** で起きていた
 
-<!-- 🔒 ❓ インシデント概要をぼかして1〜2例入れるかも -->
 
 ---
 
 <!-- _class: section-plain -->
 
 # パス計算のコードは、<br>過去のファイルを人質に取られていた
+
+---
+
+<!-- _class: section-plain -->
+
+# 1つのIDから、<br>パスは一意に決まるべき
 
 ---
 
@@ -339,142 +376,7 @@ end
 
 <!-- _class: section -->
 
-# 5. 計画・設計<br>② 依存を減らす
-
----
-
-# 依存の2つの形
-
-- **内部挙動への依存**: アプリが「Uploaderがある」前提で書かれている
-- **暗黙の仕様**: Uploaderが「ついでに」やっている処理
-    - サイズ違い画像の生成
-    - EXIFの回転・除去
-    - 削除の抑止
-
----
-
-# 内部挙動への依存
-
-- 📊 アプリ本体に、CarrierWave依存の呼び出しが **300箇所近く**
-
-```ruby
-user.avatar.present?          # 実は Uploader#blank? の意味
-user.avatar.expiring_url(:large)  # version があることが前提
-record.remove_document!       # mount が生やすメソッド
-```
-
----
-
-# c.f. パス固定による依存軽減
-
-- パスを「CarrierWaveが毎回計算するもの」から「アプリが持つデータ」へ
-    - パス固定の結果、複雑性が減り、依存を減らす土台に
-- 止血対応を、そのまま未来の準備につなげる
-
----
-
-# 互換レイヤ `CarrierWaveCompatLayer`
-
-- CarrierWaveへの呼び出しを、一つのモジュールに集めたい
-- まずは **挙動を一切変えずに** 切り出す
-
-```ruby
-user.avatar.present?            # before
-CarrierWaveCompatLayer.attached?(user, :avatar)  # after（❓ API案）
-```
-
----
-
-# 依存を切り出せるか？
-
-- 依存箇所はAIと静的検査で洗い出せないか
-    - grep などが初手になるかもしれないが...
-- 将来は Cop などで呼び出しを禁止できる
-
----
-
-<!-- _class: section -->
-
-# 6. 計画・設計<br>③ 暗黙の仕様を外部サービス化
-
----
-
-# 画像の「前処理」が非常に多い
-
-- 表示用途に合わせたサイズ違い画像（`version`）の生成
-- EXIFの向き情報に基づく回転
-- EXIF情報（住所など）の除去
-    - これらがアップロード時に**同期で**走り、保存完了までの待ち時間になる
-
----
-
-# 同期処理を切り出したい
-
-- サイズ違い画像は、別サービスでオンデマンドに生成するとどうか？
-- → 同期処理から、version生成とEXIF処理を外すことができる
-- 別サービスの内容はCDNに載せキャッシュすれば、負荷の懸念も小さい
-
----
-
-# 同時に検討すべきこと
-
-- **原則、originalは直接参照しない**
-    - 回転、EXIFの除去を行なった後のものを生成して返せる
-    - 念のため、originalのEXIFを少しずつ消すジョブも必要かも
-
----
-
-# 副産物: 性能の改善
-
-- 同期で走っていた処理がなくなれば速くなるのも嬉しい
-- TBA: 簡単な計測結果
-
----
-
-# 複雑性を低減したい話
-
-- ここまでの、互換レイヤ、外部サービス化の導入により
-    - CarrierWaveへの直接依存を減らす
-    - 画像に関する実装をシンプルに、影響を限定的にする
-- （パス固定も副次的に複雑性低減に寄与）
-
-
----
-
-# 複雑性の削減のために目指す姿
-
-<div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/upload-architecture.svg" width="1100" height="460" aria-label="アプリから二方向へ分岐。CarrierWaveの内部挙動に依存する処理は互換レイヤに集め、依存しない画像処理は外部サービスに任せる設計案。"><img src="assets/upload-architecture.svg" alt="アプリから二方向へ分岐。CarrierWaveの内部挙動に依存する処理は互換レイヤに集め、依存しない画像処理は外部サービスに任せる設計案。" width="1100"></object>
-</div>
-
-<!-- 計画段階の責務・依存関係の図。矢印は画像データの転送経路ではない。
-Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞り、画像処理を分離する。 -->
-
----
-
-<!-- _class: section-plain -->
-
-# シンプルにする → 更新も移行もしやすくなる
-
----
-
-# 計画のまとめ
-
-| | 方針 | 現在地 |
-|---|---|---|
-| ① | パスを固定して障害を減らす | 実践と結果をこのあと紹介 |
-| ② | 依存を減らして移行に備える | 計画・設計・検証 |
-| ③ | 重い処理を切り離す | 計画・設計・検証 |
-
----
-
-# ここからは『実践　パス固定』の話
-
----
-
-<!-- _class: section -->
-
-# 7. パス固定移行の実践と結果
+# 5. 実践:<br>cache_path の固定
 
 ---
 
@@ -483,6 +385,8 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 - cacheしてからstoreするまでの間に、cache pathの計算結果が変わる
 - 📊 これだけで **年に5〜6件** の障害
 - 対策: cache時のパスを保存し、取り出すときは再計算しない
+
+<!-- ❓ リハでは「年間4、5件」と話した。スライドと口頭の数字を揃える。 -->
 
 ---
 
@@ -510,6 +414,7 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 - cache作成のタイミングで、ID → cache_pathをKVSに保持
     - 取り出すときは再計算せず、KVSから取得
 - シンプルに！
+- 対応表はあくまでキャッシュなので、1〜2週間ほどで消える。1ヶ月後の再開は対象外（質疑用）
 -->
 
 ---
@@ -522,23 +427,72 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 
 ---
 
+<!-- _class: section -->
+
+# 6. 実践:<br>store_path 固定へのチャレンジ
+
+---
+
 # 次の山は store_path の固定
 
 - 保存時のパスを保存する専用のカラムを導入
     - 読むときはそのカラムを優先、なければ従来どおり計算
     - 既存データはバックフィル
+    - すべて埋まれば、従来の計算（フォールバック）を消せる
 - 1つのUploaderから始めて、順次広げる
 
 ---
 
-# TODO: 実装の簡易コード
+# 実装イメージ: 書き込み側
+
+```ruby
+class ApplicationUploader < CarrierWave::Uploader::Base
+  after :store, :persist_object_store_path
+
+  def persist_object_store_path(*)
+    return if should_not_store_full_path?
+
+    persisted_store_path = object_store_path_to_persist
+    save_object_store_path(persisted_store_path)
+    log_if_mismatch
+  end
+end
+```
+
+- store の直後に、パスを専用カラムへ記録する
+
+<!-- hanicaのコードからポイントを絞り、若干改変したもの。should_not_store_full_path? が write フラグに相当。 -->
 
 ---
 
-# store_path 固定化プロジェクト
+# 実装イメージ: 読み込み側
 
-- cacheと違い、永続的なもので影響が大きめ
-- そんな中、考慮すべき点は...？
+```ruby
+class ApplicationUploader < CarrierWave::Uploader::Base
+  def store_path(*args)
+    calculated_store_path = super(*args)
+    persisted_store_path = resolve_persisted_store_path
+    log_if_mismatch
+    return calculated_store_path if persisted_store_path.nil?
+    use_persisted_store_path ? persisted_store_path : calculated_store_path
+  end
+end
+```
+
+- 記録がなければ、従来どおり計算したパスを使う
+- 計算値と記録値の不一致は、ログで観測する
+
+<!-- use_persisted_store_path が read フラグに相当。次の「戻せる設計」へのつなぎ。 -->
+
+---
+
+# cache と store では、影響の大きさが違う
+
+- **cache** は消えていくもの
+    - ある時点で間違っても、影響はやがて薄れる
+- **store** はずっと残るもの
+    - 不整合なデータが作られたら、残り続けて後始末が大変
+- だからこそ、慎重に進めたい。考慮すべき点は...？
 
 ---
 
@@ -604,8 +558,8 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 
 # Step 1: ユーザーストーリーを書く
 
-- 重要な利用経路（CUJ）を「〇〇として、△△できる」の形で抜き出す
-- 人が書くのは、前提と「操作 / 期待値」の表だけ
+- 重要な利用経路（CUJ）を、**AIと協業して**「〇〇として、△△できる」の形で抜き出す
+- 人が把握するのは、前提と「操作 / 期待値」の表だけ
 
 | 操作 | 期待値 |
 |---|---|
@@ -665,6 +619,14 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 
 ---
 
+# 結果
+
+- 30件程度のテストケース（ストーリー）を、**2日で一通り確認**
+- 自動テストも、AIと協力して大きく補強した
+- 影響が大きい変更だからこそ、**たくさん試せる** ことに価値がある
+
+---
+
 <!-- _class: section-plain -->
 
 # 影響が大きいからこそ、AIに頼る
@@ -673,41 +635,175 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 
 <!-- _class: section -->
 
-# 8. 次につなげる
+# 7. 今後の展望
 
 ---
 
-# 依存減らしの今後
+# 残りの課題と、現在地
 
-- 互換レイヤの導入計画
+| | 課題 | 現在地 |
+|---|---|---|
+| ① | 障害が起きやすい | パス固定を実践中（cache_pathは完了） |
+| ② | バージョンアップができていない | 互換レイヤに向けて分析中 |
+| ③ | パフォーマンス・生産性の問題 | 外部サービスのPoCを開発中 |
+
+---
+
+<!-- _class: section-plain -->
+
+# 展望1: 互換レイヤで<br>CarrierWaveへの依存を分析する
+
+---
+
+# 依存の2つの形
+
+- **内部挙動への依存**: アプリが「Uploaderがある」前提で書かれている
+- **暗黙の前処理**: Uploaderが「ついでに」やっている処理
+    - サイズ違い画像の生成
+    - EXIFの回転・除去
+    - 削除の抑止
+
+---
+
+# 内部挙動への依存
+
+- 📊 アプリ本体に、CarrierWave依存の呼び出しが **300箇所近く**
+
+```ruby
+user.avatar.present?          # 実は Uploader#blank? の意味
+user.avatar.expiring_url(:large)  # version があることが前提
+record.remove_document!       # mount が生やすメソッド
+```
+
+---
+
+# c.f. パス固定による依存軽減
+
+- パスを「CarrierWaveが毎回計算するもの」から「アプリが持つデータ」へ
+    - パス固定の結果、複雑性が減り、依存を減らす土台に
+- 止血対応を、そのまま未来の準備につなげる
+
+---
+
+# 互換レイヤ `CarrierWaveCompatLayer`
+
+- CarrierWaveの機能より一つ上の、**SmartHRが画像に求める機能** の層を切り出す
+    - 例: URLを取得する、ファイルがあるかを確かめる
+- まずは **挙動を一切変えずに** 切り出す
+
+```ruby
+user.avatar.present?            # before
+CarrierWaveCompatLayer.attached?(user, :avatar)  # after（❓ API案）
+```
+
+---
+
+# 依存を切り出せるか？
+
+- 依存箇所はAIと静的検査で洗い出せないか
+    - grep などが初手になるかもしれないが...
     - モジュラモノリスの分析に使ったツールなどを、活用できないか検討中
-- 画像のリサイズやEXIF処理を、外部サービスに切り出す計画
-    - 現在、**PoCを開発中**
-    - まずは実現性を確かめる
+- 将来は Cop などで呼び出しを禁止できる
+
+---
+
+<!-- _class: section-plain -->
+
+# 展望2: 画像の前処理を<br>外部サービスへ切り出す
+
+---
+
+# 画像の「前処理」が非常に多い
+
+- 表示用途に合わせたサイズ違い画像（`version`）の生成
+- EXIFの向き情報に基づく回転
+- EXIF情報（住所など）の除去
+    - これらがアップロード時に**同期で**走り、保存完了までの待ち時間になる
+
+---
+
+# 同期処理を切り出したい
+
+- サイズ違い画像は、別サービスでオンデマンドに生成するとどうか？
+- → 同期処理から、version生成とEXIF処理を外すことができる
+- 別サービスの内容はCDNに載せキャッシュすれば、負荷の懸念も小さい
+- 画像変換サービス + CDN という構成は、実サービスでも多く採られている
+    - Cookpad の [tofu](https://www.slideshare.net/slideshow/20111102-rails-meetuptofu/10084092) を始め、色々
+    - [ImageFlux](https://imageflux.sakura.ad.jp/) 等専用サービスも
+
+---
+
+# 同時に検討すべきこと
+
+- **原則、originalは直接参照しない** と良さそう
+    - 回転、EXIFの除去を行なった後のものを生成して返せる
+    - 画質調整なども可能
+    - 念のため、originalのEXIFを少しずつ消すジョブも必要かも
+
+---
+
+# 副産物: 性能の改善
+
+- 同期で走っていた処理がなくなれば速くなるのも嬉しい
+- 現在、**PoCを開発中**。まずは実現性を確かめる
+- TODO: ローカルでの簡単な計測結果を掲載する
+
+---
+
+<!-- _class: section-plain -->
+
+# 展望3: 疎結合にした先で<br>やりたいこと
+
+---
+
+# 複雑性を低減したい話
+
+- ここまでの、互換レイヤ、外部サービス化の導入により
+    - CarrierWaveへの直接依存を減らす
+    - 画像に関する実装をシンプルに、影響を限定的にする
+- （パス固定も副次的に複雑性低減に寄与）
+
+---
+
+# 複雑性の削減のために目指す姿
+
+<div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
+<object type="image/svg+xml" data="assets/upload-architecture.svg" width="1100" height="460" aria-label="アプリから二方向へ分岐。CarrierWaveの内部挙動に依存する処理は互換レイヤに集め、依存しない画像処理は外部サービスに任せる設計案。"><img src="assets/upload-architecture.svg" alt="アプリから二方向へ分岐。CarrierWaveの内部挙動に依存する処理は互換レイヤに集め、依存しない画像処理は外部サービスに任せる設計案。" width="1100"></object>
+</div>
+
+<!-- 計画段階の責務・依存関係の図。矢印は画像データの転送経路ではない。
+Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞り、画像処理を分離する。 -->
+
+---
+
+<!-- _class: section-plain -->
+
+# シンプルにする →<br>更新も移行もしやすくなる
 
 ---
 
 # その先は、リプレースか、更新か
 
-- CarrierWaveをリプレースするか、使い続けて更新するかは、まだ迷っている
+- CarrierWaveをリプレースするか、使い続けて更新するかは悩ましい
 - 短期的には、**最新バージョンへのキャッチアップ**が現実的かもしれない
 - どちらを選ぶにしても、依存を減らしておくことは次につながる
 
 ---
 
-# CarrierWaveをやめた先は？（あくまでも案）
+# CarrierWaveをやめた先は？（案）
 
 - **ActiveStorage**: 1モデルに最大8個の添付。JOINが必要で、履歴とも相性が悪い
-- **Shrine**: プラグインで疎結合なのは強い。ただしGCS対応はコミュニティgemで、結局たくさん内製することになる
+- **Shrine**: プラグインで疎結合なのは強い。ただしGCS対応はコミュニティgemで、結局たくさん内製することになる？
 - **内製**: 履歴との絡みとAIの普及を考えると、捨てきれない
 
 ---
 
 # その先でやりたいこと
 
-- リプレースした上で、[HotCell](https://github.com/basecamp/hotcell) のような機構も導入したい
+- リプレースにあたっては [HotCell](https://github.com/basecamp/hotcell) のような機構も導入したい
     - 信頼できないファイルの処理を、権限を絞った別コンテナに隔離する仕組み
-- 処理の置き場所も選べるように、今から **疎結合化** を進めたい
+    - ライブラリ自体の脆弱性からも本体を切り離せる
+- いずれにせよ **疎結合化** が鍵となる
 
 <!-- HotCellそのものの採用を決めたわけではなく、処理を隔離する機構への個人的な展望。 -->
 
@@ -715,16 +811,15 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 
 <!-- _class: section -->
 
-# 9. まとめ
+# 8. まとめ
 
 ---
 
 # 苦労しているすべてのRails開発者へ
 
-1. 課題は **性質で** 分割する
-2. **障害をなくす** ことを最優先に。それが次の一手の土台になる
-3. **戻せる設計** と、厚い検証。AIは検証側にも使う
-4. 挙動を変えずに **境界を切る** と、「置き換え」という選択肢が生まれる
+1. 課題は **性質で** 分割し、 **影響度** に沿って優先順位をつける
+2. **戻せる設計** と、AIを使った **厚い検証** で、安全に失敗する
+3. **境界を切って** 疎結合にし、置き換えも更新も選べるようにする
 
 ---
 
