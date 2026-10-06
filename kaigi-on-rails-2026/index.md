@@ -34,7 +34,8 @@ English version of index.ja.md. The slide structure and layout directives match 
 
 <!-- _class: body -->
 
-- In 200X, you built your first blog app with Rails.
+- Think back to 200X.
+- You built your first blog app with Rails.
 - The title and body showed up on the screen.
 
 ---
@@ -553,10 +554,10 @@ Narrow the Uploader's job down to "putting bytes at a fixed path," and separate 
 
 | Step | write | read | Notes |
 |---|---|---|---|
-| 1 | Partly ON | OFF | Double write for some tenants. Reads work as before |
-| 2 | All ON | OFF | Double write for all tenants. Reads work as before |
-| 3 | All ON | Partly ON | Some tenants start reading from the fixed paths |
-| 4 | All ON | All ON | All tenants read from the fixed paths |
+| 1 | <span style='color: var(--kor-lime);'>Partly ON</span> | OFF | Double write for some tenants. Reads work as before |
+| 2 | _All ON_ | OFF | Double write for all tenants. Reads work as before |
+| 3 | _All ON_ | <span style='color: var(--kor-lime);'>Partly ON</span> | Some tenants start reading from the fixed paths |
+| 4 | _All ON_ | _All ON_ | All tenants read from the fixed paths |
 
 ---
 
