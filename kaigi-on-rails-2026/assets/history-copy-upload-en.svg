@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="390" viewBox="0 0 1100 390" role="img" aria-labelledby="title desc">
+  <title id="title">Copying history triggers an upload</title>
+  <desc id="desc">Values are copied from a previous history row to a new row. Internally, assigning the file to the mounted attribute triggers CarrierWave cache!, causing an unnecessary upload of the same file.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05"/></marker>
+    <marker id="pink-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff83bd"/></marker>
+  </defs>
+  <rect width="1100" height="390" rx="20" fill="#202020" fill-opacity="0.94"/>
+  <g font-family="Arial, sans-serif" text-anchor="middle" fill="#fff">
+    <text x="232" y="59" font-size="29" font-weight="700" fill="#ceff05">Copy history</text>
+    <rect x="30" y="113" width="174" height="150" rx="12" fill="#333" stroke="#aaa" stroke-width="2"/>
+    <text x="117" y="158" font-size="25" font-weight="700">Previous row</text>
+    <text x="117" y="218" font-size="23">photo.jpg</text>
+    <path d="M216 188 H255" stroke="#ceff05" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="235" y="166" font-size="17" fill="#ceff05">copy</text>
+    <rect x="269" y="113" width="174" height="150" rx="12" fill="#343b20" stroke="#ceff05" stroke-width="2"/>
+    <text x="356" y="158" font-size="25" font-weight="700">New row</text>
+    <text x="356" y="218" font-size="23">photo.jpg</text>
+    <text x="232" y="340" font-size="24">Same file</text>
+    <circle cx="235" cy="188" r="4" fill="#ceff05"/>
+    <path d="M235 188 V285 Q235 297 247 297 H478 Q490 297 490 285 V200 Q490 188 502 188 H518" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="526" y="113" width="235" height="150" rx="12" fill="#333" stroke="#aaa" stroke-width="2"/>
+    <text x="643" y="154" font-size="25" font-weight="700">Internal assign</text>
+    <text x="643" y="201" font-size="21">Mounted attribute</text>
+    <text x="643" y="231" font-size="21">receives the file</text>
+    <path d="M777 188 H829" stroke="#ff83bd" stroke-width="3" marker-end="url(#pink-arrow)"/>
+    <rect x="845" y="113" width="225" height="150" rx="12" fill="#422636" stroke="#ff83bd" stroke-width="2"/>
+    <text x="957" y="157" font-size="29" font-weight="700" fill="#ff83bd">Upload</text>
+    <text x="957" y="216" font-size="30" font-family="monospace">cache!</text>
+    <text x="957" y="307" font-size="24" fill="#ff83bd">Hidden side effect</text>
+  </g>
+</svg>

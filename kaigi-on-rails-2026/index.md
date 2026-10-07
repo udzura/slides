@@ -5,6 +5,13 @@ paginate: true
 size: 16:9
 ---
 
+<style>
+section.section-plain h1 {
+  top: 50%;
+  transform: translateY(-50%);
+}
+</style>
+
 <!-- _class: cover -->
 <!-- _paginate: false -->
 
@@ -209,10 +216,10 @@ B.A. (Before ActiveStorage)
 # Nine Years Later
 
 - Migrated once from Paperclip, then nine years on CarrierWave
-- Uploader classes: 32
-- `mount_uploader` calls: 87
-- Up to 8 images per model
-- And CarrierWave is still on an old version
+- Uploader classes: **32**
+- `mount_uploader` calls: **87**
+- Up to **8** images per model
+- And CarrierWave is still on an older version
 
 <!--
 【日本語版】
@@ -229,7 +236,7 @@ B.A. (Before ActiveStorage)
 
 ---
 
-# Bitemporal Data Model
+# Bitemporal Data Model and Us
 
 <div style="position: absolute; top: 150px; left: 180px; width: 920px;">
 <object type="image/svg+xml" data="assets/bitemporal-history-en.svg" width="920" height="385" aria-label="Valid time runs left to right and transaction time runs top to bottom. On 10/17, the location since 10/1 is corrected; the old row is kept and two rows, Tokyo and Hakata, are added."><img src="assets/bitemporal-history-en.svg" alt="Valid time runs left to right and transaction time runs top to bottom. On 10/17, the location since 10/1 is corrected; the old row is kept and two rows, Tokyo and Hakata, are added." width="920"></object>
@@ -267,10 +274,11 @@ B.A. (Before ActiveStorage)
 
 # Bitemporal Data and Files: Problem (2)
 
-- Each history split duplicates rows that hold the same file
-    - In the code, it just copies values from the previous history
-    - But CarrierWave **starts an upload (`cache!`) on a simple assignment**
-    - As a hidden side effect, unneeded uploads run
+<div style="position: absolute; top: 175px; left: 90px; width: 1100px;">
+<img src="assets/history-copy-upload-en.svg" alt="Copy history: previous row to new row → internal assign → upload via cache!" width="1100" height="390">
+</div>
+
+<p style="position: absolute; top: 580px; left: 90px; width: 1100px; text-align: center;">Copying history can <strong>upload the same file again.</strong></p>
 
 <!--
 【日本語版】
@@ -395,11 +403,10 @@ B.A. (Before ActiveStorage)
 
 # Most Important: No More Incidents
 
-- HR files "must never disappear"
-    - Identity documents, certificates...
-- The path design and rules are complex and **easy to get wrong**
+- The path design and rules are **complex and easy to get wrong**
     - Even careful changes can overlook the impact on existing files
-- Security matters, of course. But **reliability comes first**
+- For an HR service, **reliability comes first**
+    - We have identity documents, certificates...
 
 <!--
 【日本語版】
@@ -490,8 +497,8 @@ cache_path と store_path
 
 - `cache_path` / `store_path` are **methods that build a path string**
 - Developers can override them, or `cache_dir` / `store_dir`, to change the rules
-- Free to change, but **old files must stay reachable**
-    - Old rules and exceptions cannot be dropped, and they pile up as debt
+- But **old files must stay reachable**
+    - Old rules and exceptions cannot be dropped
 
 <!--
 【日本語版】
@@ -549,16 +556,16 @@ end
 # How Did We Get Here?
 
 - We probably wanted two properties for paths...
-    - Unguessability: others cannot easily guess a person's file
-    - Uniqueness: a path never collides with another file's
+    - **Unguessability**: others cannot easily guess a person's file
+    - **Uniqueness**: a path never collides with another file's
 - But we went a bit too far, and now it is hard to operate
 
 <!--
 【日本語版】
 どうしてこうなった
 - おそらく、パスに以下の2つの性質を持たせたかったのだろう...
-    - 非推測性: 本人のファイルを、他人が容易に推測できないこと
-    - 非衝突性: 他のファイルとパスが衝突しないこと
+    - **非推測性**: 本人のファイルを、他人が容易に推測できないこと
+    - **非衝突性**: 他のファイルとパスが衝突しないこと
 - ただ、ちょっとやりすぎて、運用が難しくなっている
 -->
 
@@ -594,7 +601,7 @@ end
 
 - A small change in the logic can make old files unreachable
     - The code is complex, so we cannot predict the impact
-- This led to incidents
+- This led to incidents :(
 - And it happened for **both** cache_path and store_path
 
 <!--
@@ -636,7 +643,6 @@ end
 - Two points to fix
     1. cache_path
     2. store_path
-- Unguessability and uniqueness only need to hold when the path is decided
 
 <!--
 【日本語版】
@@ -764,7 +770,7 @@ cache_path 固定の結果
 
 - We could change the identifier format, but chose **a dedicated column**
     - On read, prefer that column; otherwise, calculate as before
-    - Backfill existing data. Once it is all filled, the fallback can go
+    - Backfill existing data by recalculation
 - Start with the most problematic Uploader, then expand
 
 <!--
@@ -895,8 +901,8 @@ write / read の2フェーズフラグ
 # Using Flipper
 
 - Control the write/read flags with [Flipper](https://rubygems.org/gems/flipper) and migrate step by step
-    - Release to selected tenants
-    - Roll back online
+    - **Release to selected tenants**
+    - **Roll back online**
 
 <!--
 【日本語版】
@@ -908,14 +914,11 @@ Flipper の活用
 
 ---
 
-# Why Rollback Matters
+# Rollback Matters
 
-- Roll back in reverse order
-    - Keep the ability to go back one step at any stage
 - To allow rollback, we added a new column unrelated to the old logic
     - Safety over the extra DB migration work
 - QA also checks that **rolling back in an emergency is safe**
-- Control the impact, and **fail safely**
 
 <!--
 【日本語版】
@@ -925,6 +928,14 @@ Flipper の活用
 - 戻せるように、既存ロジックと関係ないカラムを新設した
     - db migration追加の手間より安全を優先
 - QAの中でも **「いざという時戻しても問題ないか」** を確認する
+-->
+
+---
+<!-- _class: section-plain -->
+
+# Control the impact.<br>Fail safely.
+
+<!--
 - 影響をコントロールしながら、**安全に失敗する**
 -->
 
@@ -945,22 +956,23 @@ Flipper の活用
 
 - Internally, we changed how paths are decided
 - How do we confirm **nothing changed for users**?
-- Screens, APIs, applications, drafts... flag states × paths = a huge number of cases
+- Workflows, invitations, mobile apps...
+    - Flag states × paths = a huge number of cases
 
 <!--
 【日本語版】
 問い
 - 内部的には、パスの決め方を変えた
 - **ユーザーから見て何も変わっていない** ことを、どう確かめる？
-- 経路は画面・API・申請・下書き... フラグの状態 × 経路で、組み合わせは膨大
+- 経路は申請機能・招待機能・モバイルアプリ... フラグの状態 × 経路で、組み合わせは膨大
 -->
 
 ---
 
-# Step 1: Write User Stories
+# For Humans: Just Write User Stories
 
 - **With AI**, extract critical user journeys (CUJs) as "As X, I can Y"
-- Humans only need the preconditions and an "action / expected result" table
+- Humans only need the preconditions and an "action / expected result" story
 
 | Action | Expected result |
 |---|---|
@@ -982,7 +994,7 @@ Step 1: ユーザーストーリーを書く
 
 ---
 
-# Step 2: AI Builds and Runs Scenarios
+# Run and Build Reports with AI
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
 <object type="image/svg+xml" data="assets/ai-qa-flow-en.svg" width="1100" height="460" aria-label="An AI structures the human-written story while keeping it readable, and another AI runs it. Checks and observations are also structured, and a reporting AI writes a human-readable report with verdicts and reasons."><img src="assets/ai-qa-flow-en.svg" alt="An AI structures the human-written story while keeping it readable, and another AI runs it. Checks and observations are also structured, and a reporting AI writes a human-readable report with verdicts and reasons." width="1100"></object>
@@ -996,26 +1008,6 @@ Step 2: AIがシナリオにして、実行する
 構造化の形式はGherkinなどもあるが、今回は独自形式。
 実行役のAIをAIの中で起動。やり取りはファイルとスキーマ。
 図は次のStep 3まで含めた全体像。観測と判定を分け、人が最後に証跡をレビューする。
--->
-
----
-
-# Step 3: AI Writes the Report
-
-- A judging AI compares observations with expected results
-    - PASS / FAIL / ERROR / NEEDS_REVIEW
-    - Every step includes **the reason for its verdict**
-- The report and evidence go into a PR
-- A human reviews the evidence in the PR and approves
-
-<!--
-【日本語版】
-Step 3: AIがレポートする
-- 判定役のAIが、観測結果と期待値を照合
-    - PASS / FAIL / ERROR / NEEDS_REVIEW
-    - すべてのステップに **判定の根拠** を書く
-- レポートと証跡をPRにまとめる
-- 人はPRで証跡をレビューし、最終承認する
 -->
 
 ---
@@ -1167,22 +1159,23 @@ store_path 固定の現在地
 
 ---
 
-# Two Kinds of Dependency
+# To Begin with: Two Kinds of Dependency
 
-- **Dependency on internal behavior**: the app assumes "an Uploader exists"
-- **Implicit preprocessing**: what the Uploader does "along the way"
+- **On carrierwave internals**:
+    - the app assumes "a CARRIERWAVE uploader exists"
+- **On carrierwave preprocessing**: what the Uploader does "along the way"
     - Generating resized images
     - Rotating images and removing EXIF data
-    - Preventing deletion
+    - Obtaining file metadata
 
 <!--
 【日本語版】
-依存の2つの形
+前提: 依存の2つの形
 - **内部挙動への依存**: アプリが「Uploaderがある」前提で書かれている
 - **暗黙の前処理**: Uploaderが「ついでに」やっている処理
     - サイズ違い画像の生成
     - EXIFの回転・除去
-    - 削除の抑止
+    - ファイルのメタデータ取得
 -->
 
 ---
@@ -1206,31 +1199,18 @@ record.remove_document!       # a method added by mount
 
 ---
 
-# c.f. Fixed Paths Reduce Dependency
-
-- From "calculated by CarrierWave every time" to "data owned by the app"
-    - Fixing paths reduces complexity and prepares to cut dependencies
-- Stopping the bleeding also prepares us for the future
-
-<!--
-【日本語版】
-c.f. パス固定による依存軽減
-- パスを「CarrierWaveが毎回計算するもの」から「アプリが持つデータ」へ
-    - パス固定の結果、複雑性が減り、依存を減らす土台に
-- 止血対応を、そのまま未来の準備につなげる
--->
-
----
-
-# Compatibility Layer: `CarrierWaveCompatLayer`
+# Compatibility Layer
 
 - A layer one step above CarrierWave: **what SmartHR needs from images**
     - e.g., get a URL, check whether a file exists
 - **No behavior change**, and **step by step**, so it is easy to move forward
 
 ```ruby
-user.avatar.present?            # before
-CarrierWaveCompatLayer.attached?(user, :avatar)  # after
+# before
+user.avatar.present?            
+# ↓
+# ↓ after
+CarrierWaveCompatLayer.attached?(user, :avatar)
 ```
 
 <!--
@@ -1271,10 +1251,8 @@ CarrierWaveCompatLayer.attached?(user, :avatar)  # after
 
 # Too Much Image "Preprocessing"
 
-- Generating resized images (`version`) for each use
-- Rotating images based on EXIF orientation
-- Removing EXIF data (such as addresses)
-    - All of it runs **synchronously** on upload and adds to the wait
+- Generating resized images (`version`), EXIF handling...
+    - All of it runs **synchronously** on upload and adds to the huge wait
 
 <!--
 【日本語版】
@@ -1289,10 +1267,7 @@ CarrierWaveCompatLayer.attached?(user, :avatar)  # after
 
 # Let's Move the Synchronous Work Out
 
-- What if a separate service generated resized images on demand?
-- → Version generation and EXIF processing leave the synchronous path
-- With a CDN cache in front, load should not be a big concern
-- Many real services use "image service + CDN"
+- Many real services use "on-demand image service + CDN"
     - Starting with Cookpad's [tofu](https://www.slideshare.net/slideshow/20111102-rails-meetuptofu/10084092)
     - Dedicated services such as [ImageFlux](https://imageflux.sakura.ad.jp/)
 
@@ -1312,7 +1287,6 @@ CarrierWaveCompatLayer.attached?(user, :avatar)  # after
 # A By-product: Better Performance
 
 - Without the synchronous work, it should also get faster
-- **A PoC is under development**. First, we check feasibility
 - A quick local measurement shows...
 
 <!--
@@ -1359,12 +1333,18 @@ CarrierWaveCompatLayer.attached?(user, :avatar)  # after
 
 ---
 
+# On-demand Image Service Status
+
+- We are now designing and developing it as a PoC!
+- Stay tuned for updates!
+
+---
+
 # Another Speedup: Avoid Re-uploads
 
 - We are **considering** improvements around the bitemporal model
-- Mark "history copy in progress" when copying history
-    - Skip uploads during the copy, so the same file is not uploaded again
-- To pass this state into hooks, we will likely use `CurrentAttributes`
+- Mark "bi-temporal ops in progress" to skip uploads during the copy
+- Use `CurrentAttributes` to pass this state into hooks
 
 <!--
 【日本語版】
@@ -1425,9 +1405,12 @@ Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞
 
 # After CarrierWave? (Ideas)
 
-- **ActiveStorage**: looks hard. Up to 8 attachments per model, JOINs, and a poor fit with history
-- **Shrine**: looks good. But GCS support is a community gem, so some in-house work remains
-- **In-house**: with history and the rise of AI, we cannot rule it out
+- **ActiveStorage?**
+    - Up to 8 attachments per model, JOINs, and a poor fit with history
+- **Shrine?**
+    - Good. But GCS support is optional...
+- **In-house??**
+    - Dreamy. But reasonable actually?
 
 <!--
 【日本語版】
