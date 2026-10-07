@@ -34,7 +34,7 @@ Presentation by Uchio Kondo
 
 <!-- _class: section -->
 
-# 0. The Beginning<br>(of Your Web Development)
+# 0. Your First Web App
 
 <!--
 【日本語版】
@@ -131,7 +131,7 @@ section { padding-right: 510px; }
 
 <!-- _class: section -->
 
-# 1. Rails and<br>File Upload
+# 1. Rails and File Upload
 
 <!--
 【日本語版】
@@ -183,7 +183,7 @@ B.A. (Before ActiveStorage)
 
 <!-- _class: section -->
 
-# 2. The Situation<br>at SmartHR
+# 2. The Situation at SmartHR
 
 <!--
 【日本語版】
@@ -299,12 +299,9 @@ B.A. (Before ActiveStorage)
 
 # Symptoms
 
-- Path calculation grew complex and broke many times
-    - File upload incidents actually happened again and again
-- Resized images (`version`) are generated synchronously
-- EXIF data is processed synchronously on upload
-- Uploads are out of control (history splits trigger many)
-- Image specs are complex on both sides, so we cannot upgrade
+<div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
+<img src="assets/symptoms-cloud-en.svg" alt="Fragile Path Logic, Synchronous Image Resizing, EXIF Processing, Implicit Uploads, Tangled Dependencies, Difficult Upgrades" width="1100" height="460">
+</div>
 
 <!--
 【日本語版】
@@ -400,8 +397,8 @@ B.A. (Before ActiveStorage)
 
 - HR files "must never disappear"
     - Identity documents, certificates...
-- The path logic is **beyond the cognitive limit** of ordinary developers
-    - Hard to stop someone from breaking it by accident
+- The path design and rules are complex and **easy to get wrong**
+    - Even careful changes can overlook the impact on existing files
 - Security matters, of course. But **reliability comes first**
 
 <!--
@@ -409,8 +406,8 @@ B.A. (Before ActiveStorage)
 一番大事なのは、障害をなくすこと
 - 人事労務のファイルは「消えてはいけないもの」
     - 本人確認書類、各種証明書...
-- パスのロジックは、普通の開発者の **認知負荷の限界** を超えている
-    - うっかり壊す実装が入るのを、防ぐのが難しい
+- パスに関する設計・仕様が複雑で、**間違えやすい**
+    - 注意深く変更しても、過去のファイルへの影響を見落としやすい
 - セキュリティももちろん大事。でも **まずは信頼性** から
 -->
 
@@ -429,7 +426,7 @@ B.A. (Before ActiveStorage)
 
 <!-- _class: section -->
 
-# 4. The Cause:<br>How Paths Are Decided
+# 4. How Paths Break
 
 <!--
 【日本語版】
@@ -535,16 +532,16 @@ end
 
 - Model state that has nothing to do with the file changes, **and the file is lost**
 - An Uploader is just a Ruby class
-    - A subclass can change the path logic for its own needs
-    - One person changing it without the big picture can cause real trouble
+    - Each subclass can change the path logic
+    - It is hard to see how each change affects access to existing files
 
 <!--
 【日本語版】
 なぜ壊れるのか
 - ファイルと関係ないところでモデルの状態が変わっても、**参照できなくなる**
 - Uploaderはただの Ruby のクラス
-    - サブクラスで、都合に合わせてパス計算を変えられてしまう
-    - 全体を考えずに変える人が出ると、大変なことになる
+    - サブクラスごとにパス計算を変更できる
+    - 個々の変更が、過去のファイルの参照にどう影響するか分かりにくい
 -->
 
 ---
@@ -671,7 +668,7 @@ end
 
 <!-- _class: section -->
 
-# 5. Practice:<br>Fixing cache_path
+# 5. Fixing cache_path
 
 <!--
 【日本語版】
@@ -754,7 +751,7 @@ cache_path 固定の結果
 
 <!-- _class: section -->
 
-# 6. Practice:<br>The store_path Challenge
+# 6. Fixing store_path
 
 <!--
 【日本語版】
@@ -1557,5 +1554,3 @@ img { object-fit: contain; }
 </style>
 
 ![We are Hiring! Scan the QR code for career opportunities](assets/hiring.png)
-
-
