@@ -145,6 +145,63 @@ T = {
 },
 }
 
+# 図を描き直したもの・新しく足したもの（上の対応表より優先）
+T['bitemporal-history'] = {
+ '有効時間とトランザクション時間による履歴の分割': 'Splitting history by valid time and transaction time',
+ '横軸は有効時間で左から右、縦軸はトランザクション時間で上から下へ進む。9/1にTokyoを登録。10/17に10/1からHakataだったと記録する。上段の旧行Aを残し、下段に9/1から10/1未満のTokyoの行Bと10/1以降のHakataの行Cを追加する。':
+   'Valid time runs left to right and transaction time runs top to bottom. Tokyo is registered on 9/1. On 10/17, we record that the location has been Hakata since 10/1. The old row A stays at the top, and row B (Tokyo, 9/1 to before 10/1) and row C (Hakata, from 10/1) are added below.',
+ '10/17に「10/1からHakataだった」と記録する': 'On 10/17, record “It has been Hakata since 10/1”',
+ '有効時間 → 業務上いつ有効か': 'Valid time → when it is valid in business',
+ 'トランザクション時間': 'Transaction time',
+ 'DB上でその内容を': 'When the DB treated',
+ '正しいと扱った期間': 'the content as correct',
+ '更新前の記録 / 行A': 'Record before update / Row A',
+ '過去の認識として残る': 'Kept as past knowledge',
+ '行B：9/1〜10/1未満': 'Row B: 9/1 to before 10/1',
+ '行C：10/1以降': 'Row C: from 10/1',
+ '9/1 登録': '9/1 Created',
+ '10/17 更新': '10/17 Updated',
+ '未来へ ↓': 'Future ↓',
+ '未来へ': 'Future',
+ '各矩形＝1レコード ／ 右端・下端は表示を省略（未来へ続く）':
+   'Each rectangle = one record  /  right and bottom edges omitted (they continue into the future)',
+}
+T['carrierwave-lifecycle-write'] = {
+ '書き込み：キャッシュから永続化へ': 'Write: from the cache to persistent storage',
+ '① cache!：画像を一時保存': '① cache!: store the image temporarily',
+ 'cache_id を生成し、cache_path に保存': 'Generates a cache_id and saves to cache_path',
+ '② cache_name を保持': '② Keep the cache_name',
+ 'cache_id / 元ファイル名（再開に使う）': 'cache_id / original filename (for resuming)',
+ '③ store!：画像を永続化': '③ store!: persist the image',
+ 'キャッシュから store_path へコピー・移動等': 'Copied or moved from the cache to store_path',
+ '④ identifier をDBに保存': '④ Save the identifier to the DB',
+ '例：photo.jpg（画像本体ではなく識別子）': 'e.g., photo.jpg (an identifier, not the image)',
+ '保存を再開するとき': 'When resuming a save',
+ 'キャッシュ済み画像を復元': 'Restores the cached image',
+ 'cacheとstoreは別の段階': 'cache and store are separate steps',
+ '画像本体 → ストレージ': 'Image → storage',
+ '概念図：DBへの書き込みとstore!の厳密な順序は、モデル連携のコールバックによる':
+   'Conceptual diagram: the exact order of the DB write and store! depends on model callbacks',
+}
+T['carrierwave-lifecycle-read'] = {
+ '読み出し・参照：DBのidentifierからファイルへ': 'Read: from the identifier in the DB to the file',
+ '① DBからidentifierを読み出す': '① Read the identifier from the DB',
+ 'モデルのカラムに保存された値：photo.jpg': 'Value stored in the model’s column: photo.jpg',
+ '読み出した識別子をUploaderへ渡す': 'Passes the identifier to the Uploader',
+ '③ 保存先のパスを組み立てる': '③ Build the storage path',
+ 'store_dir などの情報 ＋ identifier → store_path': 'store_dir and other info + identifier → store_path',
+ '④ 保存済み画像への参照が使える': '④ The stored image can be referenced',
+ 'URLの生成や、必要に応じたファイルの読み出し': 'Generate URLs, or read the file when needed',
+ 'retrieveは参照の復元。呼び出した時点で画像の全バイトを取得するとは限らない':
+   'retrieve restores a reference; it does not always fetch all the bytes at call time',
+}
+T['cache-path-after'].update({
+ 'cache作成時にIDとパスAの対応をRedisへ記録。復元時には再計算せず、同じIDでRedisを引き、パスAのファイルへアクセスする。':
+   'At cache creation, the mapping from the ID to Path A is recorded in Redis. At restore time, the app does not recalculate; it looks up the same ID in Redis and accesses the file at Path A.',
+ 'Redisへ対応を記録': 'Record mapping in Redis',
+ 'Redisから取得': 'Read from Redis',
+})
+
 # 英語のほうが長くなるラベルだけ文字を小さくする
 FONT_SIZE = {
  'cache-path-before': {'Calculated from current state': 22, 'Recalculated at restore': 22},
