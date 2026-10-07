@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
+<title id="title">画像付き申請承認処理の所要時間内訳</title>
+<desc id="desc">前処理全部ありは合計17.9秒で、うちGCS処理12.56秒、サムネ画像縮小処理2.27秒、画像サイズ取得処理1.42秒、EXIF関係の操作0.60秒、その他1.10秒。前処理なしは合計5.8秒で、うちGCS処理4.96秒、その他0.85秒。ローカルでの3回平均。</desc>
+<style>
+/* Hover a bar segment or a legend item to highlight the same category. Works in browsers only. */
+.seg, .leg { transition: opacity .2s ease, filter .2s ease, transform .2s ease; transform-box: fill-box; }
+.leg { transform-origin: left center; }
+.seg { transform-origin: center; }
+svg:has(.c0:hover) .seg:not(.c0), svg:has(.c0:hover) .leg:not(.c0) { opacity: .25; }
+svg:has(.c0:hover) .seg.c0 { filter: drop-shadow(0 0 10px #ceff05); }
+svg:has(.c0:hover) .leg.c0 { transform: scale(1.12); filter: drop-shadow(0 0 6px #ceff05); }
+svg:has(.c1:hover) .seg:not(.c1), svg:has(.c1:hover) .leg:not(.c1) { opacity: .25; }
+svg:has(.c1:hover) .seg.c1 { filter: drop-shadow(0 0 10px #ff2d8b); }
+svg:has(.c1:hover) .leg.c1 { transform: scale(1.12); filter: drop-shadow(0 0 6px #ff2d8b); }
+svg:has(.c2:hover) .seg:not(.c2), svg:has(.c2:hover) .leg:not(.c2) { opacity: .25; }
+svg:has(.c2:hover) .seg.c2 { filter: drop-shadow(0 0 10px #ff58af); }
+svg:has(.c2:hover) .leg.c2 { transform: scale(1.12); filter: drop-shadow(0 0 6px #ff58af); }
+svg:has(.c3:hover) .seg:not(.c3), svg:has(.c3:hover) .leg:not(.c3) { opacity: .25; }
+svg:has(.c3:hover) .seg.c3 { filter: drop-shadow(0 0 10px #ffb3d9); }
+svg:has(.c3:hover) .leg.c3 { transform: scale(1.12); filter: drop-shadow(0 0 6px #ffb3d9); }
+svg:has(.c4:hover) .seg:not(.c4), svg:has(.c4:hover) .leg:not(.c4) { opacity: .25; }
+svg:has(.c4:hover) .seg.c4 { filter: drop-shadow(0 0 10px #8a8a8a); }
+svg:has(.c4:hover) .leg.c4 { transform: scale(1.12); filter: drop-shadow(0 0 6px #8a8a8a); }
+@media (prefers-reduced-motion: reduce) { .seg, .leg { transition: none; } }
+</style>
+<rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.75"/>
+<g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff">
+<text x="40" y="44" font-size="24" font-weight="700" fill="#ceff05">画像付き申請承認処理の所要時間内訳</text>
+<g transform="translate(0 44)">
+<g class="leg c0"><rect x="40" y="28" width="16" height="16" rx="3" fill="#ceff05"/><text x="66" y="42" font-size="18">GCS 処理　12.56s → 4.96s</text></g>
+<g class="leg c1"><rect x="390" y="28" width="16" height="16" rx="3" fill="#ff2d8b"/><text x="416" y="42" font-size="18">サムネ画像縮小処理　2.27s → 0.00s</text></g>
+<g class="leg c2"><rect x="740" y="28" width="16" height="16" rx="3" fill="#ff58af"/><text x="766" y="42" font-size="18">画像サイズ取得処理　1.42s → 0.00s</text></g>
+<g class="leg c3"><rect x="40" y="60" width="16" height="16" rx="3" fill="#ffb3d9"/><text x="66" y="74" font-size="18">EXIF 関係の操作　0.60s → 0.00s</text></g>
+<g class="leg c4"><rect x="390" y="60" width="16" height="16" rx="3" fill="#8a8a8a"/><text x="416" y="74" font-size="18">その他　1.10s → 0.85s</text></g>
+<path d="M230.0 120 V330" stroke="#ffffff" stroke-opacity="0.15"/>
+<text x="230.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">0</text>
+<path d="M312.2 120 V330" stroke="#ffffff" stroke-opacity="0.15"/>
+<text x="312.2" y="356" font-size="16" fill="#ccc" text-anchor="middle">2</text>
+<path d="M394.4 120 V330" stroke="#ffffff" stroke-opacity="0.15"/>
+<text x="394.4" y="356" font-size="16" fill="#ccc" text-anchor="middle">4</text>
+<path d="M476.7 120 V330" stroke="#ffffff" stroke-opacity="0.15"/>
+<text x="476.7" y="356" font-size="16" fill="#ccc" text-anchor="middle">6</text>
+<path d="M558.9 120 V330" stroke="#ffffff" stroke-opacity="0.15"/>
+<text x="558.9" y="356" font-size="16" fill="#ccc" text-anchor="middle">8</text>
+<path d="M641.1 120 V330" stroke="#ffffff" stroke-opacity="0.15"/>
+<text x="641.1" y="356" font-size="16" fill="#ccc" text-anchor="middle">10</text>
+<path d="M723.3 120 V330" stroke="#ffffff" stroke-opacity="0.15"/>
+<text x="723.3" y="356" font-size="16" fill="#ccc" text-anchor="middle">12</text>
+<path d="M805.6 120 V330" stroke="#ffffff" stroke-opacity="0.15"/>
+<text x="805.6" y="356" font-size="16" fill="#ccc" text-anchor="middle">14</text>
+<path d="M887.8 120 V330" stroke="#ffffff" stroke-opacity="0.15"/>
+<text x="887.8" y="356" font-size="16" fill="#ccc" text-anchor="middle">16</text>
+<path d="M970.0 120 V330" stroke="#ffffff" stroke-opacity="0.15"/>
+<text x="970.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">18</text>
+<text x="600.0" y="392" font-size="17" fill="#ccc" text-anchor="middle">秒（ローカル計測・3回平均）</text>
+<text x="214" y="173" font-size="23" font-weight="700" text-anchor="end">前処理全部あり</text>
+<g class="seg c0"><rect x="230.0" y="135" width="516.4" height="60" fill="#ceff05" stroke="#202020" stroke-width="2"/><text x="244.0" y="173" font-size="19" font-weight="700" fill="#202020">GCS 処理 12.56s</text></g>
+<g class="seg c1"><rect x="746.4" y="135" width="93.3" height="60" fill="#ff2d8b" stroke="#202020" stroke-width="2"/></g>
+<g class="seg c2"><rect x="839.7" y="135" width="58.4" height="60" fill="#ff58af" stroke="#202020" stroke-width="2"/></g>
+<g class="seg c3"><rect x="898.1" y="135" width="24.7" height="60" fill="#ffb3d9" stroke="#202020" stroke-width="2"/></g>
+<g class="seg c4"><rect x="922.7" y="135" width="45.2" height="60" fill="#8a8a8a" stroke="#202020" stroke-width="2"/></g>
+<text x="981.9" y="177" font-size="32" font-weight="700" fill="#ceff05">17.9s</text>
+<text x="214" y="273" font-size="23" font-weight="700" text-anchor="end">前処理なし</text>
+<g class="seg c0"><rect x="230.0" y="235" width="203.9" height="60" fill="#ceff05" stroke="#202020" stroke-width="2"/><text x="244.0" y="273" font-size="19" font-weight="700" fill="#202020">GCS 処理 4.96s</text></g>
+<g class="seg c4"><rect x="433.9" y="235" width="34.9" height="60" fill="#8a8a8a" stroke="#202020" stroke-width="2"/></g>
+<text x="482.9" y="277" font-size="32" font-weight="700" fill="#ceff05">5.8s</text>
+</g></g></svg>

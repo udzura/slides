@@ -128,11 +128,27 @@ T = {
  '人がPRで証跡をレビュー': 'Human reviews it in a PR',
  '人が読める入力 → 構造化して受け渡す → 人が読める結果': 'Human-readable input → structured handoff → human-readable result',
 },
+'bench-preprocess': {
+ '画像付き申請承認処理の所要時間内訳': 'Time breakdown of approving an application with images',
+ '前処理全部ありは合計17.9秒で、うちGCS処理12.56秒、サムネ画像縮小処理2.27秒、画像サイズ取得処理1.42秒、EXIF関係の操作0.60秒、その他1.10秒。前処理なしは合計5.8秒で、うちGCS処理4.96秒、その他0.85秒。ローカルでの3回平均。':
+   'With all preprocessing, the total is 17.9 s: GCS operations 12.56 s, thumbnail resizing 2.27 s, getting the image size 1.42 s, EXIF operations 0.60 s, and other 1.10 s. Without preprocessing, the total is 5.8 s: GCS operations 4.96 s and other 0.85 s. Average of three local runs.',
+ 'GCS 処理　12.56s → 4.96s': 'GCS operations  12.56s → 4.96s',
+ 'サムネ画像縮小処理　2.27s → 0.00s': 'Thumbnail resizing  2.27s → 0.00s',
+ '画像サイズ取得処理　1.42s → 0.00s': 'Getting image size  1.42s → 0.00s',
+ 'EXIF 関係の操作　0.60s → 0.00s': 'EXIF operations  0.60s → 0.00s',
+ 'その他　1.10s → 0.85s': 'Other  1.10s → 0.85s',
+ '秒（ローカル計測・3回平均）': 'Seconds (local, average of 3 runs)',
+ '前処理全部あり': 'With preprocessing',
+ '前処理なし': 'Without preprocessing',
+ 'GCS 処理 12.56s': 'GCS 12.56s',
+ 'GCS 処理 4.96s': 'GCS 4.96s',
+},
 }
 
 # 英語のほうが長くなるラベルだけ文字を小さくする
 FONT_SIZE = {
  'cache-path-before': {'Calculated from current state': 22, 'Recalculated at restore': 22},
+ 'bench-preprocess': {'With preprocessing': 18, 'Without preprocessing': 18},
 }
 
 JA = re.compile(r'[぀-ヿ一-鿿！-～]')
