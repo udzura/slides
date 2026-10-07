@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="470" viewBox="0 0 1100 470" role="img" aria-labelledby="title desc">
+<defs><marker id="lime" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05"/></marker><marker id="pink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff83bd"/></marker></defs>
+<rect width="1100" height="470" rx="18" fill="#202020" fill-opacity="0.94"/>
+<g font-family="Arial, sans-serif" text-anchor="middle" fill="#fff"><title id="title">CarrierWave: Store</title><desc id="desc">The cached image is persisted to store_path in GCS and its identifier is saved to PostgreSQL. On reading, the database identifier is passed to retrieve_from_store! to resolve store_path and make the image accessible. This is a conceptual flow, not callback ordering.</desc>
+<text x="115" y="35" font-size="23" fill="#ceff05" font-weight="700">Persist</text>
+<rect x="35" y="89" width="180" height="90" rx="12" fill="#303030" stroke="#aaa" stroke-width="2"/>
+<text x="125.0" y="123" font-size="25" fill="#aaa" font-weight="700">Cached image</text>
+<text x="125.0" y="155" font-size="22" fill="#fff" font-weight="400">photo.jpg</text>
+<text x="482" y="70" font-size="24" fill="#fff" font-weight="400">CarrierWave Uploader</text>
+<rect x="325" y="89" width="315" height="90" rx="12" fill="#303030" stroke="#ceff05" stroke-width="2"/>
+<text x="482.5" y="123" font-size="25" fill="#ceff05" font-weight="700">store!</text>
+<rect x="857" y="27" width="210" height="83" rx="12" fill="#303030" stroke="#ceff05" stroke-width="2"/>
+<text x="962.0" y="61" font-size="25" fill="#ceff05" font-weight="700">GCS</text>
+<text x="962.0" y="93" font-size="22" fill="#fff" font-weight="400">store_path</text>
+<rect x="857" y="149" width="210" height="83" rx="12" fill="#303030" stroke="#ff83bd" stroke-width="2"/>
+<text x="962.0" y="183" font-size="25" fill="#ff83bd" font-weight="700">PostgreSQL</text>
+<text x="962.0" y="215" font-size="22" fill="#fff" font-weight="400">identifier</text>
+<path d="M229 134 H309" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#lime)"/>
+<path d="M656 113 H710 V70 H841" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#lime)"/>
+<text x="754" y="47" font-size="20" fill="#fff" font-weight="400">Copy / persist</text>
+<path d="M656 159 H710 V191 H841" fill="none" stroke="#ff83bd" stroke-width="3" stroke-linejoin="round" marker-end="url(#pink)"/>
+<text x="754" y="219" font-size="19" fill="#ff83bd" font-weight="400">Save identifier</text>
+<path d="M30 244 H1070" stroke="#777" stroke-dasharray="5 7"/>
+<text x="57" y="290" font-size="23" fill="#ceff05" font-weight="700">Read</text>
+<rect x="35" y="323" width="180" height="84" rx="12" fill="#303030" stroke="#aaa" stroke-width="2"/>
+<text x="125.0" y="357" font-size="25" fill="#aaa" font-weight="700">Browser</text>
+<text x="125.0" y="389" font-size="22" fill="#fff" font-weight="400">Image request</text>
+<text x="482" y="303" font-size="24" fill="#fff" font-weight="400">CarrierWave Uploader</text>
+<rect x="325" y="323" width="315" height="84" rx="12" fill="#303030" stroke="#ceff05" stroke-width="2"/>
+<text x="482.5" y="357" font-size="25" fill="#ceff05" font-weight="700">retrieve_from_store!</text>
+<rect x="857" y="265" width="210" height="83" rx="12" fill="#303030" stroke="#ceff05" stroke-width="2"/>
+<text x="962.0" y="299" font-size="25" fill="#ceff05" font-weight="700">GCS</text>
+<text x="962.0" y="331" font-size="22" fill="#fff" font-weight="400">store_path</text>
+<rect x="857" y="375" width="210" height="83" rx="12" fill="#303030" stroke="#ff83bd" stroke-width="2"/>
+<text x="962.0" y="409" font-size="25" fill="#ff83bd" font-weight="700">PostgreSQL</text>
+<text x="962.0" y="441" font-size="22" fill="#fff" font-weight="400">identifier</text>
+<path d="M229 365 H309" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#lime)"/>
+<path d="M656 340 H723 V307 H841" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#lime)"/>
+<text x="752" y="288" font-size="19" fill="#fff" font-weight="400">Resolve path</text>
+<path d="M841 416 H715 V387 H656" fill="none" stroke="#ff83bd" stroke-width="3" stroke-linejoin="round" marker-end="url(#pink)"/>
+<text x="741" y="449" font-size="19" fill="#ff83bd" font-weight="400">Get identifier</text>
+<path d="M945 265 V251 H112 V308" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#lime)"/>
+<text x="485" y="267" font-size="18" fill="#ccc" font-weight="400">Image accessible via store_path</text>
+</g></svg>

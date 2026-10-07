@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
+<title id="title">AI QA: transforming artifacts</title>
+<desc id="desc">Features to test become a human-written User Story. The main AI structures it as scenario.yml. A sub-agent tests it with Playwright and produces result.yml. The main AI converts results into a human-readable report, which a human reviews to approve or reject.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05"/></marker></defs>
+<rect width="1100" height="460" rx="18" fill="#202020" fill-opacity="0.94"/>
+<g font-family="Arial, sans-serif" text-anchor="middle" fill="#fff">
+<rect x="30" y="180" width="120" height="82" rx="10" fill="#333" stroke="#aaa" stroke-width="2"/>
+<text x="90" y="229" font-size="24" fill="#fff" font-weight="700">Human</text>
+<text x="90" y="297" font-size="23" fill="#fff" font-weight="400">Write</text>
+<rect x="260" y="180" width="120" height="82" rx="10" fill="#333" stroke="#aaa" stroke-width="2"/>
+<text x="320" y="229" font-size="24" fill="#fff" font-weight="700">AI (main)</text>
+<text x="320" y="297" font-size="23" fill="#fff" font-weight="400">Structure</text>
+<rect x="490" y="180" width="120" height="82" rx="10" fill="#333" stroke="#aaa" stroke-width="2"/>
+<text x="550" y="229" font-size="24" fill="#fff" font-weight="700">AI (sub)</text>
+<text x="550" y="297" font-size="23" fill="#fff" font-weight="400">Test</text>
+<text x="550" y="325" font-size="21" fill="#ccc" font-weight="400">Playwright</text>
+<rect x="720" y="180" width="120" height="82" rx="10" fill="#333" stroke="#aaa" stroke-width="2"/>
+<text x="780" y="229" font-size="24" fill="#fff" font-weight="700">AI (main)</text>
+<text x="780" y="297" font-size="23" fill="#fff" font-weight="400">Build report</text>
+<rect x="950" y="180" width="120" height="82" rx="10" fill="#333" stroke="#aaa" stroke-width="2"/>
+<text x="1010" y="229" font-size="24" fill="#fff" font-weight="700">Human</text>
+<text x="1010" y="297" font-size="23" fill="#fff" font-weight="400">Review</text>
+<rect x="102" y="64" width="206" height="77" rx="25" fill="#343b20" stroke="#ceff05" stroke-width="2"/>
+<text x="205" y="110" font-size="23" fill="#ceff05" font-weight="700">User Story</text>
+<path d="M205 147 V207" stroke="#777" stroke-width="2" stroke-dasharray="4 5"/>
+<path d="M158 221 H244" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="332" y="64" width="206" height="77" rx="25" fill="#343b20" stroke="#ceff05" stroke-width="2"/>
+<text x="435" y="110" font-size="23" fill="#ceff05" font-weight="700">scenario.yml</text>
+<path d="M435 147 V207" stroke="#777" stroke-width="2" stroke-dasharray="4 5"/>
+<path d="M388 221 H474" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="562" y="64" width="206" height="77" rx="25" fill="#343b20" stroke="#ceff05" stroke-width="2"/>
+<text x="665" y="110" font-size="23" fill="#ceff05" font-weight="700">result.yml</text>
+<path d="M665 147 V207" stroke="#777" stroke-width="2" stroke-dasharray="4 5"/>
+<path d="M618 221 H704" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="792" y="64" width="206" height="77" rx="25" fill="#343b20" stroke="#ceff05" stroke-width="2"/>
+<text x="895" y="96" font-size="23" fill="#ceff05" font-weight="700">Human-readable</text>
+<text x="895" y="124" font-size="23" fill="#ceff05" font-weight="700">Report</text>
+<path d="M895 147 V207" stroke="#777" stroke-width="2" stroke-dasharray="4 5"/>
+<path d="M848 221 H934" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="20" y="355" width="205" height="76" rx="30" fill="#422636" stroke="#ff83bd" stroke-width="2"/>
+<text x="122" y="386" font-size="23" fill="#fff" font-weight="400">Features</text>
+<text x="122" y="415" font-size="23" fill="#fff" font-weight="400">to test</text>
+<path d="M40 349 V276" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="875" y="355" width="205" height="76" rx="30" fill="#422636" stroke="#ff83bd" stroke-width="2"/>
+<text x="977" y="400" font-size="22" fill="#fff" font-weight="400">Approve / Reject</text>
+<path d="M1060 276 V343" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="550" y="410" font-size="25" fill="#ceff05" font-weight="700">Story → Scenario → Results → Report</text>
+</g></svg>

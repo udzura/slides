@@ -442,10 +442,10 @@ B.A. (Before ActiveStorage)
 
 ---
 
-# CarrierWave: Write
+# CarrierWave: Cache
 
 <div style="position: absolute; top: 155px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/carrierwave-lifecycle-write-en.svg" width="1100" height="470" aria-label="cache! stores the image temporarily and keeps the cache_name. store! persists the image, and the identifier is saved to the DB. When resuming, retrieve_from_cache! restores the image from the cache."><img src="assets/carrierwave-lifecycle-write-en.svg" alt="cache! stores the image temporarily and keeps the cache_name. store! persists the image, and the identifier is saved to the DB. When resuming, retrieve_from_cache! restores the image from the cache." width="1100"></object>
+<img src="assets/carrierwave-cache-en.svg" alt="Assign uploads to cache_path in GCS. Keep Cache ID in the form and restore the cached file when resuming." width="1100" height="470">
 </div>
 
 <!--
@@ -453,16 +453,16 @@ B.A. (Before ActiveStorage)
 CarrierWave：書き込み
 
 【メモ】
-cache_name = cache_id / original_filename。モデルのIDとは別。
+図のCache IDは再開用のcache_nameを指す（cache_id / original_filename）。モデルのIDとは別。
 画像の永続化とidentifierのDB保存は役割を示した概念図で、厳密なコールバック順序ではない。
 -->
 
 ---
 
-# CarrierWave: Read
+# CarrierWave: Store
 
 <div style="position: absolute; top: 155px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/carrierwave-lifecycle-read-en.svg" width="1100" height="470" aria-label="The identifier is read from the DB and passed to retrieve_from_store!. With store_dir and other information, the path is calculated and the reference to the stored image is restored."><img src="assets/carrierwave-lifecycle-read-en.svg" alt="The identifier is read from the DB and passed to retrieve_from_store!. With store_dir and other information, the path is calculated and the reference to the stored image is restored." width="1100"></object>
+<img src="assets/carrierwave-store-en.svg" alt="Persist the image to GCS and save its identifier in PostgreSQL. Read the identifier to resolve store_path and access the image." width="1100" height="470">
 </div>
 
 <!--
@@ -997,7 +997,7 @@ Step 1: ユーザーストーリーを書く
 # Run and Build Reports with AI
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/ai-qa-flow-en.svg" width="1100" height="460" aria-label="An AI structures the human-written story while keeping it readable, and another AI runs it. Checks and observations are also structured, and a reporting AI writes a human-readable report with verdicts and reasons."><img src="assets/ai-qa-flow-en.svg" alt="An AI structures the human-written story while keeping it readable, and another AI runs it. Checks and observations are also structured, and a reporting AI writes a human-readable report with verdicts and reasons." width="1100"></object>
+<img src="assets/ai-qa-pipeline-en.svg" alt="Human → User Story → AI structures scenario.yml → AI runs tests and produces result.yml → AI builds a human-readable report → Human approves or rejects" width="1100" height="460">
 </div>
 
 <!--
@@ -1224,6 +1224,16 @@ CarrierWaveCompatLayer.attached?(user, :avatar)
 
 ---
 
+# An API for What SmartHR Needs
+
+<div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
+<img src="assets/compatibility-layer-en.svg" alt="SmartHR calls the wrapped image operation API to get a name, get image size, and perform other operations. The CarrierWave API stays inside the wrapper." width="1100" height="460">
+</div>
+
+<!-- SmartHRが必要とする画像操作を互換レイヤで公開し、CarrierWave固有のAPIを内側に閉じ込める。 -->
+
+---
+
 # Can We Extract the Dependencies?
 
 - How to extract them is still under discussion
@@ -1251,8 +1261,11 @@ CarrierWaveCompatLayer.attached?(user, :avatar)
 
 # Too Much Image "Preprocessing"
 
-- Generating resized images (`version`), EXIF handling...
-    - All of it runs **synchronously** on upload and adds to the huge wait
+<div style="position: absolute; top: 170px; left: 90px; width: 1100px;">
+<img src="assets/preprocessing-sync-en.svg" alt="File → SmartHR Uploader → large, small, and thumbnail images in GCS. All resizing and uploads run synchronously." width="1100" height="360">
+</div>
+
+<p style="position: absolute; top: 555px; left: 90px; right: 90px; text-align: center;">Resizing, EXIF handling, and uploads — <strong>all before saving finishes.</strong></p>
 
 <!--
 【日本語版】
@@ -1267,9 +1280,11 @@ CarrierWaveCompatLayer.attached?(user, :avatar)
 
 # Let's Move the Synchronous Work Out
 
-- Many real services use "on-demand image service + CDN"
-    - Starting with Cookpad's [tofu](https://www.slideshare.net/slideshow/20111102-rails-meetuptofu/10084092)
-    - Dedicated services such as [ImageFlux](https://imageflux.sakura.ad.jp/)
+<div style="position: absolute; top: 170px; left: 90px; width: 1100px;">
+<img src="assets/preprocessing-ondemand-en.svg" alt="Upload only the original to GCS. A dynamic resizer reads it and generates images on demand; a CDN caches and delivers them to the browser." width="1100" height="360">
+</div>
+
+<p style="position: absolute; top: 550px; left: 90px; right: 90px; text-align: center;"><strong>On-demand image service + CDN</strong><br>Examples: <a href="https://www.slideshare.net/slideshow/20111102-rails-meetuptofu/10084092">Cookpad's tofu</a> · <a href="https://imageflux.sakura.ad.jp/">ImageFlux</a></p>
 
 <!--
 【日本語版】
@@ -1342,9 +1357,11 @@ CarrierWaveCompatLayer.attached?(user, :avatar)
 
 # Another Speedup: Avoid Re-uploads
 
-- We are **considering** improvements around the bitemporal model
-- Mark "bi-temporal ops in progress" to skip uploads during the copy
-- Use `CurrentAttributes` to pass this state into hooks
+<div style="position: absolute; top: 165px; left: 90px; width: 1100px;">
+<img src="assets/history-copy-skip-upload-en.svg" alt="Proposed: copy the history row and assign internally, but skip the upload when bitemporal operations are marked as in progress." width="1100" height="390">
+</div>
+
+<p style="position: absolute; top: 560px; left: 90px; right: 90px; text-align: center;"><strong>Under consideration:</strong> use <code>CurrentAttributes</code><br>to pass the “copy in progress” state into hooks.</p>
 
 <!--
 【日本語版】
