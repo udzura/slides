@@ -1,19 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
-  <title id="title">File upload symptoms</title>
+  <style>
+/* Hover effect: works only when embedded as an object element in a browser. Static in PDF and images. */
+.box { --glow: #ceff05; --hover-fill: #3a4422; transform-box: fill-box; transform-origin: center; transition: transform .2s ease, filter .2s ease; }
+.box.gray { --glow: #ffffff; --hover-fill: #444444; }
+.box.pink { --glow: #ff58af; --hover-fill: #4a2a3f; }
+.box &gt; rect { transition: fill .2s ease; }
+.box:hover:not(:has(.box:hover)) { transform: scale(1.04); filter: drop-shadow(0 0 10px var(--glow)); }
+.box:hover:not(:has(.box:hover)) &gt; rect { fill: var(--hover-fill); }
+@media (prefers-reduced-motion: reduce) { .box, .box &gt; rect { transition: none; } .box:hover { transform: none; } }
+</style><title id="title">File upload symptoms</title>
   <desc id="desc">A cloud of six overlapping concerns: fragile path logic, synchronous image resizing, EXIF processing, implicit uploads, tangled dependencies, and difficult upgrades.</desc>
-  <rect width="1100" height="460" rx="20" fill="#202020" fill-opacity="0.94"/>
+  <rect width="1100" height="460" rx="20" fill="#202020" fill-opacity="0.94" />
   <g font-family="Arial, sans-serif" text-anchor="middle" font-weight="700">
-    <rect x="55" y="46" width="560" height="88" rx="18" fill="#30391c" stroke="#ceff05" stroke-width="2"/>
+    <g class="box"><rect x="55" y="46" width="560" height="88" rx="18" fill="#30391c" stroke="#ceff05" stroke-width="2" />
     <text x="335" y="103" font-size="49" fill="#ceff05">Fragile Path Logic</text>
-    <rect x="654" y="69" width="380" height="66" rx="16" fill="#2f2f2f" stroke="#777"/>
+    </g><g class="box gray"><rect x="654" y="69" width="380" height="66" rx="16" fill="#2f2f2f" stroke="#777" />
     <text x="844" y="111" font-size="32" fill="#fff">EXIF Processing</text>
-    <rect x="113" y="160" width="650" height="72" rx="16" fill="#2f2f2f" stroke="#777"/>
+    </g><g class="box gray"><rect x="113" y="160" width="650" height="72" rx="16" fill="#2f2f2f" stroke="#777" />
     <text x="438" y="206" font-size="35" fill="#fff">Synchronous Image Resizing</text>
-    <rect x="707" y="254" width="343" height="70" rx="16" fill="#2f2f2f" stroke="#777"/>
+    </g><g class="box gray"><rect x="707" y="254" width="343" height="70" rx="16" fill="#2f2f2f" stroke="#777" />
     <text x="878" y="299" font-size="33" fill="#fff">Implicit Uploads</text>
-    <rect x="49" y="273" width="607" height="92" rx="18" fill="#432539" stroke="#ff58af" stroke-width="2"/>
+    </g><g class="box pink"><rect x="49" y="273" width="607" height="92" rx="18" fill="#432539" stroke="#ff58af" stroke-width="2" />
     <text x="352" y="333" font-size="51" fill="#ff58af">Difficult Upgrades</text>
-    <rect x="492" y="383" width="535" height="54" rx="14" fill="#2f2f2f" stroke="#777"/>
+    </g><g class="box gray"><rect x="492" y="383" width="535" height="54" rx="14" fill="#2f2f2f" stroke="#777" />
     <text x="759" y="419" font-size="31" fill="#fff">Tangled Dependencies</text>
-  </g>
+  </g></g>
 </svg>

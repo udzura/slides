@@ -10,6 +10,11 @@
 .box:hover { transform: scale(1.04); filter: drop-shadow(0 0 10px var(--glow)); }
 .box:hover rect { fill: var(--hover-fill); }
 @media (prefers-reduced-motion: reduce) { .box, .box rect { transition: none; } .box:hover { transform: none; } }
+
+/* Flow effect: arrows march while the pointer is on the diagram. */
+svg:hover .flow { stroke-dasharray: 12 6; animation: flow .8s linear infinite; }
+@keyframes flow { to { stroke-dashoffset: -18; } }
+@media (prefers-reduced-motion: reduce) { svg:hover .flow { animation: none; stroke-dasharray: none; } }
 </style><defs>
 <marker id="lime" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05" /></marker>
 <marker id="pink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff58af" /></marker>
@@ -20,15 +25,15 @@
 <text x="550" y="50" font-size="29" font-weight="700">Application</text>
 <text x="550" y="79" font-size="21" fill="#ccc">Business logic / history / recorded paths</text>
 </g><path d="M390 94 V117 H285 V132" fill="none" stroke="#ceff05" stroke-width="3" />
-<path d="M285 166 V188" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#lime)" />
+<path d="M285 166 V188" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#lime)" class="flow" />
 <path d="M710 94 V117 H815 V132" fill="none" stroke="#ff58af" stroke-width="3" />
-<path d="M815 166 V188" fill="none" stroke="#ff58af" stroke-width="3" marker-end="url(#pink)" />
+<path d="M815 166 V188" fill="none" stroke="#ff58af" stroke-width="3" marker-end="url(#pink)" class="flow" />
 <text x="285" y="157" font-size="22" fill="#ceff05" font-weight="700">Depends on internal behavior</text>
 <text x="815" y="157" font-size="22" fill="#ff58af" font-weight="700">Independent of internal behavior</text>
 <g class="box"><rect x="45" y="191" width="480" height="87" rx="10" fill="#30391c" stroke="#ceff05" stroke-width="2" />
 <text x="285" y="227" font-size="27" font-weight="700" fill="#ceff05">CarrierWaveCompatLayer</text>
 <text x="285" y="258" font-size="21">Keeps behavior; contains internal dependencies</text>
-</g><path d="M285 278 V311" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#lime)" />
+</g><path d="M285 278 V311" fill="none" stroke="#ceff05" stroke-width="3" marker-end="url(#lime)" class="flow" />
 <g class="box"><rect x="45" y="314" width="480" height="85" rx="10" fill="#30391c" stroke="#ceff05" stroke-width="2" />
 <text x="285" y="346" font-size="25" font-weight="700">Storage library</text>
 <text x="285" y="370" font-size="18" fill="#ceff05">CarrierWave for now</text>

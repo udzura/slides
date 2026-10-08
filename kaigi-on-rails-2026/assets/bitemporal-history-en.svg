@@ -22,8 +22,8 @@
 <text x="20" y="228" text-anchor="start" font-size="18" fill="#fff" font-weight="400">the content as correct</text>
 <text x="20" y="320" text-anchor="start" font-size="16" fill="#ccc" font-weight="400">[transaction_from,</text>
 <text x="20" y="343" text-anchor="start" font-size="16" fill="#ccc" font-weight="400"> transaction_to)</text>
-<path d="M310 120 H1060 M310 120 V420" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
-<path d="M1030 120 H1060" stroke="#fff" stroke-width="2" marker-end="url(#arrow)" />
+<path class="no-flow" d="M310 120 H1060 M310 120 V420" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+<path class="no-flow" d="M1030 120 H1060" stroke="#fff" stroke-width="2" marker-end="url(#arrow)" />
 <g class="box gray"><rect x="323" y="140" width="707" height="117" rx="6" fill="#2f2f2f" stroke="#aaa" stroke-width="2" />
 <text x="676" y="170" text-anchor="middle" font-size="21" fill="#ccc" font-weight="400">Record before update / Row A</text>
 <text x="676" y="206" text-anchor="middle" font-size="30" fill="#fff" font-weight="700">location = Tokyo</text>

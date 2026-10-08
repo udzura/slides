@@ -275,7 +275,7 @@ B.A. (Before ActiveStorage)
 # Bitemporal Data and Files: Problem (2)
 
 <div style="position: absolute; top: 175px; left: 90px; width: 1100px;">
-<img src="assets/history-copy-upload-en.svg" alt="Copy history: previous row to new row → internal assign → upload via cache!" width="1100" height="390">
+<object type="image/svg+xml" data="assets/history-copy-upload-en.svg" width="1100" height="390" aria-label="Copy history: previous row to new row → internal assign → upload via cache!"><img src="assets/history-copy-upload-en.svg" alt="Copy history: previous row to new row → internal assign → upload via cache!" width="1100"></object>
 </div>
 
 <p style="position: absolute; top: 580px; left: 90px; width: 1100px; text-align: center;">Copying history can <strong>upload the same file again.</strong></p>
@@ -308,7 +308,7 @@ B.A. (Before ActiveStorage)
 # Symptoms
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/symptoms-cloud-en.svg" alt="Fragile Path Logic, Synchronous Image Resizing, EXIF Processing, Implicit Uploads, Tangled Dependencies, Difficult Upgrades" width="1100" height="460">
+<object type="image/svg+xml" data="assets/symptoms-cloud-en.svg" width="1100" height="460" aria-label="Fragile Path Logic, Synchronous Image Resizing, EXIF Processing, Implicit Uploads, Tangled Dependencies, Difficult Upgrades"><img src="assets/symptoms-cloud-en.svg" alt="Fragile Path Logic, Synchronous Image Resizing, EXIF Processing, Implicit Uploads, Tangled Dependencies, Difficult Upgrades" width="1100"></object>
 </div>
 
 <!--
@@ -363,7 +363,7 @@ B.A. (Before ActiveStorage)
 # Three Problems
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/quality-priorities-en.svg" alt="Reliability is the top priority. Maintainability / Security and Usability are the other two areas of improvement." width="1100" height="460">
+<object type="image/svg+xml" data="assets/quality-priorities-en.svg" width="1100" height="460" aria-label="Reliability is the top priority. Maintainability / Security and Usability are the other two areas of improvement."><img src="assets/quality-priorities-en.svg" alt="Reliability is the top priority. Maintainability / Security and Usability are the other two areas of improvement." width="1100"></object>
 </div>
 
 <!--
@@ -443,7 +443,7 @@ B.A. (Before ActiveStorage)
 # CarrierWave: Cache
 
 <div style="position: absolute; top: 155px; left: 90px; width: 1100px;">
-<img src="assets/carrierwave-cache-en.svg" alt="Assign uploads to cache_path in GCS. Keep Cache ID in the form and restore the cached file when resuming." width="1100" height="470">
+<object type="image/svg+xml" data="assets/carrierwave-cache-en.svg" width="1100" height="470" aria-label="Assign uploads to cache_path in GCS. Keep Cache ID in the form and restore the cached file when resuming."><img src="assets/carrierwave-cache-en.svg" alt="Assign uploads to cache_path in GCS. Keep Cache ID in the form and restore the cached file when resuming." width="1100"></object>
 </div>
 
 <!--
@@ -460,7 +460,7 @@ CarrierWave：書き込み
 # CarrierWave: Store
 
 <div style="position: absolute; top: 155px; left: 90px; width: 1100px;">
-<img src="assets/carrierwave-store-en.svg" alt="Persist the image to GCS and save its identifier in PostgreSQL. Read the identifier to resolve store_path and access the image." width="1100" height="470">
+<object type="image/svg+xml" data="assets/carrierwave-store-en.svg" width="1100" height="470" aria-label="Persist the image to GCS and save its identifier in PostgreSQL. Read the identifier to resolve store_path and access the image."><img src="assets/carrierwave-store-en.svg" alt="Persist the image to GCS and save its identifier in PostgreSQL. Read the identifier to resolve store_path and access the image." width="1100"></object>
 </div>
 
 <!--
@@ -995,7 +995,7 @@ Step 1: ユーザーストーリーを書く
 # Run and Build Reports with AI
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/ai-qa-pipeline-en.svg" alt="Human → User Story → AI structures scenario.yml → AI runs tests and produces result.yml → AI builds a human-readable report → Human approves or rejects" width="1100" height="460">
+<object type="image/svg+xml" data="assets/ai-qa-pipeline-en.svg" width="1100" height="460" aria-label="Human → User Story → AI structures scenario.yml → AI runs tests and produces result.yml → AI builds a human-readable report → Human approves or rejects"><img src="assets/ai-qa-pipeline-en.svg" alt="Human → User Story → AI structures scenario.yml → AI runs tests and produces result.yml → AI builds a human-readable report → Human approves or rejects" width="1100"></object>
 </div>
 
 <!--
@@ -1130,7 +1130,7 @@ store_path 固定の現在地
 # Remaining Problems and Status
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/quality-status-en.svg" alt="Reliability is the top priority. Maintainability / Security and Usability are the other two areas of improvement." width="1100" height="460">
+<object type="image/svg+xml" data="assets/quality-status-en.svg" width="1100" height="460" aria-label="Reliability is the top priority. Maintainability / Security and Usability are the other two areas of improvement."><img src="assets/quality-status-en.svg" alt="Reliability is the top priority. Maintainability / Security and Usability are the other two areas of improvement." width="1100"></object>
 </div>
 
 <!--
@@ -1223,7 +1223,7 @@ CarrierWaveCompatLayer.attached?(user, :avatar)
 # An API for What SmartHR Needs
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<img src="assets/compatibility-layer-en.svg" alt="SmartHR calls the wrapped image operation API to get a name, get image size, and perform other operations. The CarrierWave API stays inside the wrapper." width="1100" height="460">
+<object type="image/svg+xml" data="assets/compatibility-layer-en.svg" width="1100" height="460" aria-label="SmartHR calls the wrapped image operation API to get a name, get image size, and perform other operations. The CarrierWave API stays inside the wrapper."><img src="assets/compatibility-layer-en.svg" alt="SmartHR calls the wrapped image operation API to get a name, get image size, and perform other operations. The CarrierWave API stays inside the wrapper." width="1100"></object>
 </div>
 
 <!-- SmartHRが必要とする画像操作を互換レイヤで公開し、CarrierWave固有のAPIを内側に閉じ込める。 -->
@@ -1258,7 +1258,7 @@ CarrierWaveCompatLayer.attached?(user, :avatar)
 # Too Much Image "Preprocessing"
 
 <div style="position: absolute; top: 170px; left: 90px; width: 1100px;">
-<img src="assets/preprocessing-sync-en.svg" alt="File → SmartHR Uploader → large, small, and thumbnail images in GCS. All resizing and uploads run synchronously." width="1100" height="360">
+<object type="image/svg+xml" data="assets/preprocessing-sync-en.svg" width="1100" height="360" aria-label="File → SmartHR Uploader → large, small, and thumbnail images in GCS. All resizing and uploads run synchronously."><img src="assets/preprocessing-sync-en.svg" alt="File → SmartHR Uploader → large, small, and thumbnail images in GCS. All resizing and uploads run synchronously." width="1100"></object>
 </div>
 
 <p style="position: absolute; top: 555px; left: 90px; right: 90px; text-align: center;">Resizing, EXIF handling, and uploads — <strong>all before saving finishes.</strong></p>
@@ -1277,7 +1277,7 @@ CarrierWaveCompatLayer.attached?(user, :avatar)
 # Let's Move the Synchronous Work Out
 
 <div style="position: absolute; top: 170px; left: 90px; width: 1100px;">
-<img src="assets/preprocessing-ondemand-en.svg" alt="Upload only the original to GCS. A dynamic resizer reads it and generates images on demand; a CDN caches and delivers them to the browser." width="1100" height="360">
+<object type="image/svg+xml" data="assets/preprocessing-ondemand-en.svg" width="1100" height="360" aria-label="Upload only the original to GCS. A dynamic resizer reads it and generates images on demand; a CDN caches and delivers them to the browser."><img src="assets/preprocessing-ondemand-en.svg" alt="Upload only the original to GCS. A dynamic resizer reads it and generates images on demand; a CDN caches and delivers them to the browser." width="1100"></object>
 </div>
 
 <p style="position: absolute; top: 550px; left: 90px; right: 90px; text-align: center;"><strong>On-demand image service + CDN</strong><br>Examples: <a href="https://www.slideshare.net/slideshow/20111102-rails-meetuptofu/10084092">Cookpad's tofu</a> · <a href="https://imageflux.sakura.ad.jp/">ImageFlux</a></p>
@@ -1354,7 +1354,7 @@ CarrierWaveCompatLayer.attached?(user, :avatar)
 # Another Speedup: Avoid Re-uploads
 
 <div style="position: absolute; top: 165px; left: 90px; width: 1100px;">
-<img src="assets/history-copy-skip-upload-en.svg" alt="Proposed: copy the history row and assign internally, but skip the upload when bitemporal operations are marked as in progress." width="1100" height="390">
+<object type="image/svg+xml" data="assets/history-copy-skip-upload-en.svg" width="1100" height="390" aria-label="Proposed: copy the history row and assign internally, but skip the upload when bitemporal operations are marked as in progress."><img src="assets/history-copy-skip-upload-en.svg" alt="Proposed: copy the history row and assign internally, but skip the upload when bitemporal operations are marked as in progress." width="1100"></object>
 </div>
 
 <p style="position: absolute; top: 560px; left: 90px; right: 90px; text-align: center;"><strong>Under consideration:</strong> use <code>CurrentAttributes</code><br>to pass the “copy in progress” state into hooks.</p>
