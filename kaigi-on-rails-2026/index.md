@@ -362,11 +362,9 @@ B.A. (Before ActiveStorage)
 
 # Three Problems
 
-| Problem | Quality (-ility) |
-|---|---|
-| Prone to incidents (unstable paths) | Reliability |
-| Cannot upgrade | Maintainability / Security |
-| Performance and productivity | Usability |
+<div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
+<img src="assets/quality-priorities-en.svg" alt="Reliability is the top priority. Maintainability / Security and Usability are the other two areas of improvement." width="1100" height="460">
+</div>
 
 <!--
 【日本語版】
@@ -1131,11 +1129,9 @@ store_path 固定の現在地
 
 # Remaining Problems and Status
 
-| Quality to improve | Status |
-|---|---|
-| Reliability | cache_path done; store_path partly done |
-| Maintainability / Security | Analyzing for a compatibility layer |
-| Usability | Building a PoC for an external service |
+<div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
+<img src="assets/quality-status-en.svg" alt="Reliability is the top priority. Maintainability / Security and Usability are the other two areas of improvement." width="1100" height="460">
+</div>
 
 <!--
 【日本語版】

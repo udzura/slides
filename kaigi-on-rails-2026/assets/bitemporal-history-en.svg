@@ -12,7 +12,7 @@
 @media (prefers-reduced-motion: reduce) { .box, .box rect { transition: none; } .box:hover { transform: none; } }
 </style>
 <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#fff" /></marker></defs>
-<rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.75" />
+<rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.94" />
 <g font-family="'Funnel Display','Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff">
 <text x="550" y="32" text-anchor="middle" font-size="25" fill="#fff" font-weight="400">On 10/17, record “It has been Hakata since 10/1”</text>
 <text x="670" y="70" text-anchor="middle" font-size="24" fill="#ff58af" font-weight="700">Valid time → when it is valid in business</text>
@@ -24,7 +24,7 @@
 <text x="20" y="343" text-anchor="start" font-size="16" fill="#ccc" font-weight="400"> transaction_to)</text>
 <path d="M310 120 H1060 M310 120 V420" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
 <path d="M1030 120 H1060" stroke="#fff" stroke-width="2" marker-end="url(#arrow)" />
-<g class="box gray"><rect x="323" y="140" width="707" height="117" rx="6" fill="#333" stroke="#aaa" stroke-width="2" />
+<g class="box gray"><rect x="323" y="140" width="707" height="117" rx="6" fill="#2f2f2f" stroke="#aaa" stroke-width="2" />
 <text x="676" y="170" text-anchor="middle" font-size="21" fill="#ccc" font-weight="400">Record before update / Row A</text>
 <text x="676" y="206" text-anchor="middle" font-size="30" fill="#fff" font-weight="700">location = Tokyo</text>
 <text x="676" y="240" text-anchor="middle" font-size="20" fill="#ccc" font-weight="400">Kept as past knowledge</text>

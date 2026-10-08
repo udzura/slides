@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="470" viewBox="0 0 1100 470" role="img" aria-labelledby="title desc">
-<defs><marker id="lime" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05"/></marker><marker id="pink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff83bd"/></marker></defs>
+<defs><marker id="lime" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ceff05"/></marker><marker id="pink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#ff58af"/></marker></defs>
 <rect width="1100" height="470" rx="18" fill="#202020" fill-opacity="0.94"/>
 <g font-family="Arial, sans-serif" text-anchor="middle" fill="#fff"><title id="title">CarrierWave: Cache</title><desc id="desc">Assign uploads a file to cache_path in GCS. Keep a Cache ID in the form, without saving a model record to PostgreSQL. Resume using that ID and retrieve_from_cache! to restore the cached file.</desc>
 <text x="115" y="35" font-size="23" fill="#ceff05" font-weight="700">First upload</text>
-<rect x="35" y="66" width="160" height="90" rx="12" fill="#303030" stroke="#aaa" stroke-width="2"/>
+<rect x="35" y="66" width="160" height="90" rx="12" fill="#2f2f2f" stroke="#aaa" stroke-width="2"/>
 <text x="115.0" y="100" font-size="25" fill="#aaa" font-weight="700">File</text>
 <text x="115.0" y="132" font-size="22" fill="#fff" font-weight="400">photo.jpg</text>
 <text x="502" y="45" font-size="24" fill="#fff" font-weight="400">CarrierWave Uploader</text>
-<rect x="330" y="66" width="345" height="90" rx="12" fill="#303030" stroke="#ceff05" stroke-width="2"/>
+<rect x="330" y="66" width="345" height="90" rx="12" fill="#2f2f2f" stroke="#ceff05" stroke-width="2"/>
 <text x="502.5" y="100" font-size="25" fill="#ceff05" font-weight="700">assign → cache!</text>
-<rect x="865" y="66" width="200" height="90" rx="12" fill="#303030" stroke="#ceff05" stroke-width="2"/>
+<rect x="865" y="66" width="200" height="90" rx="12" fill="#2f2f2f" stroke="#ceff05" stroke-width="2"/>
 <text x="965.0" y="100" font-size="25" fill="#ceff05" font-weight="700">GCS</text>
 <text x="965.0" y="132" font-size="22" fill="#fff" font-weight="400">cache_path</text>
 <path d="M210 111 H314" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#lime)"/>
@@ -17,23 +17,23 @@
 <text x="770" y="92" font-size="22" fill="#fff" font-weight="400">Upload</text>
 <path d="M965 170 V206 H201" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#lime)"/>
 <text x="566" y="195" font-size="23" fill="#ceff05" font-weight="400">Keep Cache ID in the form</text>
-<rect x="35" y="179" width="160" height="48" rx="12" fill="#303030" stroke="#ff83bd" stroke-width="2"/>
-<text x="115.0" y="213" font-size="25" fill="#ff83bd" font-weight="700">Cache ID</text>
+<rect x="35" y="179" width="160" height="48" rx="12" fill="#2f2f2f" stroke="#ff58af" stroke-width="2"/>
+<text x="115.0" y="213" font-size="25" fill="#ff58af" font-weight="700">Cache ID</text>
 <text x="867" y="233" font-size="18" fill="#ccc" font-weight="400">Not yet saved to PostgreSQL</text>
 <path d="M30 244 H1070" stroke="#777" stroke-dasharray="5 7"/>
 <text x="250" y="277" font-size="23" fill="#ceff05" font-weight="700">Resume after a validation error</text>
-<rect x="35" y="313" width="160" height="90" rx="12" fill="#303030" stroke="#ff83bd" stroke-width="2"/>
-<text x="115.0" y="347" font-size="25" fill="#ff83bd" font-weight="700">Cache ID</text>
+<rect x="35" y="313" width="160" height="90" rx="12" fill="#2f2f2f" stroke="#ff58af" stroke-width="2"/>
+<text x="115.0" y="347" font-size="25" fill="#ff58af" font-weight="700">Cache ID</text>
 <text x="115.0" y="379" font-size="22" fill="#fff" font-weight="400">from the form</text>
 <text x="502" y="303" font-size="24" fill="#fff" font-weight="400">CarrierWave Uploader</text>
-<rect x="330" y="323" width="345" height="80" rx="12" fill="#303030" stroke="#ceff05" stroke-width="2"/>
+<rect x="330" y="323" width="345" height="80" rx="12" fill="#2f2f2f" stroke="#ceff05" stroke-width="2"/>
 <text x="502.5" y="357" font-size="25" fill="#ceff05" font-weight="700">retrieve_from_cache!</text>
-<rect x="865" y="313" width="200" height="90" rx="12" fill="#303030" stroke="#ceff05" stroke-width="2"/>
+<rect x="865" y="313" width="200" height="90" rx="12" fill="#2f2f2f" stroke="#ceff05" stroke-width="2"/>
 <text x="965.0" y="347" font-size="25" fill="#ceff05" font-weight="700">GCS</text>
 <text x="965.0" y="379" font-size="22" fill="#fff" font-weight="400">cache_path</text>
 <path d="M210 358 H314" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#lime)"/>
 <path d="M691 353 H849" fill="none" stroke="#ceff05" stroke-width="3" stroke-linejoin="round" marker-end="url(#lime)"/>
 <text x="769" y="323" font-size="20" fill="#fff" font-weight="400">Resolve path</text>
-<path d="M965 415 V444 H502 V415" fill="none" stroke="#ff83bd" stroke-width="3" stroke-linejoin="round" marker-end="url(#pink)"/>
-<text x="741" y="434" font-size="21" fill="#ff83bd" font-weight="400">Restore cached file</text>
+<path d="M965 415 V444 H502 V415" fill="none" stroke="#ff58af" stroke-width="3" stroke-linejoin="round" marker-end="url(#pink)"/>
+<text x="741" y="434" font-size="21" fill="#ff58af" font-weight="400">Restore cached file</text>
 </g></svg>
