@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
+<title id="title">Current image responsibilities inside the application</title>
+<desc id="desc">The application contains CarrierWave uploader callbacks and tightly connected file path logic, internal API calls, image resizing, and EXIF removal. Changing one concern can affect the others.</desc>
+<style>
+.box { --glow: #ff58af; transform-box: fill-box; transform-origin: center; transition: transform .2s ease, filter .2s ease; }
+.box.lime { --glow: #ceff05; }
+.box:hover { transform: scale(1.04); filter: drop-shadow(0 0 8px var(--glow)); }
+@media (prefers-reduced-motion: reduce) { .box { transition: none; } .box:hover { transform: none; } }
+</style>
+<rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.94" />
+<g font-family="Arial, sans-serif" text-anchor="middle">
+<rect x="85" y="22" width="930" height="380" rx="20" fill="#292929" stroke="#c5c5c5" stroke-width="3" />
+<text x="550" y="68" font-size="30" font-weight="700" fill="#fff">Application</text>
+<g fill="none" stroke="#ff58af" stroke-width="3" stroke-dasharray="8 7" opacity=".8">
+  <path d="M375 166 H413" /><path d="M687 166 H725" />
+  <path d="M275 211 V291" /><path d="M550 213 V291" /><path d="M825 211 V291" />
+  <path d="M365 306 L443 212" /><path d="M735 306 L657 212" />
+</g>
+<g class="box lime"><rect x="136" y="116" width="240" height="94" rx="12" fill="#30391c" stroke="#ceff05" stroke-width="2" /><text x="256" y="155" font-size="24" font-weight="700" fill="#ceff05">Business logic</text><text x="256" y="184" font-size="19" fill="#fff">Models and features</text></g>
+<g class="box"><rect x="412" y="111" width="276" height="104" rx="12" fill="#432539" stroke="#ff58af" stroke-width="3" /><text x="550" y="154" font-size="23" font-weight="700" fill="#ff58af">CarrierWave Uploader</text><text x="550" y="187" font-size="20" fill="#fff">callbacks and side effects</text></g>
+<g class="box lime"><rect x="724" y="116" width="240" height="94" rx="12" fill="#30391c" stroke="#ceff05" stroke-width="2" /><text x="844" y="155" font-size="24" font-weight="700" fill="#ceff05">Internal API calls</text><text x="844" y="184" font-size="19" fill="#fff">throughout the app</text></g>
+<g class="box"><rect x="136" y="291" width="240" height="72" rx="12" fill="#323232" stroke="#ff58af" stroke-width="2" /><text x="256" y="336" font-size="23" font-weight="700" fill="#fff">File path logic</text></g>
+<g class="box"><rect x="430" y="291" width="240" height="72" rx="12" fill="#323232" stroke="#ff58af" stroke-width="2" /><text x="550" y="336" font-size="23" font-weight="700" fill="#fff">Resize images</text></g>
+<g class="box"><rect x="724" y="291" width="240" height="72" rx="12" fill="#323232" stroke="#ff58af" stroke-width="2" /><text x="844" y="336" font-size="23" font-weight="700" fill="#fff">EXIF removal</text></g>
+<text x="550" y="440" font-size="23" font-weight="700" fill="#ff58af">Responsibilities and side effects are intertwined</text>
+</g>
+</svg>
