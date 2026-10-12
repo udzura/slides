@@ -23,7 +23,7 @@ section.section h1 { top: 50%; transform: translateY(-50%); }
 <!-- _paginate: false -->
 
 <!--
-Restructured from index.md: split the problem → paths → history → other work → upgrade or replace → takeaways.
+Restructured from index.md: split the problem → paths → history → reducing coupling → upgrade or replace → takeaways.
 TBA marks missing implementation details or evidence. History proposals are not presented as completed work.
 -->
 
@@ -49,7 +49,7 @@ Presentation by Uchio Kondo
 
 <!-- _class: section -->
 
-# 0. Your First Web App
+# Intro
 
 <!--
 【日本語版】
@@ -79,7 +79,7 @@ Presentation by Uchio Kondo
 
 <!-- _class: body -->
 
-- What do you want to build next...?
+- What feature do you want to build next...?
 
 <!--
 【日本語版】
@@ -156,6 +156,38 @@ section { padding-right: 510px; }
 
 ---
 
+<!-- Talk map: seven chapters, with file paths and history as the main focus. -->
+
+# Today's Route
+
+<div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
+<object type="image/svg+xml" data="assets/talk-route-en.svg" width="1100" height="460" aria-label="Seven chapters: Situation; Split the Problem; File Paths; History; Reducing Coupling; Upgrade or Replace; Takeaways. File Paths and History are the main focus."><img src="assets/talk-route-en.svg" alt="Seven chapters: Situation; Split the Problem; File Paths; History; Reducing Coupling; Upgrade or Replace; Takeaways. File Paths and History are the main focus." width="1100"></object>
+</div>
+
+<div class="chapter-label">INTRO</div>
+
+---
+
+# Before We Begin
+
+- This talk is more a collection of **questions** than a single conclusion.
+- Some details have been adapted; the **technical substance** is unchanged.
+- Reasonable engineers may make different calls. Let's discuss them in the hallway or at the social event.
+
+<!--
+【日本語版】
+はじめに
+- この発表は、一つの結論よりも、取り組みの中で生まれた問いを共有するもの。
+- 技術的な内容が変わらない範囲で、一部の詳細を改変している。
+- 現場での判断には別の見方もあるはず。廊下や懇親会でぜひ議論したい。
+-->
+
+<!-- _footer: ぜひ、廊下や懇親会でお話ししましょう！ -->
+
+<div class="chapter-label">INTRO</div>
+
+---
+
 <!-- _class: section -->
 
 # 1. Situation
@@ -225,13 +257,13 @@ B.A. (Before ActiveStorage)
 
 ---
 
-# Nine Years Later
+# 9 Years Later
 
-- Migrated once from Paperclip, then nine years on CarrierWave
-- Uploader classes: **32**
-- `mount_uploader` calls: **87**
+- Migrated once from Paperclip, then about 9 years on CarrierWave
+- **32** Uploader classes · **87** `mount_uploader` calls
 - Up to **8** images per model
-- And CarrierWave is still on an older version
+- CarrierWave is on an older version; upgrades require compatibility work
+- Other dependencies, especially **Ruby and Rails**, are kept near the latest versions
 
 <!--
 【日本語版】
@@ -240,10 +272,11 @@ B.A. (Before ActiveStorage)
 - Uploaderクラス: 32
 - `mount_uploader`: 87箇所
 - 1モデルに最大8個の画像
-- そして、CarrierWaveのバージョンは低いまま
+- CarrierWaveは古いバージョンで、更新には既存仕様との互換性整理が必要
 
 【メモ】
 移行の経緯: 2017年5月にPaperclipからCarrierWaveへ移行し、2017年11月にPaperclipを削除（質疑用）
+他のライブラリ、特にRuby・Rails本体は常にほぼ最新を維持している。今回の更新の難しさは、CarrierWaveと当社の既存仕様の互換性に関する話。
 -->
 
 <div class="chapter-label">1. SITUATION</div>
@@ -261,7 +294,7 @@ B.A. (Before ActiveStorage)
 # Symptoms
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/symptoms-cloud-en.svg" width="1100" height="460" aria-label="Fragile Path Logic, Synchronous Image Resizing, EXIF Processing, Implicit Uploads, Tangled Dependencies, Difficult Upgrades"><img src="assets/symptoms-cloud-en.svg" alt="Fragile Path Logic, Synchronous Image Resizing, EXIF Processing, Implicit Uploads, Tangled Dependencies, Difficult Upgrades" width="1100"></object>
+<object type="image/svg+xml" data="assets/symptoms-cloud-new-en.svg" width="1100" height="460" aria-label="Fragile Path Logic, Synchronous Image Resizing, EXIF Processing, Implicit Uploads, Tangled Dependencies, Difficult Upgrades"><img src="assets/symptoms-cloud-new-en.svg" alt="Fragile Path Logic, Synchronous Image Resizing, EXIF Processing, Implicit Uploads, Tangled Dependencies, Difficult Upgrades" width="1100"></object>
 </div>
 
 <!--
@@ -302,7 +335,7 @@ B.A. (Before ActiveStorage)
 # Set Priorities: Reliability, Then Usability
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/quality-priorities-en.svg" width="1100" height="460" aria-label="Reliability is first in lime; Usability and performance are second in pink; Maintainability is deferred in gray."><img src="assets/quality-priorities-en.svg" alt="Reliability is first in lime; Usability and performance are second in pink; Maintainability is deferred in gray." width="1100"></object>
+<object type="image/svg+xml" data="assets/quality-priorities-en.svg" width="1100" height="460" aria-label="Given our current situation: Reliability is first in lime; Usability and performance are second in pink; Maintainability is the next action in gray."><img src="assets/quality-priorities-en.svg" alt="Given our current situation: Reliability is first in lime; Usability and performance are second in pink; Maintainability is the next action in gray." width="1100"></object>
 </div>
 
 <!--
@@ -314,7 +347,8 @@ B.A. (Before ActiveStorage)
 | パフォーマンス・生産性の問題 | 利用容易性（Usability） |
 
 【メモ】
-この後は信頼性、次にパフォーマンスを含む利用容易性を扱う。保守性は今回は保留。
+今回の改善対象についての優先順位。WAFなどの多層防御が機能している状況を踏まえ、実際にお客様から指摘のあった障害・性能の改善を先行した。
+ライブラリ更新も必要であり、多層防御を更新の代替とする意味ではない。保守性の改善は次のアクション。
 -->
 
 <div class="chapter-label">2. SPLIT THE PROBLEM</div>
@@ -323,9 +357,11 @@ B.A. (Before ActiveStorage)
 
 # Two Main Problems Today
 
+Given our current situation, we focus on:
+
 1. **File paths:** keep saved files **reachable**
     - Fix **fragile file paths** and make them **stable**
-2. **History:** keep old files, avoid duplicate uploads
+2. **History:** avoid needless uploads when copying records
     - Tangled history logic **slows down uploads**
 
 Then, briefly: simplify dependencies before upgrading or replacing.
@@ -346,9 +382,14 @@ Then, briefly: simplify dependencies before upgrading or replacing.
 
 # Why Do File Paths Matter?
 
-- Legacy file path logic sometimes made saved files **unreachable**
-- These are HR documents. They must stay **accessible**
-- **Reliability comes first**
+- Past incidents involved **incorrect file references**
+- **No files were lost** in these incidents
+- All these incidents were mitigated and resolved; affected customers were informed
+- **Reliability comes first** for HR documents
+
+<!-- _footer: 過去の障害はすべて止血・復旧・顧客説明済みです。 -->
+
+<!-- 今回扱う参照障害についての説明。参照のためのデータが壊れたもので、ファイル自体が消えた事例はない。過去の障害への対応完了と、再発防止のための構造改善の展開状況を区別する。 -->
 
 <div class="chapter-label">3. FOCUS ON FILE PATHS</div>
 
@@ -422,7 +463,7 @@ retrieve_from_store!は参照の復元で、常に画像の全バイトを取得
 
 # File Paths Can Be Overridden Easily
 
-- Override `store_dir` with a simple method
+- Convenient customization through `store_dir`
 - Include model data such as a tenant ID or table name
 - Changes to that data or the method can make file paths **fragile**
 
@@ -478,8 +519,8 @@ end
 
 # The Problem and the Two Fixes
 
-- Changing model state or path rules can make files **unreachable**
-- The file may still exist; the calculated location is wrong
+- Changing model state or path rules can produce **incorrect file references**
+- In these incidents, the files remained intact; the reference data was incorrect
 
 | Fix | Record the path when… | Keep it in… |
 |---|---|---|
@@ -488,13 +529,15 @@ end
 
 <div class="chapter-label">3. FOCUS ON FILE PATHS</div>
 
+<!-- _footer: ここまでのまとめ: 1. cacheとstoreがある 2. パスは開発者が壊しやすい -->
+
 ---
 
 # Fix #1: Record cache_path
 
 - Between cache and store, the calculated cache path could change
     - e.g., code where the path changes depending on whether an ID exists
-- In some years, this alone caused **4–5 incidents**
+- This caused multiple incidents in the past
 - Fix: save the path at cache time, and never recalculate it
 
 <!--
@@ -502,7 +545,7 @@ end
 cache_path の固定
 - cacheしてからstoreするまでの間に、cache pathの計算結果が変わる
     - 例: IDがある／ないでパスが変わる実装
-- 年によっては、これだけで **4〜5件** の障害
+- 過去に、この原因で複数回の障害があった
 - 対策: cache時のパスを保存し、取り出すときは再計算しない
 -->
 
@@ -555,15 +598,15 @@ cache_path の固定
 # Cache: Result
 
 - Completed at the end of 2025, as our first improvement
-- Incidents caused by cache_path dropped to **zero**
-- Only store_path issues remain
+- Incidents caused by cache_path dropped to **zero** :tada:
+- Next: prevent store_path incidents from recurring
 
 <!--
 【日本語版】
 cache_path 固定の結果
 - 改善第一弾として2025年末に完了
 - cache_path起因の障害は **ゼロ** になった
-- 残っているのは、store_path起因のものだけ
+- 次は、store_path側でも再発を防ぐための構造改善
 -->
 
 <div class="chapter-label">3. FOCUS ON FILE PATHS</div>
@@ -727,9 +770,12 @@ pre .hljs-comment { color: #c8c8c8; }
 
 # QA: Users Should See No Change
 
+- All AI-assisted QA ran in **staging with no customer data**
 - Features × preconditions create many test cases
 - Define user stories and expected results with AI
 - Keep automated tests and check **human-visible evidence**
+
+<!-- _footer: AIを用いたQAはすべて、顧客情報を含まないstaging環境で実施。 -->
 
 <div class="chapter-label">3. FOCUS ON FILE PATHS</div>
 
@@ -791,6 +837,8 @@ store_path 固定の現在地
 
 <div class="chapter-label">3. FOCUS ON FILE PATHS</div>
 
+<!-- _footer: まとめ: 壊れやすいパスを1:1で引けるよう固定した。<br>大きな変更は必ず戻せるように、AI駆動QAで品質を担保。 -->
+
 ---
 
 <!-- _class: section -->
@@ -841,7 +889,7 @@ store_path 固定の現在地
 <object type="image/svg+xml" data="assets/history-copy-upload-en.svg" width="1100" height="390" aria-label="Copy history: previous row to new row → internal assign → upload via cache!"><img src="assets/history-copy-upload-en.svg" alt="Copy history: previous row to new row → internal assign → upload via cache!" width="1100"></object>
 </div>
 
-<p style="position: absolute; top: 580px; left: 90px; width: 1100px; text-align: center;">Copying history can <strong>upload the same file again.</strong></p>
+<p style="position: absolute; top: 575px; left: 90px; width: 1100px; text-align: center;">Our history-copy workflow + CarrierWave's assignment behavior<br>can <strong>upload the same file again.</strong></p>
 
 <!--
 【日本語版】
@@ -932,13 +980,36 @@ PoCの結果であり、本番での効果や展開完了を示すものでは�
 
 <div class="chapter-label">4. FOCUS ON HISTORY</div>
 
+<!-- _footer: まとめ: 履歴実装＋画像で不要なアップロードが起こった。<br>CurrentAttributesで内部フックの挙動を制御。 -->
+
 ---
 
 <!-- _class: section -->
 
-# 5. Other Work, Briefly
+# 5. Reducing Coupling
 
-<div class="chapter-label">5. OTHER WORK, BRIEFLY</div>
+<div class="chapter-label">5. REDUCING COUPLING</div>
+
+---
+
+# :warning: Status: Design and Investigation
+
+<!-- _class: scrim -->
+
+- The approaches in this chapter are **still being designed and investigated**.
+- The diagrams show **intended boundaries**, not a completed architecture.
+- The performance result comes from a **local PoC**, not production.
+
+<!-- _footer: 疎結合化のための施策は、設計・調査段階の内容になります。 -->
+
+<!--
+【日本語版】
+この章で紹介する施策は、設計・調査段階にある。
+図は目指す責務の境界を示すもので、実装済みの構成ではない。
+後述のパフォーマンス計測はローカルPoCによるもので、本番の結果ではない。
+-->
+
+<div class="chapter-label">5. REDUCING COUPLING</div>
 
 ---
 
@@ -950,7 +1021,7 @@ PoCの結果であり、本番での効果や展開完了を示すものでは�
 
 <!-- 現状の責務の絡まりを概念的に表した図。厳密な実行順やデータフローではない。 -->
 
-<div class="chapter-label">5. OTHER WORK, BRIEFLY</div>
+<div class="chapter-label">5. REDUCING COUPLING</div>
 
 ---
 
@@ -969,7 +1040,7 @@ PoCの結果であり、本番での効果や展開完了を示すものでは�
 Uploaderの仕事を「決まったパスにバイト列を置く」ことへ絞り、画像処理を分離する。
 -->
 
-<div class="chapter-label">5. OTHER WORK, BRIEFLY</div>
+<div class="chapter-label">5. REDUCING COUPLING</div>
 
 ---
 
@@ -1020,7 +1091,7 @@ present? が依存するUploaderのblank?の挙動を、互換レイヤ内部で
 新しいAPI名だけでストレージ上のファイル実在確認を行うという意味ではない。
 -->
 
-<div class="chapter-label">5. OTHER WORK, BRIEFLY</div>
+<div class="chapter-label">5. REDUCING COUPLING</div>
 
 ---
 
@@ -1032,7 +1103,7 @@ present? が依存するUploaderのblank?の挙動を、互換レイヤ内部で
 
 <!-- SmartHRが必要とする画像操作を互換レイヤで公開し、CarrierWave固有のAPIを内側に閉じ込める。 -->
 
-<div class="chapter-label">5. OTHER WORK, BRIEFLY</div>
+<div class="chapter-label">5. REDUCING COUPLING</div>
 
 ---
 
@@ -1053,7 +1124,7 @@ present? が依存するUploaderのblank?の挙動を、互換レイヤ内部で
     - これらがアップロード時に**同期で**走り、保存完了までの待ち時間になる
 -->
 
-<div class="chapter-label">5. OTHER WORK, BRIEFLY</div>
+<div class="chapter-label">5. REDUCING COUPLING</div>
 
 ---
 
@@ -1063,20 +1134,24 @@ present? が依存するUploaderのblank?の挙動を、互換レイヤ内部で
 <object type="image/svg+xml" data="assets/preprocessing-ondemand-en.svg" width="1100" height="360" aria-label="Upload only the original to GCS. A dynamic resizer reads it and generates images on demand; a CDN caches and delivers them to the browser."><img src="assets/preprocessing-ondemand-en.svg" alt="Upload only the original to GCS. A dynamic resizer reads it and generates images on demand; a CDN caches and delivers them to the browser." width="1100"></object>
 </div>
 
-<p style="position: absolute; top: 550px; left: 90px; right: 90px; text-align: center;"><strong>PoC in progress: on-demand image service + CDN</strong><br>Examples: <a href="https://www.slideshare.net/slideshow/20111102-rails-meetuptofu/10084092">Cookpad's tofu</a> · <a href="https://imageflux.sakura.ad.jp/">ImageFlux</a></p>
+<p style="position: absolute; top: 535px; left: 90px; right: 90px; text-align: center; font-size: 25px;"><strong>Preserve required processing, including location metadata removal.</strong><br>PoC: on-demand image service + CDN<br>Examples: <a href="https://www.slideshare.net/slideshow/20111102-rails-meetuptofu/10084092">Cookpad's tofu</a> · <a href="https://imageflux.sakura.ad.jp/">ImageFlux</a></p>
 
 <!--
 【日本語版】
 同期処理を切り出したい
 - サイズ違い画像は、別サービスでオンデマンドに生成するとどうか？
-- → 同期処理から、version生成とEXIF処理を外すことができる
+- 位置情報の除去など、必要な画像処理を維持することが前提
+- 同期処理から何を切り出すかを検討する。EXIF処理を必ず外部へ移すとは限らない
 - 別サービスの内容はCDNに載せキャッシュすれば、負荷の懸念も小さい
 - 画像変換サービス + CDN という構成は、実サービスでも多く採られている
     - Cookpad の [tofu](https://www.slideshare.net/slideshow/20111102-rails-meetuptofu/10084092) を始め、色々
     - [ImageFlux](https://imageflux.sakura.ad.jp/) 等専用サービスも
+
+【質疑用】
+EXIF処理の計測上の影響は相対的に小さい。既存の実行箇所に維持する可能性もあり、切り出す範囲は検討中。
 -->
 
-<div class="chapter-label">5. OTHER WORK, BRIEFLY</div>
+<div class="chapter-label">5. REDUCING COUPLING</div>
 
 ---
 
@@ -1095,7 +1170,27 @@ present? が依存するUploaderのblank?の挙動を、互換レイヤ内部で
 本番の所要時間や改善幅を直接示すものではない。
 -->
 
-<div class="chapter-label">5. OTHER WORK, BRIEFLY</div>
+<div class="chapter-label">5. REDUCING COUPLING</div>
+
+---
+
+<!-- _footer: まとめ: 複雑な仕様をレイヤ導入＋分析で疎結合にしたい。<br>パフォーマンスにも効いてくる。 -->
+
+# Clearer Boundaries, Less Work
+
+- **Analyze** which behaviors the application needs to preserve.
+- **Isolate** CarrierWave-specific operations and image processing behind clear boundaries.
+- **Reduce synchronous work** in the upload path; the local PoC suggests a performance benefit.
+
+<!--
+【日本語版】
+複雑な仕様を分析し、必要な振る舞いを明確にする。
+CarrierWave固有の操作と画像処理を切り出し、責務の境界を作る。
+同期処理の削減はローカルPoCで速度にも効果が見えたが、本番での効果は未確認。
+この整理を踏まえて、次章ではCarrierWaveを更新するか置き換えるかを考える。
+-->
+
+<div class="chapter-label">5. REDUCING COUPLING</div>
 
 ---
 
@@ -1136,6 +1231,9 @@ present? が依存するUploaderのblank?の挙動を、互換レイヤ内部で
 
 <!-- 更新か置き換えかは未決定。どちらでも、何をアプリ・ライブラリ・外部サービスが担うかを明確にする。 -->
 
+<!-- _footer: 結論はまだ出ていないが、更新にせよ、移行にせよ、<br>ファイルアップロードの責務と影響範囲を明確にすることが重要。 -->
+
+
 <div class="chapter-label">6. UPGRADE OR REPLACE?</div>
 
 ---
@@ -1148,19 +1246,53 @@ present? が依存するUploaderのblank?の挙動を、互換レイヤ内部で
 
 ---
 
-# Make the Next Change Safer
+<!-- _class: section-plain -->
 
-1. **Split the problem** and make priorities explicit
-2. **Keep changes reversible**, and verify rollback
-3. **Make side effects explicit** and define small boundaries
+# First, split the problem<br>by quality attribute.
 
-Simpler specifications and less coupling keep both upgrade and replacement possible.
+<!-- _footer: まず、課題を性質で分割する。 -->
+
+<div class="chapter-label">7. TAKEAWAYS</div>
+
+---
+
+<!-- _class: section-plain -->
+
+# Make important changes<br>reversible.
+
+<!-- _footer: 重要な変更は、必ず戻せるようにする。 -->
+
+<div class="chapter-label">7. TAKEAWAYS</div>
+
+---
+
+<!-- _class: section-plain -->
+
+# Watch for hidden bugs<br>where behaviors interact.
+
+<!-- _footer: 仕様の組み合わせによる、暗黙のバグに注意する。 -->
+
+<div class="chapter-label">7. TAKEAWAYS</div>
+
+---
+
+<!-- _class: section-plain -->
+
+<style scoped>
+h1 { top: 44%; }
+</style>
+
+# Extract image complexity<br>step by step.<br><span style="font-size: 44px; color: var(--kor-pink);">For upgrades or replacement.</span>
+
+<!-- _footer: 画像の複雑な仕様を、少しずつ切り出す。<br>最終的な更新でも移行でも、その整理が必要になる。 -->
 
 <div class="chapter-label">7. TAKEAWAYS</div>
 
 ---
 
 <!-- _class: quote -->
+
+<!-- _footer: 参考訳: あなたが本当に整備しているのは“あなた自身”という名のオートバイだ。 -->
 
 <style scoped>
 h1 { top: 220px; font-size: 60px; line-height: 1.15; }
@@ -1201,13 +1333,13 @@ Robert M. Pirsig, Zen and the Art of Motorcycle Maintenance
 <!-- _paginate: false -->
 
 <style scoped>
-h1 { top: 100px; }
-h2 { top: 525px; }
+h1 { top: 80px; }
+h2 { top: 460px; }
 </style>
 
 # Thank you!
 
-<a href="https://udzura.jp/slides/2026/kaigionrails" style="position: absolute; top: 230px; left: 532px; display: block; width: 216px; height: 216px;">
+<a href="https://udzura.jp/slides/2026/kaigionrails" style="position: absolute; top: 200px; left: 532px; display: block; width: 216px; height: 216px;">
 <img src="assets/slides-qr.png" alt="QR code for the slides URL" width="216" height="216">
 </a>
 
@@ -1218,6 +1350,8 @@ h2 { top: 525px; }
 Thank you!
 [udzura.jp/slides/2026/kaigionrails](https://udzura.jp/slides/2026/kaigionrails)
 -->
+
+<!-- _footer: Thanks: Team members! @eminem, @a5-stable, @yudai -->
 
 ---
 

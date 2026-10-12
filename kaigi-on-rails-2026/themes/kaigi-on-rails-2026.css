@@ -13,6 +13,7 @@
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Noto+Sans+JP:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400&display=swap');
 
 :root {
   /* palette (sampled from the Keynote master) */
@@ -288,9 +289,9 @@ section > footer {
   border: 2px solid var(--kor-lime);
   border-radius: 16px;
   z-index: 1;
-  font-family: var(--kor-family);
+  font-family: 'Funnel Display', 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
   font-size: calc(21px * var(--kor-type-scale));
-  font-weight: var(--kor-w-body);
+  font-weight: 400;
   line-height: 1.5;
   color: var(--kor-white);
   text-align: left;

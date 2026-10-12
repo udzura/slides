@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
+<title id="title">Today's route through seven chapters</title>
+<desc id="desc">Arrows connect the seven chapters in order: Situation, Split the Problem, File Paths, History, Reducing Coupling, Upgrade or Replace, and Takeaways. File Paths and History are the main focus.</desc>
+<style>
+.step { transform-box: fill-box; transform-origin: center; transition: transform .2s ease, filter .2s ease; }
+.step:hover { transform: scale(1.04); filter: drop-shadow(0 0 8px var(--glow)); }
+@media (prefers-reduced-motion: reduce) { .step { transition: none; } .step:hover { transform: none; } }
+</style>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#c8c8c8" /></marker></defs>
+<rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.94" />
+<g fill="none" stroke="#c8c8c8" stroke-width="2.5" marker-end="url(#arrow)">
+<path d="M272 117 H288" /><path d="M541 117 H557" /><path d="M810 117 H826" />
+<path d="M953 195 V214 Q953 222 945 222 H288 Q280 222 280 230 V239" />
+<path d="M406 317 H423" /><path d="M676 317 H693" />
+</g>
+<g font-family="Arial, sans-serif" text-anchor="middle">
+<g class="step" style="--glow:#aaaaaa"><rect x="25" y="45" width="242" height="145" rx="16" fill="#2f2f2f" stroke="#aaaaaa" stroke-width="2" /><text x="60" y="85" font-size="27" fill="#c8c8c8" font-weight="700">1</text><text x="146" y="128" font-size="29" fill="#fff" font-weight="700">Situation</text></g>
+<g class="step" style="--glow:#aaaaaa"><rect x="294" y="45" width="242" height="145" rx="16" fill="#2f2f2f" stroke="#aaaaaa" stroke-width="2" /><text x="329" y="85" font-size="27" fill="#c8c8c8" font-weight="700">2</text><text x="415" y="116" font-size="28" fill="#fff" font-weight="700">Split the</text><text x="415" y="151" font-size="28" fill="#fff" font-weight="700">Problem</text></g>
+<g class="step" style="--glow:#ceff05"><rect x="563" y="45" width="242" height="145" rx="16" fill="#30391c" stroke="#ceff05" stroke-width="3" /><text x="598" y="85" font-size="27" fill="#ceff05" font-weight="700">3</text><text x="684" y="128" font-size="29" fill="#ceff05" font-weight="700">File Paths</text></g>
+<g class="step" style="--glow:#ff58af"><rect x="832" y="45" width="242" height="145" rx="16" fill="#432539" stroke="#ff58af" stroke-width="3" /><text x="867" y="85" font-size="27" fill="#ff58af" font-weight="700">4</text><text x="953" y="128" font-size="29" fill="#ff58af" font-weight="700">History</text></g>
+<g class="step" style="--glow:#aaaaaa"><rect x="159" y="245" width="242" height="145" rx="16" fill="#2f2f2f" stroke="#aaaaaa" stroke-width="2" /><text x="194" y="285" font-size="27" fill="#c8c8c8" font-weight="700">5</text><text x="280" y="315" font-size="27" fill="#fff" font-weight="700">Reducing</text><text x="280" y="350" font-size="27" fill="#fff" font-weight="700">Coupling</text></g>
+<g class="step" style="--glow:#aaaaaa"><rect x="429" y="245" width="242" height="145" rx="16" fill="#2f2f2f" stroke="#aaaaaa" stroke-width="2" /><text x="464" y="285" font-size="27" fill="#c8c8c8" font-weight="700">6</text><text x="550" y="315" font-size="26" fill="#fff" font-weight="700">Upgrade or</text><text x="550" y="350" font-size="26" fill="#fff" font-weight="700">Replace?</text></g>
+<g class="step" style="--glow:#aaaaaa"><rect x="699" y="245" width="242" height="145" rx="16" fill="#2f2f2f" stroke="#aaaaaa" stroke-width="2" /><text x="734" y="285" font-size="27" fill="#c8c8c8" font-weight="700">7</text><text x="820" y="328" font-size="29" fill="#fff" font-weight="700">Takeaways</text></g>
+<text x="550" y="437" font-size="22" fill="#fff">Main focus: <tspan fill="#ceff05" font-weight="700">File Paths</tspan> and <tspan fill="#ff58af" font-weight="700">History</tspan></text>
+</g>
+</svg>
