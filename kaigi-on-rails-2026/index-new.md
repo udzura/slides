@@ -1015,6 +1015,24 @@ CurrentAttributes でスコープを示し、CarrierWave のフック（cache!�
 <div class="chapter-label">4. FOCUS ON HISTORY</div>
 
 ---
+# History: Where the Time Went
+
+<div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
+<object type="image/svg+xml" data="assets/history-copy-spans-en.svg" width="1100" height="460" aria-label="Spans of one request on the same time scale. Before: 16.86 seconds, including building the new history row (4.38 s) and a repeated store (2.56 s). With suppression: 9.36 seconds; both of those spans drop to 0 s."><img src="assets/history-copy-spans-en.svg" alt="Spans of one request on the same time scale. Before: 16.86 seconds, including building the new history row (4.38 s) and a repeated store (2.56 s). With suppression: 9.36 seconds; both of those spans drop to 0 s." width="1100"></object>
+</div>
+
+<p style="position: absolute; top: 622px; left: 90px; right: 90px; text-align: center; font-size: 21px;">Two spans disappear: <strong>rebuilding the history row</strong> and the <strong>repeated store</strong></p>
+
+<!--
+同じリクエスト（申請提出）のスパンを、対策なし／ありで1回ずつ、同じ時間軸で並べたもの。クラス・メソッド名は匿名化している。
+対策なし 16.86秒のうち、履歴の新しい行を作る処理（4.38秒）と、2回目の重複した store!（2.56秒）が、対策ありでは0秒になる。
+新しい行を作る処理の中では、原本とversion 4種の再cache!が、5回のGCSへのputとして直列に並んでいた（4.38秒 → 557µs）。
+最初の Draft#apply は検証用の処理、最初の短い store! は version を持たない単発の store で、どちらも対策の対象外なので残る。
+-->
+
+<div class="chapter-label">4. FOCUS ON HISTORY</div>
+
+---
 
 # History: What Matters
 
