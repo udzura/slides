@@ -22,11 +22,6 @@ section.section h1 { top: 50%; transform: translateY(-50%); }
 <!-- _class: cover -->
 <!-- _paginate: false -->
 
-<!--
-Restructured from index.md: split the problem → paths → history → reducing coupling → upgrade or replace → takeaways.
-TBA marks missing implementation details or evidence. History proposals are not presented as completed work.
--->
-
 ---
 
 <!-- _class: title -->
