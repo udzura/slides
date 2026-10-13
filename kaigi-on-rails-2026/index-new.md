@@ -755,14 +755,20 @@ pre .hljs-comment { color: #c8c8c8; }
 </style>
 
 ```sql
--- TBA: BigQuery monitoring query
--- Confirm the exact SQL and monitored conditions
-
-
-
+-- Daily check on the BigQuery copy (simplified)
+SELECT id, tenant_id, avatar, avatar_object_path
+FROM app_mirror.employee_profiles
+WHERE
+  -- a file without a path, or a path without a file
+  (COALESCE(avatar, '') = '') != (avatar_object_path IS NULL)
+  -- or the path does not end with the file name
+  OR NOT ENDS_WITH(avatar_object_path, CONCAT('/', avatar))
 ```
 
-<!-- 定期同期したBigQueryのデータにクエリを投げて監視した。実際のSQLと監視条件は後で確認して差し替える。 -->
+<!-- 定期同期したBigQueryのデータに、毎日クエリを投げて監視した。
+実際のクエリ（Redashの「store_path不整合チェック」、毎日22:30実行）を簡略化し、テーブル名・データセット名は伏せたもの。
+見ているのは3種類の不整合: ファイルがあるのにパスがない／パスがあるのにファイルがない／パスの末尾がファイル名と一致しない。
+実際のクエリでは、調査済みで既知の行を除外している。 -->
 
 <div class="chapter-label">3. FOCUS ON FILE PATHS</div>
 
@@ -927,24 +933,59 @@ store_path 固定の現在地
 
 # CurrentAttributes: Planned Integration
 
-Pass “history copy in progress” into the CarrierWave hook.
-
 <style scoped>
-pre { min-height: 320px; box-sizing: border-box; }
+.code-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; margin-top: 8px; width: 1060px; }
+.code-cols h2 { text-align: left; color: var(--kor-pink); font-size: 26px; margin: 0 0 10px; }
+.code-cols pre { font-size: 17px; margin: 0; box-sizing: border-box; height: 330px; }
 pre .hljs-comment { color: #c8c8c8; }
 </style>
 
+<div class="code-cols">
+<div>
+
+## 1. Mark the scope
+
 ```ruby
-# TBA: replace with the verified CurrentAttributes code
+# Per-request state, reset by Rails
+class HistoryCopy < AS::CurrentAttributes
+  attribute :in_progress, default: false
+end
 
-# Mark the history-copy scope
-
-# Skip the upload in the CarrierWave hook
-
-# Reset the marker after the operation
+# In ApplicationUploader
+def self.copying_history
+  HistoryCopy.in_progress = true
+  yield
+ensure # reset, even on errors
+  HistoryCopy.in_progress = false
+end
 ```
 
-<!-- 実コードを確認して差し替える。CurrentAttributesのAPI、フック名、例外時を含むスコープの解除方法は未確認。 -->
+</div>
+<div>
+
+## 2. Skip the upload in the hook
+
+```ruby
+# In ApplicationUploader
+# Assignment runs cache!; skip it during copy
+def cache!(*)
+  return if HistoryCopy.in_progress
+
+  super
+end
+
+# Usage
+ApplicationUploader.copying_history do
+  record.copy_history!
+end
+```
+
+</div>
+</div>
+
+<!-- 構想段階の模擬コード。既存の VersionCacheSuppressible（承認処理中だけ version 生成を止める仕組み）と同じ形で、
+CurrentAttributes でスコープを示し、CarrierWave のフック（cache!）を上書きして抑止し、ensure で必ず解除する。
+実際の PoC は別の形（同じリクエスト内で同じ store path への2回目の保存を省く）で、細部は異なる。 -->
 
 <div class="chapter-label">4. FOCUS ON HISTORY</div>
 
