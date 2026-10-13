@@ -332,23 +332,22 @@ B.A. (Before ActiveStorage)
 
 ---
 
-# Set Priorities: Reliability, Then Usability
+# Set Priorities Across Three Qualities
 
 <div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/quality-priorities-en.svg" width="1100" height="460" aria-label="Given our current situation: Reliability is first in lime; Usability and performance are second in pink; Maintainability is the next action in gray."><img src="assets/quality-priorities-en.svg" alt="Given our current situation: Reliability is first in lime; Usability and performance are second in pink; Maintainability is the next action in gray." width="1100"></object>
+<object type="image/svg+xml" data="assets/quality-priorities-en.svg" width="1100" height="460" aria-label="Reliability is first in lime, Usability second in pink, and Maintainability third in gray, covered briefly today."><img src="assets/quality-priorities-en.svg" alt="Reliability is first in lime, Usability second in pink, and Maintainability third in gray, covered briefly today." width="1100"></object>
 </div>
 
 <!--
 【日本語版】
-3つの課題
-| 課題 | 関係する性質（-ility） |
-| 障害が起きやすい（パスが不安定） | 信頼性（Reliability） |
-| バージョンアップができていない | 保守性（Maintainability） |
-| パフォーマンス・生産性の問題 | 利用容易性（Usability） |
+3つの性質に優先順位をつける
+1. 信頼性（Reliability）: パスが不安定で障害が起きやすい → まずファイルの参照を安定させる
+2. 利用容易性（Usability）: 性能・開発生産性 → アップロードを速くする
+3. 保守性（Maintainability）: バージョンアップが難しい → 今日は少しだけ触れる
 
 【メモ】
-今回の改善対象についての優先順位。WAFなどの多層防御が機能している状況を踏まえ、実際にお客様から指摘のあった障害・性能の改善を先行した。
-ライブラリ更新も必要であり、多層防御を更新の代替とする意味ではない。保守性の改善は次のアクション。
+お客様が実際に感じている障害と遅さから先に手を付けた。保守性は3番目で、今日は後半で少しだけ扱う。
+セキュリティは前面に出さない（WAFなどの多層防御があることは質疑用。ライブラリ更新の代わりになるという意味ではない）。
 -->
 
 <div class="chapter-label">2. SPLIT THE PROBLEM</div>
@@ -364,9 +363,9 @@ Given our current situation, we focus on:
 2. **History:** avoid needless uploads when copying records
     - Tangled history logic **slows down uploads**
 
-Then, briefly: simplify dependencies before upgrading or replacing.
+Third, briefly: **maintainability** — simplify dependencies.
 
-<!-- 発表の地図。主役はパスと履歴。後半の依存整理は補足的な展望。 -->
+<!-- 発表の地図。主役はパスと履歴。3番目の保守性（依存整理）は、後半で少しだけ扱う補足的な展望。 -->
 
 <div class="chapter-label">2. SPLIT THE PROBLEM</div>
 
@@ -661,6 +660,8 @@ end
 hanicaのコードからポイントを絞り、若干改変したもの。should_not_store_full_path? が write フラグに相当。
 -->
 
+<p class="code-note" style="position: absolute; right: 220px; bottom: 96px; margin: 0; font-size: 15px; font-style: italic; color: #bbb;">NOTE: Simplified from the actual code.</p>
+
 <div class="chapter-label">3. FOCUS ON FILE PATHS</div>
 
 ---
@@ -692,6 +693,8 @@ end
 【メモ】
 use_persisted_store_path が read フラグに相当。次の「戻せる設計」へのつなぎ。
 -->
+
+<p class="code-note" style="position: absolute; right: 220px; bottom: 96px; margin: 0; font-size: 15px; font-style: italic; color: #bbb;">NOTE: Simplified from the actual code.</p>
 
 <div class="chapter-label">3. FOCUS ON FILE PATHS</div>
 
@@ -769,6 +772,8 @@ WHERE
 実際のクエリ（Redashの「store_path不整合チェック」、毎日22:30実行）を簡略化し、テーブル名・データセット名は伏せたもの。
 見ているのは3種類の不整合: ファイルがあるのにパスがない／パスがあるのにファイルがない／パスの末尾がファイル名と一致しない。
 実際のクエリでは、調査済みで既知の行を除外している。 -->
+
+<p class="code-note" style="position: absolute; right: 220px; bottom: 96px; margin: 0; font-size: 15px; font-style: italic; color: #bbb;">NOTE: Simplified from the actual code.</p>
 
 <div class="chapter-label">3. FOCUS ON FILE PATHS</div>
 
@@ -910,28 +915,28 @@ store_path 固定の現在地
 
 ---
 
-# Proposed Fix: Mark History Copies
+# The Fix: Mark History Copies
 
 <div style="position: absolute; top: 165px; left: 90px; width: 1100px;">
-<object type="image/svg+xml" data="assets/history-copy-skip-upload-en.svg" width="1100" height="390" aria-label="Proposed: copy the history row and assign internally, but skip the upload when bitemporal operations are marked as in progress."><img src="assets/history-copy-skip-upload-en.svg" alt="Proposed: copy the history row and assign internally, but skip the upload when bitemporal operations are marked as in progress." width="1100"></object>
+<object type="image/svg+xml" data="assets/history-copy-skip-upload-en.svg" width="1100" height="390" aria-label="The fix: copy the history row and assign internally, but skip the upload when bitemporal operations are marked as in progress."><img src="assets/history-copy-skip-upload-en.svg" alt="The fix: copy the history row and assign internally, but skip the upload when bitemporal operations are marked as in progress." width="1100"></object>
 </div>
 
-<p style="position: absolute; top: 560px; left: 90px; right: 90px; text-align: center;"><strong>Under consideration:</strong> use <code>CurrentAttributes</code><br>to pass the “copy in progress” state into hooks.</p>
+<p style="position: absolute; top: 560px; left: 90px; right: 90px; text-align: center;"><strong>In the PR:</strong> <code>CurrentAttributes</code> carries<br>the “copy in progress” state into hooks.</p>
 
 <!--
 【日本語版】
 もう一つの性能改善: 再アップロードを防ぐ
-- バイテンポラルデータモデル周辺の改善も **検討中**
-- 履歴を複製するときに **「履歴複製中」のマーク** を付けたい
+- 履歴を複製するときに **「履歴複製中」のマーク** を付ける
     - その間はアップロードを回避し、同じファイルを再アップロードしない
-- フック内部へ状態を伝えるため、`CurrentAttributes` を使うことになりそう
+- フック内部へ状態を伝えるため、`CurrentAttributes` を使う
+- 本番投入間近のPRとして実装済み
 -->
 
 <div class="chapter-label">4. FOCUS ON HISTORY</div>
 
 ---
 
-# CurrentAttributes: Planned Integration
+# CurrentAttributes: Into the Hook
 
 <style scoped>
 .code-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; margin-top: 8px; width: 1060px; }
@@ -983,30 +988,33 @@ end
 </div>
 </div>
 
-<!-- 構想段階の模擬コード。既存の VersionCacheSuppressible（承認処理中だけ version 生成を止める仕組み）と同じ形で、
+<!-- 簡略化した模擬コード。既存の VersionCacheSuppressible（承認処理中だけ version 生成を止める仕組み）と同じ形で、
 CurrentAttributes でスコープを示し、CarrierWave のフック（cache!）を上書きして抑止し、ensure で必ず解除する。
-実際の PoC は別の形（同じリクエスト内で同じ store path への2回目の保存を省く）で、細部は異なる。 -->
+リリース間近の実際のPRは別の形（同じリクエスト内で同じ store path への2回目の保存を省く）で、細部は異なる。 -->
+
+<p class="code-note" style="position: absolute; right: 220px; bottom: 96px; margin: 0; font-size: 15px; font-style: italic; color: #bbb;">NOTE: Simplified from the actual code.</p>
 
 <div class="chapter-label">4. FOCUS ON HISTORY</div>
 
 ---
 
-# History: PoC Measurement
+# History: Measuring the Upcoming PR
 
-Skip uploads when splitting history — **PoC ready; local measurement pending**
+<div style="position: absolute; top: 160px; left: 90px; width: 1100px;">
+<object type="image/svg+xml" data="assets/bench-history-copy-en.svg" width="1100" height="460" aria-label="Before: 17.0 seconds and 39 GCS calls. With duplicate-upload suppression: 9.6 seconds and 22 GCS calls. put, delete, and copy each drop from 11 to 6."><img src="assets/bench-history-copy-en.svg" alt="Before: 17.0 seconds and 39 GCS calls. With duplicate-upload suppression: 9.6 seconds and 22 GCS calls. put, delete, and copy each drop from 11 to 6." width="1100"></object>
+</div>
 
-| Same history split | Before | With suppression | Difference |
-|---|---|---|---|
-| Upload count | TBA | TBA | TBA |
-| Elapsed time | TBA | TBA | TBA |
-
-**TBA:** verify copied history keeps the expected image reference.
+<p style="position: absolute; top: 622px; left: 90px; right: 90px; text-align: center; font-size: 21px;">Local run of a <strong>near-release PR</strong>: <strong>17.0s → 9.6s (−44%)</strong> · GCS calls <strong>39 → 22</strong></p>
 
 <!--
-履歴分割時にアップロードを抑止するPoCはある。後でローカル環境で差分を計測する。
-同じ入力・分割操作で、抑止なし／ありのアップロード回数と処理時間を比較。
-計測条件（画像サイズ、分割数、実行回数など）と結果はTBA。
-PoCの結果であり、本番での効果や展開完了を示すものではない。
+履歴分割時の重複アップロードを抑止する変更は、もうすぐ本番環境に入れられる状態のPRになっている。そのPRを最新のstagingにリベースし、ローカルで計測した。
+操作: 実画面から「アバターいますぐ」（承認なし）の申請を提出し、既存のプロフィール画像を差し替える（申請提出 create_by_applicant）。
+抑止なし／ありを交互に3回ずつ、毎回別の画像で実行した平均。
+全体 17.0秒 → 9.6秒（−44%）。GCS操作 39回 → 22回。put / delete / copy がそれぞれ 11回 → 6回、get / metadata が 3回 → 2回。
+1回あたりのレイテンシ（put 約430ms、delete 約300ms、copy 約225〜260ms）は前後で同じなので、短縮分は回数の削減によるもの。
+対策後もGCSが全体の約70%を占める。
+5章のPoC（設計・調査段階）とは違い、こちらはリリース直前のPR。ただしローカルでの計測であり、本番での効果や展開完了を示すものではない。
+コピーした履歴が、期待どおりの画像を参照し続けていることも確認済み。
 -->
 
 <div class="chapter-label">4. FOCUS ON HISTORY</div>
@@ -1018,10 +1026,11 @@ PoCの結果であり、本番での効果や展開完了を示すものでは�
 - Make the difference between **copying a reference** and **uploading a file** explicit
 - Keep lifecycle side effects under application control
 - Validate the history behavior before rolling out
+- The PR is nearly ready; **the production rollout is next**
 
 <div class="chapter-label">4. FOCUS ON HISTORY</div>
 
-<!-- _footer: まとめ: 履歴実装＋画像で不要なアップロードが起こった。<br>CurrentAttributesで内部フックの挙動を制御。 -->
+<!-- _footer: まとめ: 履歴実装＋画像で不要なアップロードが起こった。<br>CurrentAttributesで内部フックを制御。PRは本番投入間近。 -->
 
 ---
 

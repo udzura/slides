@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
+<title id="title">Time breakdown of submitting an application with an image</title>
+<desc id="desc">Submitting an application that replaces a profile image, average of three local runs. Before: 17.0 s in total, with 39 GCS calls (put, delete, and copy 11 each; get and metadata 3 each). With duplicate-upload suppression: 9.6 s in total, with 22 GCS calls (put, delete, and copy 6 each; get and metadata 2 each).</desc>
+<style>
+/* Hover a bar segment or a legend item to highlight the same category. Works in browsers only. */
+.seg, .leg { transition: opacity .2s ease, filter .2s ease, transform .2s ease; transform-box: fill-box; }
+.leg { transform-origin: left center; }
+.seg { transform-origin: center; }
+svg:has(.c0:hover) .seg:not(.c0), svg:has(.c0:hover) .leg:not(.c0) { opacity: .25; }
+svg:has(.c0:hover) .seg.c0 { filter: drop-shadow(0 0 10px #ceff05); }
+svg:has(.c0:hover) .leg.c0 { transform: scale(1.12); filter: drop-shadow(0 0 6px #ceff05); }
+svg:has(.c1:hover) .seg:not(.c1), svg:has(.c1:hover) .leg:not(.c1) { opacity: .25; }
+svg:has(.c1:hover) .seg.c1 { filter: drop-shadow(0 0 10px #9fc400); }
+svg:has(.c1:hover) .leg.c1 { transform: scale(1.12); filter: drop-shadow(0 0 6px #9fc400); }
+svg:has(.c2:hover) .seg:not(.c2), svg:has(.c2:hover) .leg:not(.c2) { opacity: .25; }
+svg:has(.c2:hover) .seg.c2 { filter: drop-shadow(0 0 10px #6f8a00); }
+svg:has(.c2:hover) .leg.c2 { transform: scale(1.12); filter: drop-shadow(0 0 6px #6f8a00); }
+svg:has(.c3:hover) .seg:not(.c3), svg:has(.c3:hover) .leg:not(.c3) { opacity: .25; }
+svg:has(.c3:hover) .seg.c3 { filter: drop-shadow(0 0 10px #ff58af); }
+svg:has(.c3:hover) .leg.c3 { transform: scale(1.12); filter: drop-shadow(0 0 6px #ff58af); }
+svg:has(.c4:hover) .seg:not(.c4), svg:has(.c4:hover) .leg:not(.c4) { opacity: .25; }
+svg:has(.c4:hover) .seg.c4 { filter: drop-shadow(0 0 10px #ffb3d9); }
+svg:has(.c4:hover) .leg.c4 { transform: scale(1.12); filter: drop-shadow(0 0 6px #ffb3d9); }
+svg:has(.c5:hover) .seg:not(.c5), svg:has(.c5:hover) .leg:not(.c5) { opacity: .25; }
+svg:has(.c5:hover) .seg.c5 { filter: drop-shadow(0 0 10px #8a8a8a); }
+svg:has(.c5:hover) .leg.c5 { transform: scale(1.12); filter: drop-shadow(0 0 6px #8a8a8a); }
+@media (prefers-reduced-motion: reduce) { .seg, .leg { transition: none; } }
+</style>
+<rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.94" />
+<g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff">
+<text x="40" y="44" font-size="24" font-weight="700" fill="#ceff05">Time breakdown of submitting an application with an image</text>
+<g transform="translate(0 44)">
+<g class="leg c0"><rect x="40" y="28" width="16" height="16" rx="3" fill="#ceff05" /><text x="66" y="42" font-size="18">put_object  ×11 → ×6</text></g>
+<g class="leg c1"><rect x="390" y="28" width="16" height="16" rx="3" fill="#9fc400" /><text x="416" y="42" font-size="18">delete_object  ×11 → ×6</text></g>
+<g class="leg c2"><rect x="740" y="28" width="16" height="16" rx="3" fill="#6f8a00" /><text x="766" y="42" font-size="18">copy_object  ×11 → ×6</text></g>
+<g class="leg c3"><rect x="40" y="60" width="16" height="16" rx="3" fill="#ff58af" /><text x="66" y="74" font-size="18">get_object  ×3 → ×2</text></g>
+<g class="leg c4"><rect x="390" y="60" width="16" height="16" rx="3" fill="#ffb3d9" /><text x="416" y="74" font-size="18">get_object_metadata  ×3 → ×2</text></g>
+<g class="leg c5"><rect x="740" y="60" width="16" height="16" rx="3" fill="#8a8a8a" /><text x="766" y="74" font-size="18">Other (non-GCS)</text></g>
+<path d="M250.0 120 V330" stroke="#ffffff" stroke-opacity="0.15" />
+<text x="250.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">0</text>
+<path d="M330.0 120 V330" stroke="#ffffff" stroke-opacity="0.15" />
+<text x="330.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">2</text>
+<path d="M410.0 120 V330" stroke="#ffffff" stroke-opacity="0.15" />
+<text x="410.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">4</text>
+<path d="M490.0 120 V330" stroke="#ffffff" stroke-opacity="0.15" />
+<text x="490.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">6</text>
+<path d="M570.0 120 V330" stroke="#ffffff" stroke-opacity="0.15" />
+<text x="570.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">8</text>
+<path d="M650.0 120 V330" stroke="#ffffff" stroke-opacity="0.15" />
+<text x="650.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">10</text>
+<path d="M730.0 120 V330" stroke="#ffffff" stroke-opacity="0.15" />
+<text x="730.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">12</text>
+<path d="M810.0 120 V330" stroke="#ffffff" stroke-opacity="0.15" />
+<text x="810.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">14</text>
+<path d="M890.0 120 V330" stroke="#ffffff" stroke-opacity="0.15" />
+<text x="890.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">16</text>
+<path d="M970.0 120 V330" stroke="#ffffff" stroke-opacity="0.15" />
+<text x="970.0" y="356" font-size="16" fill="#ccc" text-anchor="middle">18</text>
+<text x="610.0" y="392" font-size="17" fill="#ccc" text-anchor="middle">Seconds (local, average of 3 runs)</text>
+<text x="234" y="173" font-size="23" font-weight="700" text-anchor="end">Before</text>
+<g class="seg c0"><rect x="250.0" y="135" width="187.0" height="60" fill="#ceff05" stroke="#202020" stroke-width="2" /><text x="262.0" y="173" font-size="18" font-weight="700" fill="#202020">put 4.7s</text></g>
+<g class="seg c1"><rect x="437.0" y="135" width="131.0" height="60" fill="#9fc400" stroke="#202020" stroke-width="2" /></g>
+<g class="seg c2"><rect x="568.0" y="135" width="115.4" height="60" fill="#6f8a00" stroke="#202020" stroke-width="2" /></g>
+<g class="seg c3"><rect x="683.4" y="135" width="40.0" height="60" fill="#ff58af" stroke="#202020" stroke-width="2" /></g>
+<g class="seg c4"><rect x="723.4" y="135" width="17.8" height="60" fill="#ffb3d9" stroke="#202020" stroke-width="2" /></g>
+<g class="seg c5"><rect x="741.2" y="135" width="189.3" height="60" fill="#8a8a8a" stroke="#202020" stroke-width="2" /><text x="753.2" y="173" font-size="18" font-weight="700" fill="#202020">Other 4.7s</text></g>
+<text x="944.5" y="167" font-size="32" font-weight="700" fill="#ceff05">17.0s</text>
+<text x="944.5" y="191" font-size="16" fill="#ccc">39 GCS calls</text>
+<text x="234" y="273" font-size="23" font-weight="700" text-anchor="end">With suppression</text>
+<g class="seg c0"><rect x="250.0" y="235" width="102.9" height="60" fill="#ceff05" stroke="#202020" stroke-width="2" /></g>
+<g class="seg c1"><rect x="352.9" y="235" width="71.7" height="60" fill="#9fc400" stroke="#202020" stroke-width="2" /></g>
+<g class="seg c2"><rect x="424.6" y="235" width="54.1" height="60" fill="#6f8a00" stroke="#202020" stroke-width="2" /></g>
+<g class="seg c3"><rect x="478.7" y="235" width="27.5" height="60" fill="#ff58af" stroke="#202020" stroke-width="2" /></g>
+<g class="seg c4"><rect x="506.2" y="235" width="11.4" height="60" fill="#ffb3d9" stroke="#202020" stroke-width="2" /></g>
+<g class="seg c5"><rect x="517.6" y="235" width="115.8" height="60" fill="#8a8a8a" stroke="#202020" stroke-width="2" /></g>
+<text x="647.4" y="267" font-size="32" font-weight="700" fill="#ceff05">9.6s</text>
+<text x="647.4" y="291" font-size="16" fill="#ccc">22 GCS calls</text>
+</g></g></svg>
