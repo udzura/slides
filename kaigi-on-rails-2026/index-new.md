@@ -808,6 +808,53 @@ Step 2: AIがシナリオにして、実行する
 
 ---
 
+<!-- _class: no-logo -->
+
+<style scoped>
+section { padding-right: 640px; }
+.report-shot {
+  position: absolute;
+  top: 150px;
+  right: 90px;
+  width: 520px;
+  height: 470px;
+  object-fit: cover;
+  object-position: top;
+  border: 3px solid var(--kor-lime);
+  border-radius: 8px;
+  box-shadow: 0 0 24px rgba(0, 0, 0, .6);
+  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent);
+  mask-image: linear-gradient(to bottom, #000 80%, transparent);
+  transition: object-position 6s ease-in-out;
+}
+.report-shot:hover { object-position: bottom; }
+</style>
+
+# QA: Example Report
+
+- One run = one report
+- Verdict, reason, and evidence for each step
+    - Evidence: screenshots and logs
+- Other findings go to "Warnings"
+
+<img class="report-shot" src="assets/qa-report-example.png" alt="Example of a QA report: the scenario and both steps passed. Repository names and IDs are blurred." width="520" height="470">
+
+<!--
+【日本語版】
+レポートの例
+- 1回の実行 = 1つのレポート
+- ステップごとに判定・根拠・証跡
+    - 証跡はスクショやログ
+- 判定外の気づきは「警告」欄へ
+
+【メモ】
+マウスを乗せると、レポートが下までゆっくりスクロールする（HTML表示のみ）
+-->
+
+<div class="chapter-label">3. FOCUS ON FILE PATHS</div>
+
+---
+
 # QA: Results and Human Review
 
 - About **30 large stories**, checked in **2 days by about 3 people**
