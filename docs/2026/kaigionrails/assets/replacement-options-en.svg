@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
+<title id="title">Three possible replacements for CarrierWave</title>
+<desc id="desc">ActiveStorage, Shrine, and an in-house solution are three equally open ideas if CarrierWave is replaced. Continuing to upgrade CarrierWave is also an option. No choice has been made.</desc>
+<style>
+/* Hover effect: works only when embedded as an object element in a browser. Static in PDF and images. */
+.box { --glow: #ceff05; --hover-fill: #3a4422; transform-box: fill-box; transform-origin: center; transition: transform .2s ease, filter .2s ease; }
+.box.gray { --glow: #ffffff; --hover-fill: #444444; }
+.box.pink { --glow: #ff58af; --hover-fill: #4a2a3f; }
+.box &gt; rect { transition: fill .2s ease; }
+.box:hover:not(:has(.box:hover)) { transform: scale(1.04); filter: drop-shadow(0 0 10px var(--glow)); }
+.box:hover:not(:has(.box:hover)) &gt; rect { fill: var(--hover-fill); }
+@media (prefers-reduced-motion: reduce) { .box, .box &gt; rect { transition: none; } .box:hover { transform: none; } }
+</style>
+<rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.94" />
+<g font-family="Arial, sans-serif" text-anchor="middle">
+<text x="550" y="62" font-size="27" font-weight="700" fill="#fff">If we replace CarrierWave...</text>
+<g class="box"><rect x="34" y="112" width="310" height="260" rx="18" fill="#30391c" stroke="#ceff05" stroke-width="3" /><text x="189" y="192" font-size="33" font-weight="700" fill="#ceff05">ActiveStorage</text><path d="M79 227 H299" stroke="#ceff05" stroke-opacity=".7" /><text x="189" y="280" font-size="23" fill="#fff">Fit with our data model?</text><text x="189" y="326" font-size="20" fill="#c8c8c8">8 attachments / model</text></g>
+<text x="372" y="253" font-size="26" font-weight="700" fill="#ff58af">OR</text>
+<g class="box"><rect x="395" y="112" width="310" height="260" rx="18" fill="#30391c" stroke="#ceff05" stroke-width="3" /><text x="550" y="192" font-size="34" font-weight="700" fill="#ceff05">Shrine</text><path d="M440 227 H660" stroke="#ceff05" stroke-opacity=".7" /><text x="550" y="280" font-size="23" fill="#fff">GCS integration?</text><text x="550" y="326" font-size="20" fill="#c8c8c8">Community extension</text></g>
+<text x="733" y="253" font-size="26" font-weight="700" fill="#ff58af">OR</text>
+<g class="box"><rect x="756" y="112" width="310" height="260" rx="18" fill="#30391c" stroke="#ceff05" stroke-width="3" /><text x="911" y="192" font-size="34" font-weight="700" fill="#ceff05">In-house</text><path d="M801 227 H1021" stroke="#ceff05" stroke-opacity=".7" /><text x="911" y="280" font-size="23" fill="#fff">Build and maintain?</text><text x="911" y="326" font-size="20" fill="#c8c8c8">Tailored to our needs</text></g>
+<text x="550" y="427" font-size="22" fill="#ff58af">Of course, we could keep upgrading CarrierWave.</text>
+</g>
+</svg>

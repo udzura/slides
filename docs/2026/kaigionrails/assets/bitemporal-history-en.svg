@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
+<title id="title">Splitting history by valid time and transaction time</title>
+<desc id="desc">Valid time runs left to right and transaction time runs top to bottom. Tokyo is registered on 9/1. On 10/17, we record that the location has been Hakata since 10/1. The old row A stays at the top, and row B (Tokyo, 9/1 to before 10/1) and row C (Hakata, from 10/1) are added below.</desc>
+<style>
+/* Hover effect: works only when embedded as an object element in a browser. Static in PDF and images. */
+.box { --glow: #ceff05; --hover-fill: #3a4422; transform-box: fill-box; transform-origin: center; transition: transform .2s ease, filter .2s ease; }
+.box.gray { --glow: #ffffff; --hover-fill: #444444; }
+.box.pink { --glow: #ff58af; --hover-fill: #4a2a3f; }
+.box rect { transition: fill .2s ease; }
+.box:hover { transform: scale(1.04); filter: drop-shadow(0 0 10px var(--glow)); }
+.box:hover rect { fill: var(--hover-fill); }
+@media (prefers-reduced-motion: reduce) { .box, .box rect { transition: none; } .box:hover { transform: none; } }
+</style>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#fff" /></marker></defs>
+<rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.94" />
+<g font-family="'Funnel Display','Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff">
+<text x="550" y="32" text-anchor="middle" font-size="25" fill="#fff" font-weight="400">On 10/17, record “It has been Hakata since 10/1”</text>
+<text x="670" y="70" text-anchor="middle" font-size="24" fill="#ff58af" font-weight="700">Valid time → when it is valid in business</text>
+<text x="670" y="94" text-anchor="middle" font-size="17" fill="#ccc" font-weight="400">[valid_from, valid_to)</text>
+<text x="20" y="174" text-anchor="start" font-size="22" fill="#ceff05" font-weight="700">Transaction time</text>
+<text x="20" y="203" text-anchor="start" font-size="18" fill="#fff" font-weight="400">When the DB treated</text>
+<text x="20" y="228" text-anchor="start" font-size="18" fill="#fff" font-weight="400">the content as correct</text>
+<text x="20" y="320" text-anchor="start" font-size="16" fill="#ccc" font-weight="400">[transaction_from,</text>
+<text x="20" y="343" text-anchor="start" font-size="16" fill="#ccc" font-weight="400"> transaction_to)</text>
+<path class="no-flow" d="M310 120 H1060 M310 120 V420" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+<path class="no-flow" d="M1030 120 H1060" stroke="#fff" stroke-width="2" marker-end="url(#arrow)" />
+<g class="box gray"><rect x="323" y="140" width="707" height="117" rx="6" fill="#2f2f2f" stroke="#aaa" stroke-width="2" />
+<text x="676" y="170" text-anchor="middle" font-size="21" fill="#ccc" font-weight="400">Record before update / Row A</text>
+<text x="676" y="206" text-anchor="middle" font-size="30" fill="#fff" font-weight="700">location = Tokyo</text>
+<text x="676" y="240" text-anchor="middle" font-size="20" fill="#ccc" font-weight="400">Kept as past knowledge</text>
+</g>
+<g class="box"><rect x="323" y="283" width="327" height="112" rx="6" fill="#30391c" stroke="#ceff05" stroke-width="2" />
+<text x="486" y="320" text-anchor="middle" font-size="20" fill="#ceff05" font-weight="400">Row B: 9/1 to before 10/1</text>
+<text x="486" y="366" text-anchor="middle" font-size="28" fill="#fff" font-weight="700">location = Tokyo</text>
+</g>
+<g class="box pink"><rect x="668" y="283" width="362" height="112" rx="6" fill="#432539" stroke="#ff58af" stroke-width="2" />
+<text x="849" y="320" text-anchor="middle" font-size="20" fill="#ff58af" font-weight="400">Row C: from 10/1</text>
+<text x="849" y="366" text-anchor="middle" font-size="28" fill="#fff" font-weight="700">location = Hakata</text>
+</g>
+<path d="M300 270 H1040" stroke="#ceff05" stroke-width="2" stroke-dasharray="5 6" />
+<path d="M659 125 V140 M659 257 V401" stroke="#ff58af" stroke-width="2" stroke-dasharray="5 6" />
+<text x="323" y="113" text-anchor="middle" font-size="20" fill="#fff" font-weight="400">9/1</text>
+<text x="659" y="113" text-anchor="middle" font-size="20" fill="#ff58af" font-weight="400">10/1</text>
+<text x="296" y="148" text-anchor="end" font-size="20" fill="#fff" font-weight="400">9/1 Created</text>
+<text x="296" y="277" text-anchor="end" font-size="20" fill="#ceff05" font-weight="400">10/17 Updated</text>
+<text x="1045" y="110" text-anchor="middle" font-size="16" fill="#ccc" font-weight="400">Future</text>
+<text x="295" y="414" text-anchor="end" font-size="16" fill="#ccc" font-weight="400">Future ↓</text>
+<text x="550" y="449" text-anchor="middle" font-size="17" fill="#ccc" font-weight="400">Each rectangle = one record  /  right and bottom edges omitted (they continue into the future)</text>
+</g></svg>

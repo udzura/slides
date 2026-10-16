@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc"><title id="title">Split the problem into three qualities</title><desc id="desc">Three equally weighted categories: reliability, usability, and maintainability.</desc><rect width="1100" height="460" rx="18" fill="#202020" fill-opacity="0.94"/><g font-family="Arial, sans-serif" text-anchor="middle">
+<rect x="25" y="82" width="320" height="270" rx="18" fill="#323232" stroke="#bcbcbc" stroke-width="2"/>
+<text x="185" y="135" font-size="35" font-weight="700" fill="#bcbcbc">Reliability</text><path d="M53 162 H317" stroke="#bcbcbc"/>
+<text x="185" y="210" font-size="23" fill="#eeeeee" font-weight="400">Unstable file paths</text>
+<text x="185" y="249" font-size="23" fill="#eeeeee" font-weight="400">Recurring incidents</text>
+<text x="185" y="310" font-size="21" fill="#bcbcbc" font-weight="700">Keep files reachable</text>
+<rect x="390" y="82" width="320" height="270" rx="18" fill="#323232" stroke="#bcbcbc" stroke-width="2"/>
+<text x="550" y="135" font-size="35" font-weight="700" fill="#bcbcbc">Usability</text><path d="M418 162 H682" stroke="#bcbcbc"/>
+<text x="550" y="210" font-size="23" fill="#eeeeee" font-weight="400">Slow uploads</text>
+<text x="550" y="249" font-size="23" fill="#eeeeee" font-weight="400">Developer productivity</text>
+<text x="550" y="310" font-size="21" fill="#bcbcbc" font-weight="700">Reduce waiting and friction</text>
+<rect x="755" y="82" width="320" height="270" rx="18" fill="#323232" stroke="#bcbcbc" stroke-width="2"/>
+<text x="915" y="135" font-size="29" font-weight="700" fill="#bcbcbc">Maintainability</text><path d="M783 162 H1047" stroke="#bcbcbc"/>
+<text x="915" y="210" font-size="23" fill="#eeeeee" font-weight="400">Tangled dependencies</text>
+<text x="915" y="249" font-size="23" fill="#eeeeee" font-weight="400">Difficult upgrades</text>
+<text x="915" y="310" font-size="21" fill="#bcbcbc" font-weight="700">Make changes easier</text>
+<text x="550" y="396" font-size="22" fill="#eeeeee">First, classify the problems.</text>
+<text x="550" y="431" font-size="22" fill="#eeeeee">Then, decide what to tackle first in our situation.</text></g></svg>

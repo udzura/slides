@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc"><title id="title">Priorities in our situation</title><desc id="desc">Prevent incidents first. Address customer-reported latency alongside reliability work, as a secondary focus. Upgrades were initially third; their priority will rise soon based on the security situation.</desc><rect width="1100" height="460" rx="18" fill="#202020" fill-opacity="0.94"/><g font-family="Arial, sans-serif" text-anchor="middle">
+<rect x="25" y="82" width="320" height="270" rx="18" fill="#30391c" stroke="#ceff05" stroke-width="2"/>
+<text x="185" y="49" font-size="23" font-weight="700" fill="#ceff05">1 · PRIMARY</text>
+<text x="185" y="135" font-size="35" font-weight="700" fill="#ceff05">Reliability</text><path d="M53 162 H317" stroke="#ceff05"/>
+<text x="185" y="210" font-size="23" fill="#eeeeee" font-weight="400">Prevent incidents</text>
+<text x="185" y="249" font-size="23" fill="#eeeeee" font-weight="400">Keep files reachable</text>
+<text x="185" y="310" font-size="21" fill="#ceff05" font-weight="700">Our main focus</text>
+<rect x="390" y="82" width="320" height="270" rx="18" fill="#432539" stroke="#ff58af" stroke-width="2"/>
+<text x="550" y="49" font-size="23" font-weight="700" fill="#ff58af">2 · SECONDARY</text>
+<text x="550" y="135" font-size="35" font-weight="700" fill="#ff58af">Usability</text><path d="M418 162 H682" stroke="#ff58af"/>
+<text x="550" y="210" font-size="23" fill="#eeeeee" font-weight="400">Customer-reported</text>
+<text x="550" y="249" font-size="23" fill="#eeeeee" font-weight="400">slow uploads</text>
+<text x="550" y="310" font-size="21" fill="#ff58af" font-weight="700">Alongside reliability work</text>
+<rect x="755" y="82" width="320" height="270" rx="18" fill="#323232" stroke="#bcbcbc" stroke-width="2"/>
+<text x="915" y="49" font-size="23" font-weight="700" fill="#bcbcbc">3 · INITIALLY</text>
+<text x="915" y="135" font-size="29" font-weight="700" fill="#bcbcbc">Maintainability</text><path d="M783 162 H1047" stroke="#bcbcbc"/>
+<text x="915" y="210" font-size="23" fill="#eeeeee" font-weight="400">Library upgrades</text>
+<text x="915" y="249" font-size="23" fill="#eeeeee" font-weight="400">Priority rising soon</text>
+<text x="915" y="310" font-size="21" fill="#bcbcbc" font-weight="700">Based on security needs</text>
+<text x="550" y="396" font-size="22" fill="#eeeeee">This was our starting order, not a permanent ranking.</text>
+<text x="550" y="431" font-size="22" fill="#eeeeee">We plan to raise upgrade priority soon based on the security situation.</text></g></svg>

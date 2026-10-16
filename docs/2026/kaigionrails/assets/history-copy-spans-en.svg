@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="460" viewBox="0 0 1100 460" role="img" aria-labelledby="title desc">
+<title id="title">Where the time goes in one request</title>
+<desc id="desc">Spans of one request that submits an application, before and with duplicate-upload suppression, on the same time scale. Before: 16.86 s. Building the new history row takes 4.38 s and a repeated store takes 2.56 s. With suppression: 9.36 s. Both of those spans drop to 0 s; the other spans stay about the same.</desc>
+<style>
+/* Hover a row to highlight the same span in both runs. Works in browsers only. */
+.row { transition: opacity .2s ease, filter .2s ease; }
+svg:has(.r0:hover) .row:not(.r0) { opacity: .3; }
+svg:has(.r0:hover) .row.r0 { filter: drop-shadow(0 0 8px #ceff05); }
+svg:has(.r1:hover) .row:not(.r1) { opacity: .3; }
+svg:has(.r1:hover) .row.r1 { filter: drop-shadow(0 0 8px #ceff05); }
+svg:has(.r2:hover) .row:not(.r2) { opacity: .3; }
+svg:has(.r2:hover) .row.r2 { filter: drop-shadow(0 0 8px #ceff05); }
+svg:has(.r3:hover) .row:not(.r3) { opacity: .3; }
+svg:has(.r3:hover) .row.r3 { filter: drop-shadow(0 0 8px #ff58af); }
+svg:has(.r4:hover) .row:not(.r4) { opacity: .3; }
+svg:has(.r4:hover) .row.r4 { filter: drop-shadow(0 0 8px #ff58af); }
+svg:has(.r5:hover) .row:not(.r5) { opacity: .3; }
+svg:has(.r5:hover) .row.r5 { filter: drop-shadow(0 0 8px #ceff05); }
+@media (prefers-reduced-motion: reduce) { .row { transition: none; } }
+</style>
+<rect width="1100" height="460" rx="16" fill="#202020" fill-opacity="0.94" />
+<g font-family="'Noto Sans JP','Hiragino Sans',sans-serif" fill="#fff">
+<text x="40" y="40" font-size="22" font-weight="700" fill="#ceff05">Spans of one request (one of the three runs, same time scale)</text>
+<text x="1060" y="40" font-size="15" fill="#ccc" text-anchor="end">Removed spans in pink</text>
+<path d="M300.0 58 V430" stroke="#fff" stroke-opacity="0.12" />
+<text x="300.0" y="450" font-size="14" fill="#ccc" text-anchor="middle">0s</text>
+<path d="M384.7 58 V430" stroke="#fff" stroke-opacity="0.12" />
+<text x="384.7" y="450" font-size="14" fill="#ccc" text-anchor="middle">2s</text>
+<path d="M469.4 58 V430" stroke="#fff" stroke-opacity="0.12" />
+<text x="469.4" y="450" font-size="14" fill="#ccc" text-anchor="middle">4s</text>
+<path d="M554.1 58 V430" stroke="#fff" stroke-opacity="0.12" />
+<text x="554.1" y="450" font-size="14" fill="#ccc" text-anchor="middle">6s</text>
+<path d="M638.8 58 V430" stroke="#fff" stroke-opacity="0.12" />
+<text x="638.8" y="450" font-size="14" fill="#ccc" text-anchor="middle">8s</text>
+<path d="M723.5 58 V430" stroke="#fff" stroke-opacity="0.12" />
+<text x="723.5" y="450" font-size="14" fill="#ccc" text-anchor="middle">10s</text>
+<path d="M808.2 58 V430" stroke="#fff" stroke-opacity="0.12" />
+<text x="808.2" y="450" font-size="14" fill="#ccc" text-anchor="middle">12s</text>
+<path d="M892.9 58 V430" stroke="#fff" stroke-opacity="0.12" />
+<text x="892.9" y="450" font-size="14" fill="#ccc" text-anchor="middle">14s</text>
+<path d="M977.6 58 V430" stroke="#fff" stroke-opacity="0.12" />
+<text x="977.6" y="450" font-size="14" fill="#ccc" text-anchor="middle">16s</text>
+<text x="40" y="83" font-size="18" font-weight="700" fill="#fff">Before</text>
+<rect x="300" y="66" width="714.1" height="22" rx="3" fill="#3a3a3a" stroke="#aaa" stroke-width="1.5" />
+<text x="1024.1" y="83" font-size="18" font-weight="700" fill="#fff">16.86s</text>
+<g class="row r0"><text x="60" y="110" font-size="15" fill="#ddd">Draft#apply (validation)</text><rect x="312.3" y="94" width="48.7" height="18" rx="3" fill="#ceff05" fill-opacity="0.95" /><text x="369.0" y="108" font-size="14" fill="#ccc">1.15s</text><rect x="40" y="92" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<g class="row r1"><text x="60" y="134" font-size="15" fill="#ddd">Draft#apply</text><rect x="373.7" y="118" width="173.2" height="18" rx="3" fill="#ceff05" fill-opacity="0.95" /><text x="554.9" y="132" font-size="14" fill="#ccc">4.09s</text><rect x="40" y="116" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<g class="row r2"><text x="60" y="158" font-size="15" fill="#ddd">Uploader#store! (single)</text><rect x="546.1" y="142" width="23.7" height="18" rx="3" fill="#ceff05" fill-opacity="0.95" /><text x="577.8" y="156" font-size="14" fill="#ccc">0.56s</text><rect x="40" y="140" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<g class="row r3"><text x="60" y="182" font-size="15" fill="#ddd">History#build_new_row</text><rect x="583.3" y="166" width="185.5" height="18" rx="3" fill="#ff58af" fill-opacity="0.95" /><text x="776.8" y="180" font-size="14" fill="#ccc">4.38s</text><rect x="40" y="164" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<g class="row r4"><text x="60" y="206" font-size="15" fill="#ddd">Uploader#store! (repeat)</text><rect x="768.0" y="190" width="108.4" height="18" rx="3" fill="#ff58af" fill-opacity="0.95" /><text x="884.4" y="204" font-size="14" fill="#ccc">2.56s</text><rect x="40" y="188" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<g class="row r5"><text x="60" y="230" font-size="15" fill="#ddd">Uploader#store!</text><rect x="878.5" y="214" width="130.4" height="18" rx="3" fill="#ceff05" fill-opacity="0.95" /><text x="1017.0" y="228" font-size="14" fill="#ccc">3.08s</text><rect x="40" y="212" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<text x="40" y="269" font-size="18" font-weight="700" fill="#ceff05">With suppression</text>
+<rect x="300" y="252" width="396.4" height="22" rx="3" fill="#3a3a3a" stroke="#aaa" stroke-width="1.5" />
+<text x="706.4" y="269" font-size="18" font-weight="700" fill="#ceff05">9.36s</text>
+<g class="row r0"><text x="60" y="296" font-size="15" fill="#ddd">Draft#apply (validation)</text><rect x="313.6" y="280" width="47.0" height="18" rx="3" fill="#ceff05" fill-opacity="0.95" /><text x="368.6" y="294" font-size="14" fill="#ccc">1.11s</text><rect x="40" y="278" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<g class="row r1"><text x="60" y="320" font-size="15" fill="#ddd">Draft#apply</text><rect x="367.3" y="304" width="172.4" height="18" rx="3" fill="#ceff05" fill-opacity="0.95" /><text x="547.7" y="318" font-size="14" fill="#ccc">4.07s</text><rect x="40" y="302" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<g class="row r2"><text x="60" y="344" font-size="15" fill="#ddd">Uploader#store! (single)</text><rect x="548.6" y="328" width="23.7" height="18" rx="3" fill="#ceff05" fill-opacity="0.95" /><text x="580.3" y="342" font-size="14" fill="#ccc">0.56s</text><rect x="40" y="326" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<g class="row r3"><text x="60" y="368" font-size="15" fill="#ddd">History#build_new_row</text><path d="M582.1 352 V370" stroke="#ff58af" stroke-width="3" /><text x="592.1" y="366" font-size="14" font-weight="700" fill="#ff58af">0s — skipped</text><rect x="40" y="350" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<g class="row r4"><text x="60" y="392" font-size="15" fill="#ddd">Uploader#store! (repeat)</text><path d="M582.1 376 V394" stroke="#ff58af" stroke-width="3" /><text x="592.1" y="390" font-size="14" font-weight="700" fill="#ff58af">0s — skipped</text><rect x="40" y="374" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+<g class="row r5"><text x="60" y="416" font-size="15" fill="#ddd">Uploader#store!</text><rect x="582.1" y="400" width="111.0" height="18" rx="3" fill="#ceff05" fill-opacity="0.95" /><text x="701.0" y="414" font-size="14" fill="#ccc">2.62s</text><rect x="40" y="398" width="1020" height="22" fill="#fff" fill-opacity="0" /></g>
+</g></svg>
