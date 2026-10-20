@@ -1,0 +1,257 @@
+[
+  {
+    "name": "emcc-version",
+    "exit": 0
+  },
+  {
+    "name": "node-version",
+    "exit": 0
+  },
+  {
+    "name": "wasm-objdump-version",
+    "exit": 0
+  },
+  {
+    "name": "wasm-tools-version",
+    "exit": 0
+  },
+  {
+    "name": "wasm-opt-version",
+    "exit": 0
+  },
+  {
+    "name": "rustc-version",
+    "exit": 0
+  },
+  {
+    "name": "node-versions",
+    "exit": 0
+  },
+  {
+    "name": "js-compile",
+    "exit": 0
+  },
+  {
+    "name": "js-object",
+    "exit": 0
+  },
+  {
+    "name": "js-link",
+    "exit": 0
+  },
+  {
+    "name": "js-run",
+    "exit": 0
+  },
+  {
+    "name": "js-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "js-wat",
+    "exit": 0
+  },
+  {
+    "name": "js-validate",
+    "exit": 0
+  },
+  {
+    "name": "js-bytes",
+    "wasm": 1239,
+    "js": 19489
+  },
+  {
+    "name": "js-library",
+    "exit": 0
+  },
+  {
+    "name": "legacy-compile",
+    "exit": 0
+  },
+  {
+    "name": "legacy-object",
+    "exit": 0
+  },
+  {
+    "name": "legacy-link",
+    "exit": 0
+  },
+  {
+    "name": "legacy-run",
+    "exit": 0
+  },
+  {
+    "name": "legacy-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "legacy-wat",
+    "exit": 0
+  },
+  {
+    "name": "legacy-validate",
+    "exit": 0
+  },
+  {
+    "name": "legacy-bytes",
+    "wasm": 884,
+    "js": 18372
+  },
+  {
+    "name": "legacy-library",
+    "exit": 0
+  },
+  {
+    "name": "legacy-named-library",
+    "exit": 0
+  },
+  {
+    "name": "standard-compile",
+    "exit": 0
+  },
+  {
+    "name": "standard-object",
+    "exit": 0
+  },
+  {
+    "name": "standard-link",
+    "exit": 0
+  },
+  {
+    "name": "standard-run",
+    "exit": 0
+  },
+  {
+    "name": "standard-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "standard-wat",
+    "exit": 0
+  },
+  {
+    "name": "standard-validate",
+    "exit": 0
+  },
+  {
+    "name": "standard-bytes",
+    "wasm": 908,
+    "js": 18374
+  },
+  {
+    "name": "standard-library",
+    "exit": 0
+  },
+  {
+    "name": "standard-named-library",
+    "exit": 0
+  },
+  {
+    "name": "mixed-legacy-O0-link",
+    "exit": 0
+  },
+  {
+    "name": "mixed-legacy-O0-run",
+    "exit": 0
+  },
+  {
+    "name": "mixed-legacy-O0-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "mixed-legacy-O1-link",
+    "exit": 0
+  },
+  {
+    "name": "mixed-legacy-O1-run",
+    "exit": 0
+  },
+  {
+    "name": "mixed-legacy-O1-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "mixed-legacy-O2-link",
+    "exit": 0
+  },
+  {
+    "name": "mixed-legacy-O2-run",
+    "exit": 1
+  },
+  {
+    "name": "mixed-legacy-O2-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "mixed-standard-O0-link",
+    "exit": 0
+  },
+  {
+    "name": "mixed-standard-O0-run",
+    "exit": 0
+  },
+  {
+    "name": "mixed-standard-O0-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "mixed-standard-O1-link",
+    "exit": 0
+  },
+  {
+    "name": "mixed-standard-O1-run",
+    "exit": 0
+  },
+  {
+    "name": "mixed-standard-O1-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "mixed-standard-O2-link",
+    "exit": 0
+  },
+  {
+    "name": "mixed-standard-O2-run",
+    "exit": 1
+  },
+  {
+    "name": "mixed-standard-O2-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "legacy-object-standard-link",
+    "exit": 0
+  },
+  {
+    "name": "link-only-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "link-only-run",
+    "exit": 0
+  },
+  {
+    "name": "rust-legacy-build",
+    "exit": 0
+  },
+  {
+    "name": "rust-legacy-run",
+    "exit": 0
+  },
+  {
+    "name": "rust-legacy-disassembly",
+    "exit": 0
+  },
+  {
+    "name": "rust-standard-build",
+    "exit": 0
+  },
+  {
+    "name": "rust-standard-run",
+    "exit": 1
+  },
+  {
+    "name": "rust-standard-disassembly",
+    "exit": 0
+  }
+]

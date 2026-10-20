@@ -1,0 +1,3 @@
+$ node build/mixed-legacy-O1.js
+
+exit=0

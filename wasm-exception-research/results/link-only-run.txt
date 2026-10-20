@@ -1,0 +1,3 @@
+$ node build/link-only.js
+
+exit=0

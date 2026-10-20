@@ -1,0 +1,22 @@
+  },
+  # Legacy Wasm exceptions was the first (now legacy) format for native
+  # exception handling in WebAssembly.
+  # https://caniuse.com/wf-wasm-exception-handling
+  Feature.WASM_LEGACY_EXCEPTIONS: {
+    'chrome': 95,
+    'firefox': 100,
+    'safari': 150200,
+    'node': 170000,
+  },
+  # Wasm exceptions is a newer format for native exception handling in
+  # WebAssembly.
+  # https://caniuse.com/wf-wasm-exnref-exceptions
+  Feature.WASM_EXCEPTIONS: {
+    'chrome': 137,
+    'firefox': 131,
+    'safari': 180400,
+    'node': 241500,
+  },
+  # Growable SharedArrayBuffers improves memory growth feature in multithreaded
+  # builds by avoiding need to poll resizes to ArrayBuffer views in Workers.
+  # https://caniuse.com/mdn-webassembly_api_memory_toresizablebuffer

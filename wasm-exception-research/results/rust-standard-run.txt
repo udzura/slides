@@ -1,0 +1,15 @@
+$ node build/rust-standard.js
+failed to asynchronously prepare wasm: CompileError: WebAssembly.instantiate(): Compiling function #37 failed: module uses a mix of legacy and new exception handling instructions @+3292
+Aborted(CompileError: WebAssembly.instantiate(): Compiling function #37 failed: module uses a mix of legacy and new exception handling instructions @+3292)
+/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/rust-standard.js:597
+  var e = new WebAssembly.RuntimeError(what);
+          ^
+
+RuntimeError: Aborted(CompileError: WebAssembly.instantiate(): Compiling function #37 failed: module uses a mix of legacy and new exception handling instructions @+3292)
+    at abort (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/rust-standard.js:597:11)
+    at instantiateArrayBuffer (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/rust-standard.js:658:5)
+    at async createWasm (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/rust-standard.js:747:16)
+
+Node.js v26.8.1
+
+exit=1

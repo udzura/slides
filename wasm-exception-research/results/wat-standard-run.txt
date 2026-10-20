@@ -1,0 +1,5 @@
+$ node src/check-wat.cjs build/wat-standard.wasm
+validate: true
+answer=42
+
+exit=0

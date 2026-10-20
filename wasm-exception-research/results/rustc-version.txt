@@ -1,0 +1,10 @@
+$ rustc -vV
+rustc 1.100.0-nightly (8fa1c96cf 2026-08-17)
+binary: rustc
+commit-hash: 8fa1c96cfd489e4c27654c144ae871ce2c4db6c6
+commit-date: 2026-08-17
+host: aarch64-apple-darwin
+release: 1.100.0-nightly
+LLVM version: 23.1.0
+
+exit=0

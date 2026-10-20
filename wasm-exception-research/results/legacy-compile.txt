@@ -1,0 +1,3 @@
+$ /opt/homebrew/opt/emscripten/bin/emcc src/sjlj.c -O1 -g2 -sSUPPORT_LONGJMP=wasm -sWASM_LEGACY_EXCEPTIONS=1 -c -o build/legacy.o
+
+exit=0

@@ -1,0 +1,3 @@
+$ wasm-tools parse src/rethrow.wat -o build/wat-rethrow.wasm
+
+exit=0

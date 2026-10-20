@@ -1,0 +1,5 @@
+emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.9-git
+clang version 24.0.0git
+Target: wasm32-unknown-emscripten
+Thread model: posix
+InstalledDir: /opt/homebrew/Cellar/emscripten/6.0.9/libexec/llvm/bin

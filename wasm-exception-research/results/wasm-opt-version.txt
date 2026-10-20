@@ -1,0 +1,4 @@
+$ wasm-opt --version
+wasm-opt version 133
+
+exit=0

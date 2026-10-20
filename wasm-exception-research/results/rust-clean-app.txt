@@ -1,0 +1,4 @@
+$ cargo clean --manifest-path rust-demo/Cargo.toml --target wasm32-unknown-emscripten -p wasm-eh-probe
+     Removed 31 files, 14.0MiB total
+
+exit=0

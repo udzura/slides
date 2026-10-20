@@ -1,0 +1,3 @@
+$ wasm-tools validate --features all build/rust-translated.wasm
+
+exit=0

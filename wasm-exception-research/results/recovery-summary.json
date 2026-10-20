@@ -1,0 +1,62 @@
+[
+  {
+    "name": "rust-translate",
+    "exit": 0
+  },
+  {
+    "name": "rust-translated-run",
+    "exit": 0
+  },
+  {
+    "name": "rust-translated-validate",
+    "exit": 0
+  },
+  {
+    "name": "rust-clean-app",
+    "exit": 0
+  },
+  {
+    "name": "rust-rebuild-std",
+    "exit": 0
+  },
+  {
+    "name": "rust-rebuilt-run",
+    "exit": 0
+  },
+  {
+    "name": "rust-rebuilt-validate",
+    "exit": 0
+  },
+  {
+    "name": "wat-legacy-assemble",
+    "exit": 0
+  },
+  {
+    "name": "wat-legacy-run",
+    "exit": 0
+  },
+  {
+    "name": "wat-standard-assemble",
+    "exit": 0
+  },
+  {
+    "name": "wat-standard-run",
+    "exit": 0
+  },
+  {
+    "name": "wat-rethrow-assemble",
+    "exit": 0
+  },
+  {
+    "name": "wat-rethrow-run",
+    "exit": 0
+  },
+  {
+    "name": "wat-mixed-same-function-assemble",
+    "exit": 0
+  },
+  {
+    "name": "wat-mixed-same-function-run",
+    "exit": 1
+  }
+]

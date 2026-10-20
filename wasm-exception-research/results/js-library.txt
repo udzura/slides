@@ -1,0 +1,3 @@
+$ /opt/homebrew/opt/emscripten/bin/emcc src/sjlj.c -DLIBRARY_ONLY -O1 -g2 -sSUPPORT_LONGJMP=emscripten -c -o build/js-lib.o
+
+exit=0

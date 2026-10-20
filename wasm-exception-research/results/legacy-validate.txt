@@ -1,0 +1,3 @@
+$ wasm-tools validate --features all build/legacy.wasm
+
+exit=0

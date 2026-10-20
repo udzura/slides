@@ -1,0 +1,13 @@
+$ rustc src/rust_main.rs --edition=2024 --target=wasm32-unknown-emscripten -C linker=/opt/homebrew/opt/emscripten/bin/emcc -C panic=unwind -C target-feature=+exception-handling -C llvm-args=-wasm-use-legacy-eh=0 -C link-arg=-fwasm-exceptions -C link-arg=-sWASM_LEGACY_EXCEPTIONS=0 -C link-arg=build/standard-lib.o -o build/rust-standard.js
+warning: unstable feature specified for `-Ctarget-feature`: `exception-handling`
+  |
+  = note: this feature is not stably supported; its behavior can change in the future
+
+warning: linker stderr: emcc: WASM_BIGINT is deprecated (no longer needed. Should only ever be implicitly disabled by -sWASM=0). Please open a bug if you have a continuing need for this setting [-Wdeprecated]
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: 2 warnings emitted
+
+
+exit=0

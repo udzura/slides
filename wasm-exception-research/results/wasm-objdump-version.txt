@@ -1,0 +1,4 @@
+$ wasm-objdump --version
+1.0.39
+
+exit=0

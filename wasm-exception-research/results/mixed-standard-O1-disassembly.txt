@@ -1,0 +1,349 @@
+$ wasm-objdump -dx build/mixed-standard-O1.wasm
+
+mixed-standard-O1.wasm:	file format wasm 0x1
+module name: <mixed-standard-O1.wasm>
+
+Section Details:
+
+Type[7]:
+ - type[0] () -> nil
+ - type[1] () -> i32
+ - type[2] (i32, i32) -> i32
+ - type[3] (i32, i32, i32) -> nil
+ - type[4] (i32, i32) -> nil
+ - type[5] (i32) -> i32
+ - type[6] (i32) -> nil
+Function[11]:
+ - func[0] sig=0 <__wasm_call_ctors>
+ - func[1] sig=1 <__original_main>
+ - func[2] sig=2 <main>
+ - func[3] sig=1 <legacy_probe>
+ - func[4] sig=0 <jump>
+ - func[5] sig=1 <standard_probe>
+ - func[6] sig=0 <jump>
+ - func[7] sig=3 <__wasm_setjmp>
+ - func[8] sig=2 <__wasm_setjmp_test>
+ - func[9] sig=4 <__wasm_longjmp>
+ - func[10] sig=5 <_emscripten_stack_alloc>
+Table[1]:
+ - table[0] type=funcref initial=1 max=1
+Memory[1]:
+ - memory[0] pages: initial=258 max=258
+Tag[1]:
+ - tag[0] sig=6
+Global[1]:
+ - global[0] i32 mutable=1 <__stack_pointer> - init i32=66880
+Export[5]:
+ - memory[0] -> "memory"
+ - func[0] <__wasm_call_ctors> -> "__wasm_call_ctors"
+ - func[2] <main> -> "main"
+ - table[0] -> "__indirect_function_table"
+ - func[10] <_emscripten_stack_alloc> -> "_emscripten_stack_alloc"
+Code[11]:
+ - func[0] size=2 <__wasm_call_ctors>
+ - func[1] size=35 <__original_main>
+ - func[2] size=8 <main>
+ - func[3] size=198 <legacy_probe>
+ - func[4] size=17 <jump>
+ - func[5] size=204 <standard_probe>
+ - func[6] size=17 <jump>
+ - func[7] size=16 <__wasm_setjmp>
+ - func[8] size=30 <__wasm_setjmp_test>
+ - func[9] size=35 <__wasm_longjmp>
+ - func[10] size=26 <_emscripten_stack_alloc>
+Custom:
+ - name: "name"
+ - module <mixed-standard-O1.wasm>
+ - func[0] <__wasm_call_ctors>
+ - func[1] <__original_main>
+ - func[2] <main>
+ - func[3] <legacy_probe>
+ - func[4] <jump>
+ - func[5] <standard_probe>
+ - func[6] <jump>
+ - func[7] <__wasm_setjmp>
+ - func[8] <__wasm_setjmp_test>
+ - func[9] <__wasm_longjmp>
+ - func[10] <_emscripten_stack_alloc>
+ - global[0] <__stack_pointer>
+Custom:
+ - name: "target_features"
+  - [+] bulk-memory
+  - [+] bulk-memory-opt
+  - [+] call-indirect-overlong
+  - [+] exception-handling
+  - [+] extended-const
+  - [+] multivalue
+  - [+] mutable-globals
+  - [+] nontrapping-fptoint
+  - [+] reference-types
+  - [+] sign-ext
+
+Code Disassembly:
+
+0000ba func[0] <__wasm_call_ctors>:
+ 0000bb: 0b                         | end
+0000bd func[1] <__original_main>:
+ 0000be: 01 7f                      | local[0] type=i32
+ 0000c0: 41 01                      | i32.const 1
+ 0000c2: 21 00                      | local.set 0
+ 0000c4: 02 40                      | block
+ 0000c6: 10 83 80 80 80 00          |   call 3 <legacy_probe>
+ 0000cc: 41 2a                      |   i32.const 42
+ 0000ce: 47                         |   i32.ne
+ 0000cf: 0d 00                      |   br_if 0
+ 0000d1: 10 85 80 80 80 00          |   call 5 <standard_probe>
+ 0000d7: 41 2a                      |   i32.const 42
+ 0000d9: 47                         |   i32.ne
+ 0000da: 21 00                      |   local.set 0
+ 0000dc: 0b                         | end
+ 0000dd: 20 00                      | local.get 0
+ 0000df: 0b                         | end
+0000e1 func[2] <main>:
+ 0000e2: 10 81 80 80 80 00          | call 1 <__original_main>
+ 0000e8: 0b                         | end
+0000eb func[3] <legacy_probe>:
+ 0000ec: 04 7f                      | local[0..3] type=i32
+ 0000ee: 23 80 80 80 80 00          | global.get 0 <__stack_pointer>
+ 0000f4: 41 10                      | i32.const 16
+ 0000f6: 6b                         | i32.sub
+ 0000f7: 22 00                      | local.tee 0
+ 0000f9: 24 80 80 80 80 00          | global.set 0 <__stack_pointer>
+ 0000ff: 41 7f                      | i32.const 4294967295
+ 000101: 21 01                      | local.set 1
+ 000103: 02 40                      | block
+ 000105: 02 40                      |   block
+ 000107: 03 40                      |     loop
+ 000109: 20 02                      |       local.get 2
+ 00010b: 21 02                      |       local.set 2
+ 00010d: 02 40                      |       block
+ 00010f: 20 01                      |         local.get 1
+ 000111: 41 01                      |         i32.const 1
+ 000113: 46                         |         i32.eq
+ 000114: 0d 00                      |         br_if 0
+ 000116: 41 80 88 80 80 00          |         i32.const 1024
+ 00011c: 41 01                      |         i32.const 1
+ 00011e: 20 00                      |         local.get 0
+ 000120: 41 0c                      |         i32.const 12
+ 000122: 6a                         |         i32.add
+ 000123: 10 87 80 80 80 00          |         call 7 <__wasm_setjmp>
+ 000129: 41 00                      |         i32.const 0
+ 00012b: 21 02                      |         local.set 2
+ 00012d: 0b                         |       end
+ 00012e: 02 40                      |       block
+ 000130: 20 02                      |         local.get 2
+ 000132: 22 02                      |         local.tee 2
+ 000134: 41 2a                      |         i32.const 42
+ 000136: 47                         |         i32.ne
+ 000137: 0d 00                      |         br_if 0
+ 000139: 20 02                      |         local.get 2
+ 00013b: 21 02                      |         local.set 2
+ 00013d: 0c 02                      |         br 2
+ 00013f: 0b                         |       end
+ 000140: 02 40                      |       block
+ 000142: 20 02                      |         local.get 2
+ 000144: 0d 00                      |         br_if 0
+ 000146: 06 40                      |         try
+ 000148: 10 84 80 80 80 00          |           call 4 <jump>
+ 00014e: 0c 04                      |           br 4
+ 000150: 07 80 80 80 80 00          |         catch 0
+ 000156: 21 02                      |           local.set 2
+ 000158: 20 00                      |           local.get 0
+ 00015a: 24 80 80 80 80 00          |           global.set 0 <__stack_pointer>
+ 000160: 20 02                      |           local.get 2
+ 000162: 41 04                      |           i32.const 4
+ 000164: 6a                         |           i32.add
+ 000165: 28 02 00                   |           i32.load 2 0
+ 000168: 21 01                      |           local.set 1
+ 00016a: 02 40                      |           block
+ 00016c: 20 02                      |             local.get 2
+ 00016e: 28 02 00                   |             i32.load 2 0
+ 000171: 22 02                      |             local.tee 2
+ 000173: 20 00                      |             local.get 0
+ 000175: 41 0c                      |             i32.const 12
+ 000177: 6a                         |             i32.add
+ 000178: 10 88 80 80 80 00          |             call 8 <__wasm_setjmp_test>
+ 00017e: 22 03                      |             local.tee 3
+ 000180: 0d 00                      |             br_if 0
+ 000182: 20 02                      |             local.get 2
+ 000184: 20 01                      |             local.get 1
+ 000186: 10 89 80 80 80 00          |             call 9 <__wasm_longjmp>
+ 00018c: 00                         |             unreachable
+ 00018d: 0b                         |           end
+ 00018e: 20 01                      |           local.get 1
+ 000190: 21 02                      |           local.set 2
+ 000192: 20 03                      |           local.get 3
+ 000194: 21 01                      |           local.set 1
+ 000196: 0c 02                      |           br 2
+ 000198: 0b                         |         end
+ 000199: 0b                         |       end
+ 00019a: 0b                         |     end
+ 00019b: 41 7f                      |     i32.const 4294967295
+ 00019d: 21 02                      |     local.set 2
+ 00019f: 0b                         |   end
+ 0001a0: 20 00                      |   local.get 0
+ 0001a2: 41 10                      |   i32.const 16
+ 0001a4: 6a                         |   i32.add
+ 0001a5: 24 80 80 80 80 00          |   global.set 0 <__stack_pointer>
+ 0001ab: 20 02                      |   local.get 2
+ 0001ad: 0f                         |   return
+ 0001ae: 0b                         | end
+ 0001af: 00                         | unreachable
+ 0001b0: 0b                         | end
+0001b2 func[4] <jump>:
+ 0001b3: 41 80 88 80 80 00          | i32.const 1024
+ 0001b9: 41 2a                      | i32.const 42
+ 0001bb: 10 89 80 80 80 00          | call 9 <__wasm_longjmp>
+ 0001c1: 00                         | unreachable
+ 0001c2: 0b                         | end
+0001c5 func[5] <standard_probe>:
+ 0001c6: 04 7f                      | local[0..3] type=i32
+ 0001c8: 23 80 80 80 80 00          | global.get 0 <__stack_pointer>
+ 0001ce: 41 10                      | i32.const 16
+ 0001d0: 6b                         | i32.sub
+ 0001d1: 22 00                      | local.tee 0
+ 0001d3: 24 80 80 80 80 00          | global.set 0 <__stack_pointer>
+ 0001d9: 41 7f                      | i32.const 4294967295
+ 0001db: 21 01                      | local.set 1
+ 0001dd: 02 40                      | block
+ 0001df: 02 40                      |   block
+ 0001e1: 03 40                      |     loop
+ 0001e3: 20 02                      |       local.get 2
+ 0001e5: 21 02                      |       local.set 2
+ 0001e7: 02 40                      |       block
+ 0001e9: 20 01                      |         local.get 1
+ 0001eb: 41 01                      |         i32.const 1
+ 0001ed: 46                         |         i32.eq
+ 0001ee: 0d 00                      |         br_if 0
+ 0001f0: 41 a0 89 80 80 00          |         i32.const 1184
+ 0001f6: 41 01                      |         i32.const 1
+ 0001f8: 20 00                      |         local.get 0
+ 0001fa: 41 0c                      |         i32.const 12
+ 0001fc: 6a                         |         i32.add
+ 0001fd: 10 87 80 80 80 00          |         call 7 <__wasm_setjmp>
+ 000203: 41 00                      |         i32.const 0
+ 000205: 21 02                      |         local.set 2
+ 000207: 0b                         |       end
+ 000208: 02 40                      |       block
+ 00020a: 20 02                      |         local.get 2
+ 00020c: 22 02                      |         local.tee 2
+ 00020e: 41 2a                      |         i32.const 42
+ 000210: 47                         |         i32.ne
+ 000211: 0d 00                      |         br_if 0
+ 000213: 20 02                      |         local.get 2
+ 000215: 21 02                      |         local.set 2
+ 000217: 0c 02                      |         br 2
+ 000219: 0b                         |       end
+ 00021a: 02 40                      |       block
+ 00021c: 20 02                      |         local.get 2
+ 00021e: 0d 00                      |         br_if 0
+ 000220: 02 7f                      |         block i32
+ 000222: 1f 40 01 00 80 80 80 80 00 |           try_table catch 0 0
+ 00022b: 00                         | 
+ 00022c: 10 86 80 80 80 00          |             call 6 <jump>
+ 000232: 0c 05                      |             br 5
+ 000234: 0b                         |           end
+ 000235: 00                         |           unreachable
+ 000236: 0b                         |         end
+ 000237: 21 02                      |         local.set 2
+ 000239: 20 00                      |         local.get 0
+ 00023b: 24 80 80 80 80 00          |         global.set 0 <__stack_pointer>
+ 000241: 20 02                      |         local.get 2
+ 000243: 41 04                      |         i32.const 4
+ 000245: 6a                         |         i32.add
+ 000246: 28 02 00                   |         i32.load 2 0
+ 000249: 21 01                      |         local.set 1
+ 00024b: 02 40                      |         block
+ 00024d: 20 02                      |           local.get 2
+ 00024f: 28 02 00                   |           i32.load 2 0
+ 000252: 22 02                      |           local.tee 2
+ 000254: 20 00                      |           local.get 0
+ 000256: 41 0c                      |           i32.const 12
+ 000258: 6a                         |           i32.add
+ 000259: 10 88 80 80 80 00          |           call 8 <__wasm_setjmp_test>
+ 00025f: 22 03                      |           local.tee 3
+ 000261: 0d 00                      |           br_if 0
+ 000263: 20 02                      |           local.get 2
+ 000265: 20 01                      |           local.get 1
+ 000267: 10 89 80 80 80 00          |           call 9 <__wasm_longjmp>
+ 00026d: 00                         |           unreachable
+ 00026e: 0b                         |         end
+ 00026f: 20 01                      |         local.get 1
+ 000271: 21 02                      |         local.set 2
+ 000273: 20 03                      |         local.get 3
+ 000275: 21 01                      |         local.set 1
+ 000277: 0c 01                      |         br 1
+ 000279: 0b                         |       end
+ 00027a: 0b                         |     end
+ 00027b: 41 7f                      |     i32.const 4294967295
+ 00027d: 21 02                      |     local.set 2
+ 00027f: 0b                         |   end
+ 000280: 20 00                      |   local.get 0
+ 000282: 41 10                      |   i32.const 16
+ 000284: 6a                         |   i32.add
+ 000285: 24 80 80 80 80 00          |   global.set 0 <__stack_pointer>
+ 00028b: 20 02                      |   local.get 2
+ 00028d: 0f                         |   return
+ 00028e: 0b                         | end
+ 00028f: 00                         | unreachable
+ 000290: 0b                         | end
+000292 func[6] <jump>:
+ 000293: 41 a0 89 80 80 00          | i32.const 1184
+ 000299: 41 2a                      | i32.const 42
+ 00029b: 10 89 80 80 80 00          | call 9 <__wasm_longjmp>
+ 0002a1: 00                         | unreachable
+ 0002a2: 0b                         | end
+0002a4 func[7] <__wasm_setjmp>:
+ 0002a5: 20 00                      | local.get 0
+ 0002a7: 20 01                      | local.get 1
+ 0002a9: 36 02 04                   | i32.store 2 4
+ 0002ac: 20 00                      | local.get 0
+ 0002ae: 20 02                      | local.get 2
+ 0002b0: 36 02 00                   | i32.store 2 0
+ 0002b3: 0b                         | end
+0002b5 func[8] <__wasm_setjmp_test>:
+ 0002b6: 01 7f                      | local[2] type=i32
+ 0002b8: 41 00                      | i32.const 0
+ 0002ba: 21 02                      | local.set 2
+ 0002bc: 02 40                      | block
+ 0002be: 20 00                      |   local.get 0
+ 0002c0: 28 02 00                   |   i32.load 2 0
+ 0002c3: 20 01                      |   local.get 1
+ 0002c5: 47                         |   i32.ne
+ 0002c6: 0d 00                      |   br_if 0
+ 0002c8: 20 00                      |   local.get 0
+ 0002ca: 28 02 04                   |   i32.load 2 4
+ 0002cd: 21 02                      |   local.set 2
+ 0002cf: 0b                         | end
+ 0002d0: 20 02                      | local.get 2
+ 0002d2: 0b                         | end
+0002d4 func[9] <__wasm_longjmp>:
+ 0002d5: 20 00                      | local.get 0
+ 0002d7: 20 01                      | local.get 1
+ 0002d9: 41 01                      | i32.const 1
+ 0002db: 20 01                      | local.get 1
+ 0002dd: 41 01                      | i32.const 1
+ 0002df: 4b                         | i32.gt_u
+ 0002e0: 1b                         | select
+ 0002e1: 36 02 0c                   | i32.store 2 12
+ 0002e4: 20 00                      | local.get 0
+ 0002e6: 20 00                      | local.get 0
+ 0002e8: 36 02 08                   | i32.store 2 8
+ 0002eb: 20 00                      | local.get 0
+ 0002ed: 41 08                      | i32.const 8
+ 0002ef: 6a                         | i32.add
+ 0002f0: 08 80 80 80 80 00          | throw 0
+ 0002f6: 0b                         | end
+0002f8 func[10] <_emscripten_stack_alloc>:
+ 0002f9: 02 7f                      | local[1..2] type=i32
+ 0002fb: 23 80 80 80 80 00          | global.get 0 <__stack_pointer>
+ 000301: 20 00                      | local.get 0
+ 000303: 6b                         | i32.sub
+ 000304: 41 70                      | i32.const 4294967280
+ 000306: 71                         | i32.and
+ 000307: 22 01                      | local.tee 1
+ 000309: 24 80 80 80 80 00          | global.set 0 <__stack_pointer>
+ 00030f: 20 01                      | local.get 1
+ 000311: 0b                         | end
+
+exit=0

@@ -1,0 +1,4 @@
+$ wasm-tools --version
+wasm-tools 1.218.0
+
+exit=0

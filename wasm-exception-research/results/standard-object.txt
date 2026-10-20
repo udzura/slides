@@ -1,0 +1,203 @@
+$ wasm-objdump -dx build/standard.o
+
+standard.o:	file format wasm 0x1
+
+Section Details:
+
+Type[6]:
+ - type[0] () -> i32
+ - type[1] (i32, i32, i32) -> nil
+ - type[2] (i32) -> nil
+ - type[3] () -> nil
+ - type[4] (i32, i32) -> i32
+ - type[5] (i32, i32) -> nil
+Import[7]:
+ - memory[0] pages: initial=1 <- env.__linear_memory
+ - global[0] i32 mutable=1 <- env.__stack_pointer
+ - func[0] sig=1 <env.__wasm_setjmp> <- env.__wasm_setjmp
+ - tag[0] sig=2 <env.__c_longjmp> <- env.__c_longjmp
+ - func[1] sig=4 <env.__wasm_setjmp_test> <- env.__wasm_setjmp_test
+ - func[2] sig=5 <env.__wasm_longjmp> <- env.__wasm_longjmp
+ - table[0] type=funcref initial=0 <- env.__indirect_function_table
+Function[4]:
+ - func[3] sig=0 <probe>
+ - func[4] sig=3 <jump>
+ - func[5] sig=0 <__main_void>
+ - func[6] sig=4 <main>
+DataCount:
+ - data count: 1
+Code[4]:
+ - func[3] size=204 <probe>
+ - func[4] size=17 <jump>
+ - func[5] size=11 <__main_void>
+ - func[6] size=8 <main>
+Data[1]:
+ - segment[0] <.bss.env> memory=0 size=156 - init i32=0
+  - 0000000: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000010: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000020: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000030: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000040: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000050: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000060: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000070: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000080: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000090: 0000 0000 0000 0000 0000 0000            ............
+Custom:
+ - name: "linking"
+  - symbol table [count=12]
+   - 0: F <probe> func=3 [ binding=global vis=hidden ]
+   - 1: G <env.__stack_pointer> global=0 [ undefined binding=global vis=default ]
+   - 2: D <env> segment=0 offset=0 size=156 [ binding=local vis=default ]
+   - 3: F <env.__wasm_setjmp> func=0 [ undefined binding=global vis=default ]
+   - 4: E <env.__c_longjmp> tag=0 [ undefined binding=global vis=default ]
+   - 5: F <jump> func=4 [ binding=local vis=default ]
+   - 6: F <env.__wasm_setjmp_test> func=1 [ undefined binding=global vis=default ]
+   - 7: F <env.__wasm_longjmp> func=2 [ undefined binding=global vis=default ]
+   - 8: F <__original_main> func=5 [ binding=global vis=hidden ]
+   - 9: F <main> func=6 [ binding=global vis=hidden ]
+   - 10: F <__main_void> func=5 [ binding=global vis=hidden ]
+   - 11: T <env.__indirect_function_table> table=0 [ undefined exported no_strip binding=global vis=default ]
+  - segment info [count=1]
+   - 0: .bss.env p2align=4 [ ]
+Custom:
+ - name: "reloc.CODE"
+  - relocations for section: 4 (Code) [14]
+   - R_WASM_GLOBAL_INDEX_LEB offset=0x000007(file=0x0000f6) symbol=1 <env.__stack_pointer>
+   - R_WASM_GLOBAL_INDEX_LEB offset=0x000012(file=0x000101) symbol=1 <env.__stack_pointer>
+   - R_WASM_MEMORY_ADDR_SLEB offset=0x00002f(file=0x00011e) symbol=2 <env>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x00003c(file=0x00012b) symbol=3 <env.__wasm_setjmp>
+   - R_WASM_TAG_INDEX_LEB offset=0x000064(file=0x000153) symbol=4 <env.__c_longjmp>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x00006b(file=0x00015a) symbol=5 <jump>
+   - R_WASM_GLOBAL_INDEX_LEB offset=0x00007a(file=0x000169) symbol=1 <env.__stack_pointer>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x000098(file=0x000187) symbol=6 <env.__wasm_setjmp_test>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000a6(file=0x000195) symbol=7 <env.__wasm_longjmp>
+   - R_WASM_GLOBAL_INDEX_LEB offset=0x0000c4(file=0x0001b3) symbol=1 <env.__stack_pointer>
+   - R_WASM_MEMORY_ADDR_SLEB offset=0x0000d2(file=0x0001c1) symbol=2 <env>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000da(file=0x0001c9) symbol=7 <env.__wasm_longjmp>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000e4(file=0x0001d3) symbol=0 <probe>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000f0(file=0x0001df) symbol=8 <__main_void>
+Custom:
+ - name: "producers"
+Custom:
+ - name: "target_features"
+  - [+] bulk-memory
+  - [+] bulk-memory-opt
+  - [+] call-indirect-overlong
+  - [+] exception-handling
+  - [+] multivalue
+  - [+] mutable-globals
+  - [+] nontrapping-fptoint
+  - [+] reference-types
+  - [+] sign-ext
+  - [-] shared-mem
+
+Code Disassembly:
+
+0000f2 func[3] <probe>:
+ 0000f3: 04 7f                      | local[0..3] type=i32
+ 0000f5: 23 80 80 80 80 00          | global.get 0 <env.__stack_pointer>
+ 0000fb: 41 10                      | i32.const 16
+ 0000fd: 6b                         | i32.sub
+ 0000fe: 22 00                      | local.tee 0
+ 000100: 24 80 80 80 80 00          | global.set 0 <env.__stack_pointer>
+ 000106: 41 7f                      | i32.const 4294967295
+ 000108: 21 01                      | local.set 1
+ 00010a: 02 40                      | block
+ 00010c: 02 40                      |   block
+ 00010e: 03 40                      |     loop
+ 000110: 20 02                      |       local.get 2
+ 000112: 21 02                      |       local.set 2
+ 000114: 02 40                      |       block
+ 000116: 20 01                      |         local.get 1
+ 000118: 41 01                      |         i32.const 1
+ 00011a: 46                         |         i32.eq
+ 00011b: 0d 00                      |         br_if 0
+ 00011d: 41 80 80 80 80 00          |         i32.const 0
+ 000123: 41 01                      |         i32.const 1
+ 000125: 20 00                      |         local.get 0
+ 000127: 41 0c                      |         i32.const 12
+ 000129: 6a                         |         i32.add
+ 00012a: 10 80 80 80 80 00          |         call 0 <env.__wasm_setjmp>
+ 000130: 41 00                      |         i32.const 0
+ 000132: 21 02                      |         local.set 2
+ 000134: 0b                         |       end
+ 000135: 02 40                      |       block
+ 000137: 20 02                      |         local.get 2
+ 000139: 22 02                      |         local.tee 2
+ 00013b: 41 2a                      |         i32.const 42
+ 00013d: 47                         |         i32.ne
+ 00013e: 0d 00                      |         br_if 0
+ 000140: 20 02                      |         local.get 2
+ 000142: 21 02                      |         local.set 2
+ 000144: 0c 02                      |         br 2
+ 000146: 0b                         |       end
+ 000147: 02 40                      |       block
+ 000149: 20 02                      |         local.get 2
+ 00014b: 0d 00                      |         br_if 0
+ 00014d: 02 7f                      |         block i32
+ 00014f: 1f 40 01 00 80 80 80 80 00 |           try_table catch 0 0
+ 000158: 00                         | 
+ 000159: 10 84 80 80 80 00          |             call 4 <jump>
+ 00015f: 0c 05                      |             br 5
+ 000161: 0b                         |           end
+ 000162: 00                         |           unreachable
+ 000163: 0b                         |         end
+ 000164: 21 02                      |         local.set 2
+ 000166: 20 00                      |         local.get 0
+ 000168: 24 80 80 80 80 00          |         global.set 0 <env.__stack_pointer>
+ 00016e: 20 02                      |         local.get 2
+ 000170: 41 04                      |         i32.const 4
+ 000172: 6a                         |         i32.add
+ 000173: 28 02 00                   |         i32.load 2 0
+ 000176: 21 01                      |         local.set 1
+ 000178: 02 40                      |         block
+ 00017a: 20 02                      |           local.get 2
+ 00017c: 28 02 00                   |           i32.load 2 0
+ 00017f: 22 02                      |           local.tee 2
+ 000181: 20 00                      |           local.get 0
+ 000183: 41 0c                      |           i32.const 12
+ 000185: 6a                         |           i32.add
+ 000186: 10 81 80 80 80 00          |           call 1 <env.__wasm_setjmp_test>
+ 00018c: 22 03                      |           local.tee 3
+ 00018e: 0d 00                      |           br_if 0
+ 000190: 20 02                      |           local.get 2
+ 000192: 20 01                      |           local.get 1
+ 000194: 10 82 80 80 80 00          |           call 2 <env.__wasm_longjmp>
+ 00019a: 00                         |           unreachable
+ 00019b: 0b                         |         end
+ 00019c: 20 01                      |         local.get 1
+ 00019e: 21 02                      |         local.set 2
+ 0001a0: 20 03                      |         local.get 3
+ 0001a2: 21 01                      |         local.set 1
+ 0001a4: 0c 01                      |         br 1
+ 0001a6: 0b                         |       end
+ 0001a7: 0b                         |     end
+ 0001a8: 41 7f                      |     i32.const 4294967295
+ 0001aa: 21 02                      |     local.set 2
+ 0001ac: 0b                         |   end
+ 0001ad: 20 00                      |   local.get 0
+ 0001af: 41 10                      |   i32.const 16
+ 0001b1: 6a                         |   i32.add
+ 0001b2: 24 80 80 80 80 00          |   global.set 0 <env.__stack_pointer>
+ 0001b8: 20 02                      |   local.get 2
+ 0001ba: 0f                         |   return
+ 0001bb: 0b                         | end
+ 0001bc: 00                         | unreachable
+ 0001bd: 0b                         | end
+0001bf func[4] <jump>:
+ 0001c0: 41 80 80 80 80 00          | i32.const 0
+ 0001c6: 41 2a                      | i32.const 42
+ 0001c8: 10 82 80 80 80 00          | call 2 <env.__wasm_longjmp>
+ 0001ce: 00                         | unreachable
+ 0001cf: 0b                         | end
+0001d1 func[5] <__main_void>:
+ 0001d2: 10 83 80 80 80 00          | call 3 <probe>
+ 0001d8: 41 2a                      | i32.const 42
+ 0001da: 47                         | i32.ne
+ 0001db: 0b                         | end
+0001dd func[6] <main>:
+ 0001de: 10 85 80 80 80 00          | call 5 <__main_void>
+ 0001e4: 0b                         | end
+
+exit=0

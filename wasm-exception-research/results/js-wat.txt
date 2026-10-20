@@ -1,0 +1,195 @@
+$ wasm-tools print build/js.wasm
+(module $js.wasm
+  (type (;0;) (func (param i32)))
+  (type (;1;) (func))
+  (type (;2;) (func (result i32)))
+  (type (;3;) (func (param i32 i32) (result i32)))
+  (type (;4;) (func (param i32 i32)))
+  (type (;5;) (func (param i32 i32 i32)))
+  (type (;6;) (func (param i32) (result i32)))
+  (import "env" "invoke_v" (func $invoke_v (;0;) (type 0)))
+  (import "env" "_emscripten_throw_longjmp" (func $_emscripten_throw_longjmp (;1;) (type 1)))
+  (table (;0;) 2 2 funcref)
+  (memory (;0;) 258 258)
+  (global $__stack_pointer (;0;) (mut i32) i32.const 66736)
+  (global $tempRet0 (;1;) (mut i32) i32.const 0)
+  (export "memory" (memory 0))
+  (export "__wasm_call_ctors" (func $__wasm_call_ctors))
+  (export "main" (func $main))
+  (export "__indirect_function_table" (table 0))
+  (export "setThrew" (func $setThrew))
+  (export "_emscripten_stack_restore" (func $_emscripten_stack_restore))
+  (export "_emscripten_stack_alloc" (func $_emscripten_stack_alloc))
+  (export "emscripten_stack_get_current" (func $emscripten_stack_get_current))
+  (elem (;0;) (i32.const 1) func $jump)
+  (func $__wasm_call_ctors (;2;) (type 1))
+  (func $probe (;3;) (type 2) (result i32)
+    (local i32 i32 i32)
+    global.get $__stack_pointer
+    i32.const 16
+    i32.sub
+    local.tee 0
+    global.set $__stack_pointer
+    i32.const 1024
+    i32.const 1
+    local.get 0
+    i32.const 12
+    i32.add
+    call $__wasm_setjmp
+    i32.const 0
+    local.set 1
+    loop ;; label = @1
+      block ;; label = @2
+        local.get 1
+        local.tee 1
+        i32.eqz
+        br_if 0 (;@2;)
+        local.get 1
+        local.set 2
+        block ;; label = @3
+          local.get 1
+          i32.const 42
+          i32.eq
+          br_if 0 (;@3;)
+          i32.const -1
+          local.set 2
+        end
+        local.get 0
+        i32.const 16
+        i32.add
+        global.set $__stack_pointer
+        local.get 2
+        return
+      end
+      i32.const 0
+      i32.const 0
+      i32.store offset=1180
+      i32.const 1
+      call $invoke_v
+      i32.const 0
+      i32.load offset=1180
+      local.set 1
+      i32.const 0
+      i32.const 0
+      i32.store offset=1180
+      block ;; label = @2
+        block ;; label = @3
+          local.get 1
+          i32.eqz
+          br_if 0 (;@3;)
+          i32.const 0
+          i32.load offset=1184
+          local.tee 2
+          i32.eqz
+          br_if 0 (;@3;)
+          local.get 1
+          local.get 0
+          i32.const 12
+          i32.add
+          call $__wasm_setjmp_test
+          i32.eqz
+          br_if 1 (;@2;)
+          local.get 2
+          call $_emscripten_tempret_set
+        end
+        call $_emscripten_tempret_get
+        local.set 1
+        br 1 (;@1;)
+      end
+    end
+    local.get 1
+    local.get 2
+    call $emscripten_longjmp
+    unreachable
+  )
+  (func $jump (;4;) (type 1)
+    i32.const 1024
+    i32.const 42
+    call $emscripten_longjmp
+    unreachable
+  )
+  (func $__original_main (;5;) (type 2) (result i32)
+    call $probe
+    i32.const 42
+    i32.ne
+  )
+  (func $main (;6;) (type 3) (param i32 i32) (result i32)
+    call $__original_main
+  )
+  (func $setThrew (;7;) (type 4) (param i32 i32)
+    block ;; label = @1
+      i32.const 0
+      i32.load offset=1180
+      br_if 0 (;@1;)
+      i32.const 0
+      local.get 1
+      i32.store offset=1184
+      i32.const 0
+      local.get 0
+      i32.store offset=1180
+    end
+  )
+  (func $__wasm_setjmp (;8;) (type 5) (param i32 i32 i32)
+    local.get 0
+    local.get 1
+    i32.store offset=4
+    local.get 0
+    local.get 2
+    i32.store
+  )
+  (func $__wasm_setjmp_test (;9;) (type 3) (param i32 i32) (result i32)
+    (local i32)
+    i32.const 0
+    local.set 2
+    block ;; label = @1
+      local.get 0
+      i32.load
+      local.get 1
+      i32.ne
+      br_if 0 (;@1;)
+      local.get 0
+      i32.load offset=4
+      local.set 2
+    end
+    local.get 2
+  )
+  (func $emscripten_longjmp (;10;) (type 4) (param i32 i32)
+    local.get 0
+    local.get 1
+    i32.const 1
+    local.get 1
+    i32.const 1
+    i32.gt_u
+    select
+    call $setThrew
+    call $_emscripten_throw_longjmp
+  )
+  (func $_emscripten_tempret_set (;11;) (type 0) (param i32)
+    local.get 0
+    global.set $tempRet0
+  )
+  (func $_emscripten_tempret_get (;12;) (type 2) (result i32)
+    global.get $tempRet0
+  )
+  (func $_emscripten_stack_restore (;13;) (type 0) (param i32)
+    local.get 0
+    global.set $__stack_pointer
+  )
+  (func $_emscripten_stack_alloc (;14;) (type 6) (param i32) (result i32)
+    (local i32 i32)
+    global.get $__stack_pointer
+    local.get 0
+    i32.sub
+    i32.const -16
+    i32.and
+    local.tee 1
+    global.set $__stack_pointer
+    local.get 1
+  )
+  (func $emscripten_stack_get_current (;15;) (type 2) (result i32)
+    global.get $__stack_pointer
+  )
+  (@custom "target_features" (after code) "\08+\0bbulk-memory+\0fbulk-memory-opt+\16call-indirect-overlong+\0amultivalue+\0fmutable-globals+\13nontrapping-fptoint+\0freference-types+\08sign-ext")
+)
+
+exit=0

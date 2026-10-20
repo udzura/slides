@@ -1,0 +1,204 @@
+$ wasm-objdump -dx build/js.o
+
+js.o:	file format wasm 0x1
+
+Section Details:
+
+Type[6]:
+ - type[0] () -> i32
+ - type[1] (i32, i32, i32) -> nil
+ - type[2] () -> nil
+ - type[3] (i32) -> nil
+ - type[4] (i32, i32) -> i32
+ - type[5] (i32, i32) -> nil
+Import[9]:
+ - memory[0] pages: initial=1 <- env.__linear_memory
+ - global[0] i32 mutable=1 <- env.__stack_pointer
+ - func[0] sig=1 <env.__wasm_setjmp> <- env.__wasm_setjmp
+ - func[1] sig=3 <invoke_v> <- env.invoke_v
+ - func[2] sig=4 <env.__wasm_setjmp_test> <- env.__wasm_setjmp_test
+ - func[3] sig=3 <env.setTempRet0> <- env.setTempRet0
+ - func[4] sig=0 <env.getTempRet0> <- env.getTempRet0
+ - func[5] sig=5 <env.emscripten_longjmp> <- env.emscripten_longjmp
+ - table[0] type=funcref initial=1 <- env.__indirect_function_table
+Function[4]:
+ - func[6] sig=0 <probe>
+ - func[7] sig=2 <jump>
+ - func[8] sig=0 <__main_void>
+ - func[9] sig=4 <main>
+Elem[1]:
+ - segment[0] flags=0 table=0 count=1 - init i32=1
+  - elem[1] = ref.func:7 <jump>
+DataCount:
+ - data count: 1
+Code[4]:
+ - func[6] size=204 <probe>
+ - func[7] size=17 <jump>
+ - func[8] size=11 <__main_void>
+ - func[9] size=8 <main>
+Data[1]:
+ - segment[0] <.bss.env> memory=0 size=156 - init i32=0
+  - 0000000: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000010: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000020: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000030: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000040: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000050: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000060: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000070: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000080: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+  - 0000090: 0000 0000 0000 0000 0000 0000            ............
+Custom:
+ - name: "linking"
+  - symbol table [count=16]
+   - 0: F <probe> func=6 [ binding=global vis=hidden ]
+   - 1: G <env.__stack_pointer> global=0 [ undefined binding=global vis=default ]
+   - 2: D <env> segment=0 offset=0 size=156 [ binding=local vis=default ]
+   - 3: F <env.__wasm_setjmp> func=0 [ undefined binding=global vis=default ]
+   - 4: D <__THREW__> [ undefined binding=global vis=default ]
+   - 5: F <jump> func=7 [ binding=local vis=default ]
+   - 6: F <invoke_v> func=1 [ undefined explicit_name binding=global vis=default ]
+   - 7: D <__threwValue> [ undefined binding=global vis=default ]
+   - 8: F <env.__wasm_setjmp_test> func=2 [ undefined binding=global vis=default ]
+   - 9: F <env.setTempRet0> func=3 [ undefined binding=global vis=default ]
+   - 10: F <env.getTempRet0> func=4 [ undefined binding=global vis=default ]
+   - 11: F <env.emscripten_longjmp> func=5 [ undefined binding=global vis=default ]
+   - 12: F <__original_main> func=8 [ binding=global vis=hidden ]
+   - 13: F <main> func=9 [ binding=global vis=hidden ]
+   - 14: F <__main_void> func=8 [ binding=global vis=hidden ]
+   - 15: T <env.__indirect_function_table> table=0 [ undefined exported no_strip binding=global vis=default ]
+  - segment info [count=1]
+   - 0: .bss.env p2align=4 [ ]
+Custom:
+ - name: "reloc.CODE"
+  - relocations for section: 5 (Code) [19]
+   - R_WASM_GLOBAL_INDEX_LEB offset=0x000007(file=0x000127) symbol=1 <env.__stack_pointer>
+   - R_WASM_GLOBAL_INDEX_LEB offset=0x000012(file=0x000132) symbol=1 <env.__stack_pointer>
+   - R_WASM_MEMORY_ADDR_SLEB offset=0x000018(file=0x000138) symbol=2 <env>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x000025(file=0x000145) symbol=3 <env.__wasm_setjmp>
+   - R_WASM_GLOBAL_INDEX_LEB offset=0x000051(file=0x000171) symbol=1 <env.__stack_pointer>
+   - R_WASM_MEMORY_ADDR_LEB offset=0x000060(file=0x000180) symbol=4 <__THREW__>
+   - R_WASM_TABLE_INDEX_SLEB offset=0x000066(file=0x000186) symbol=5 <jump>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x00006c(file=0x00018c) symbol=6 <invoke_v>
+   - R_WASM_MEMORY_ADDR_LEB offset=0x000075(file=0x000195) symbol=4 <__THREW__>
+   - R_WASM_MEMORY_ADDR_LEB offset=0x000082(file=0x0001a2) symbol=4 <__THREW__>
+   - R_WASM_MEMORY_ADDR_LEB offset=0x000094(file=0x0001b4) symbol=7 <__threwValue>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000a6(file=0x0001c6) symbol=8 <env.__wasm_setjmp_test>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000b1(file=0x0001d1) symbol=9 <env.setTempRet0>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000b8(file=0x0001d8) symbol=10 <env.getTempRet0>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000c8(file=0x0001e8) symbol=11 <env.emscripten_longjmp>
+   - R_WASM_MEMORY_ADDR_SLEB offset=0x0000d2(file=0x0001f2) symbol=2 <env>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000da(file=0x0001fa) symbol=11 <env.emscripten_longjmp>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000e4(file=0x000204) symbol=0 <probe>
+   - R_WASM_FUNCTION_INDEX_LEB offset=0x0000f0(file=0x000210) symbol=12 <__main_void>
+Custom:
+ - name: "producers"
+Custom:
+ - name: "target_features"
+  - [+] bulk-memory
+  - [+] bulk-memory-opt
+  - [+] call-indirect-overlong
+  - [+] multivalue
+  - [+] mutable-globals
+  - [+] nontrapping-fptoint
+  - [+] reference-types
+  - [+] sign-ext
+  - [-] shared-mem
+
+Code Disassembly:
+
+000123 func[6] <probe>:
+ 000124: 03 7f                      | local[0..2] type=i32
+ 000126: 23 80 80 80 80 00          | global.get 0 <env.__stack_pointer>
+ 00012c: 41 10                      | i32.const 16
+ 00012e: 6b                         | i32.sub
+ 00012f: 22 00                      | local.tee 0
+ 000131: 24 80 80 80 80 00          | global.set 0 <env.__stack_pointer>
+ 000137: 41 80 80 80 80 00          | i32.const 0
+ 00013d: 41 01                      | i32.const 1
+ 00013f: 20 00                      | local.get 0
+ 000141: 41 0c                      | i32.const 12
+ 000143: 6a                         | i32.add
+ 000144: 10 80 80 80 80 00          | call 0 <env.__wasm_setjmp>
+ 00014a: 41 00                      | i32.const 0
+ 00014c: 21 01                      | local.set 1
+ 00014e: 03 40                      | loop
+ 000150: 02 40                      |   block
+ 000152: 20 01                      |     local.get 1
+ 000154: 22 01                      |     local.tee 1
+ 000156: 45                         |     i32.eqz
+ 000157: 0d 00                      |     br_if 0
+ 000159: 20 01                      |     local.get 1
+ 00015b: 21 02                      |     local.set 2
+ 00015d: 02 40                      |     block
+ 00015f: 20 01                      |       local.get 1
+ 000161: 41 2a                      |       i32.const 42
+ 000163: 46                         |       i32.eq
+ 000164: 0d 00                      |       br_if 0
+ 000166: 41 7f                      |       i32.const 4294967295
+ 000168: 21 02                      |       local.set 2
+ 00016a: 0b                         |     end
+ 00016b: 20 00                      |     local.get 0
+ 00016d: 41 10                      |     i32.const 16
+ 00016f: 6a                         |     i32.add
+ 000170: 24 80 80 80 80 00          |     global.set 0 <env.__stack_pointer>
+ 000176: 20 02                      |     local.get 2
+ 000178: 0f                         |     return
+ 000179: 0b                         |   end
+ 00017a: 41 00                      |   i32.const 0
+ 00017c: 41 00                      |   i32.const 0
+ 00017e: 36 02 80 80 80 80 00       |   i32.store 2 0
+ 000185: 41 81 80 80 80 00          |   i32.const 1
+ 00018b: 10 81 80 80 80 00          |   call 1 <invoke_v>
+ 000191: 41 00                      |   i32.const 0
+ 000193: 28 02 80 80 80 80 00       |   i32.load 2 0
+ 00019a: 21 01                      |   local.set 1
+ 00019c: 41 00                      |   i32.const 0
+ 00019e: 41 00                      |   i32.const 0
+ 0001a0: 36 02 80 80 80 80 00       |   i32.store 2 0
+ 0001a7: 02 40                      |   block
+ 0001a9: 02 40                      |     block
+ 0001ab: 20 01                      |       local.get 1
+ 0001ad: 45                         |       i32.eqz
+ 0001ae: 0d 00                      |       br_if 0
+ 0001b0: 41 00                      |       i32.const 0
+ 0001b2: 28 02 80 80 80 80 00       |       i32.load 2 0
+ 0001b9: 22 02                      |       local.tee 2
+ 0001bb: 45                         |       i32.eqz
+ 0001bc: 0d 00                      |       br_if 0
+ 0001be: 20 01                      |       local.get 1
+ 0001c0: 20 00                      |       local.get 0
+ 0001c2: 41 0c                      |       i32.const 12
+ 0001c4: 6a                         |       i32.add
+ 0001c5: 10 82 80 80 80 00          |       call 2 <env.__wasm_setjmp_test>
+ 0001cb: 45                         |       i32.eqz
+ 0001cc: 0d 01                      |       br_if 1
+ 0001ce: 20 02                      |       local.get 2
+ 0001d0: 10 83 80 80 80 00          |       call 3 <env.setTempRet0>
+ 0001d6: 0b                         |     end
+ 0001d7: 10 84 80 80 80 00          |     call 4 <env.getTempRet0>
+ 0001dd: 21 01                      |     local.set 1
+ 0001df: 0c 01                      |     br 1
+ 0001e1: 0b                         |   end
+ 0001e2: 0b                         | end
+ 0001e3: 20 01                      | local.get 1
+ 0001e5: 20 02                      | local.get 2
+ 0001e7: 10 85 80 80 80 00          | call 5 <env.emscripten_longjmp>
+ 0001ed: 00                         | unreachable
+ 0001ee: 0b                         | end
+0001f0 func[7] <jump>:
+ 0001f1: 41 80 80 80 80 00          | i32.const 0
+ 0001f7: 41 2a                      | i32.const 42
+ 0001f9: 10 85 80 80 80 00          | call 5 <env.emscripten_longjmp>
+ 0001ff: 00                         | unreachable
+ 000200: 0b                         | end
+000202 func[8] <__main_void>:
+ 000203: 10 86 80 80 80 00          | call 6 <probe>
+ 000209: 41 2a                      | i32.const 42
+ 00020b: 47                         | i32.ne
+ 00020c: 0b                         | end
+00020e func[9] <main>:
+ 00020f: 10 88 80 80 80 00          | call 8 <__main_void>
+ 000215: 0b                         | end
+
+exit=0

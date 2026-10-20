@@ -1,0 +1,14 @@
+$ cargo -Zbuild-std build --offline --manifest-path rust-demo/Cargo.toml --target wasm32-unknown-emscripten
+   Compiling wasm-eh-probe v0.1.0 (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/rust-demo)
+warning: unstable feature specified for `-Ctarget-feature`: `exception-handling`
+  |
+  = note: this feature is not stably supported; its behavior can change in the future
+
+warning: linker stderr: emcc: WASM_BIGINT is deprecated (no longer needed. Should only ever be implicitly disabled by -sWASM=0). Please open a bug if you have a continuing need for this setting [-Wdeprecated]
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `wasm-eh-probe` (bin "wasm-eh-probe") generated 2 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
+
+exit=0

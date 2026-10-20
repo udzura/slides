@@ -1,0 +1,19 @@
+$ node src/check-wat.cjs build/wat-mixed-same-function.wasm
+validate: false
+/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/src/check-wat.cjs:5
+const module_ = new WebAssembly.Module(bytes);
+                ^
+
+CompileError: WebAssembly.Module(): Compiling function #0 failed: module uses a mix of legacy and new exception handling instructions @+39
+    at Object.<anonymous> (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/src/check-wat.cjs:5:17)
+    at Module._compile (node:internal/modules/cjs/loader:1934:14)
+    at Object..js (node:internal/modules/cjs/loader:2074:10)
+    at Module.load (node:internal/modules/cjs/loader:1656:32)
+    at Module._load (node:internal/modules/cjs/loader:1448:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v26.8.1
+
+exit=1

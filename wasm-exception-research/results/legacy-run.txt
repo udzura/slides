@@ -1,0 +1,3 @@
+$ node build/legacy.js
+
+exit=0

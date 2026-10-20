@@ -1,0 +1,32 @@
+
+catch-clang.o:	file format wasm 0x1
+
+Code Disassembly:
+
+0000df func[3] <_Z10catch_onlyv>:
+ 0000e0: 02 7f                      | local[0..1] type=i32
+ 0000e2: 23 80 80 80 80 00          | global.get 0 <env.__stack_pointer>
+ 0000e8: 21 00                      | local.set 0
+ 0000ea: 02 40                      | block
+ 0000ec: 02 7f                      |   block i32
+ 0000ee: 1f 40 01 00 80 80 80 80 00 |     try_table catch 0 0
+ 0000f7: 00                         | 
+ 0000f8: 10 80 80 80 80 00          |       call 0 <env._Z9may_throwv>
+ 0000fe: 41 00                      |       i32.const 0
+ 000100: 21 01                      |       local.set 1
+ 000102: 0c 02                      |       br 2
+ 000104: 0b                         |     end
+ 000105: 00                         |     unreachable
+ 000106: 0b                         |   end
+ 000107: 21 01                      |   local.set 1
+ 000109: 20 00                      |   local.get 0
+ 00010b: 24 80 80 80 80 00          |   global.set 0 <env.__stack_pointer>
+ 000111: 20 01                      |   local.get 1
+ 000113: 10 81 80 80 80 00          |   call 1 <env.__cxa_begin_catch>
+ 000119: 1a                         |   drop
+ 00011a: 10 82 80 80 80 00          |   call 2 <env.__cxa_end_catch>
+ 000120: 41 2a                      |   i32.const 42
+ 000122: 21 01                      |   local.set 1
+ 000124: 0b                         | end
+ 000125: 20 01                      | local.get 1
+ 000127: 0b                         | end

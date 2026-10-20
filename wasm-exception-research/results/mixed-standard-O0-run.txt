@@ -1,0 +1,3 @@
+$ node build/mixed-standard-O0.js
+
+exit=0

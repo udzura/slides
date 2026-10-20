@@ -1,0 +1,3 @@
+$ /opt/homebrew/opt/emscripten/bin/emcc src/mixed.c build/legacy-named.o build/standard-named.o -O1 -g2 -sSUPPORT_LONGJMP=wasm -sWASM_LEGACY_EXCEPTIONS=0 -o build/mixed-standard-O1.js
+
+exit=0

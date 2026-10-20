@@ -1,0 +1,15 @@
+$ node build/mixed-standard-O2.js
+failed to asynchronously prepare wasm: CompileError: WebAssembly.instantiate(): Compiling function #1:"main" failed: module uses a mix of legacy and new exception handling instructions @+375
+Aborted(CompileError: WebAssembly.instantiate(): Compiling function #1:"main" failed: module uses a mix of legacy and new exception handling instructions @+375)
+/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/mixed-standard-O2.js:246
+  /** @suppress {checkTypes} */ var e = new WebAssembly.RuntimeError(what);
+                                        ^
+
+RuntimeError: Aborted(CompileError: WebAssembly.instantiate(): Compiling function #1:"main" failed: module uses a mix of legacy and new exception handling instructions @+375). Build with -sASSERTIONS for more info.
+    at abort (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/mixed-standard-O2.js:246:41)
+    at instantiateArrayBuffer (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/mixed-standard-O2.js:288:5)
+    at async createWasm (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/mixed-standard-O2.js:353:16)
+
+Node.js v26.8.1
+
+exit=1

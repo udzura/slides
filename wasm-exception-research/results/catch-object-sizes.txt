@@ -1,0 +1,3 @@
+     626 build/catch-clang.o
+     626 build/catch-emcc.o
+    1252 total

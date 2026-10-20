@@ -1,0 +1,3 @@
+$ /opt/homebrew/opt/emscripten/bin/emcc build/js.o -O1 -g2 -sSUPPORT_LONGJMP=emscripten -o build/js.js
+
+exit=0
