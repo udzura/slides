@@ -1,0 +1,26 @@
+
+catch-legacy.o:	file format wasm 0x1
+
+Code Disassembly:
+
+0000df func[3] <_Z10catch_onlyv>:
+ 0000e0: 02 7f                      | local[0..1] type=i32
+ 0000e2: 23 80 80 80 80 00          | global.get 0 <env.__stack_pointer>
+ 0000e8: 21 00                      | local.set 0
+ 0000ea: 06 40                      | try
+ 0000ec: 10 80 80 80 80 00          |   call 0 <env._Z9may_throwv>
+ 0000f2: 41 00                      |   i32.const 0
+ 0000f4: 21 01                      |   local.set 1
+ 0000f6: 07 80 80 80 80 00          | catch 0
+ 0000fc: 21 01                      |   local.set 1
+ 0000fe: 20 00                      |   local.get 0
+ 000100: 24 80 80 80 80 00          |   global.set 0 <env.__stack_pointer>
+ 000106: 20 01                      |   local.get 1
+ 000108: 10 81 80 80 80 00          |   call 1 <env.__cxa_begin_catch>
+ 00010e: 1a                         |   drop
+ 00010f: 10 82 80 80 80 00          |   call 2 <env.__cxa_end_catch>
+ 000115: 41 2a                      |   i32.const 42
+ 000117: 21 01                      |   local.set 1
+ 000119: 0b                         | end
+ 00011a: 20 01                      | local.get 1
+ 00011c: 0b                         | end

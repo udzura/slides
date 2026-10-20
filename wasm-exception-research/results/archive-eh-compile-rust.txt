@@ -1,0 +1,9 @@
+$ rustc +nightly src/rust_static.rs --edition=2024 --crate-type=staticlib --target=wasm32-unknown-emscripten -C opt-level=1 -C panic=unwind -C target-feature=+exception-handling -C llvm-args=-wasm-use-legacy-eh=0 -L native=/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build -o /Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/librust_c_mixed.a
+warning: unstable feature specified for `-Ctarget-feature`: `exception-handling`
+  |
+  = note: this feature is not stably supported; its behavior can change in the future
+
+warning: 1 warning emitted
+
+
+exit=0

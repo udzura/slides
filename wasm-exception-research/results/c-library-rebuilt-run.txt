@@ -1,0 +1,8 @@
+$ node /Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/cargo-c-library-rebuilt/wasm32-unknown-emscripten/debug/wasm-eh-probe.js
+
+thread 'main' (1) panicked at src/main.rs:7:46:
+intentional panic
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+C longjmp=42; Rust panic caught
+
+exit=0

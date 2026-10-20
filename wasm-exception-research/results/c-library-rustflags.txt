@@ -1,0 +1,1 @@
+RUSTFLAGS=-C linker=/opt/homebrew/opt/emscripten/bin/emcc -C panic=unwind -C target-feature=+exception-handling -C llvm-args=-wasm-use-legacy-eh=0 -C link-arg=-fwasm-exceptions -C link-arg=-sSUPPORT_LONGJMP=wasm -C link-arg=-sWASM_LEGACY_EXCEPTIONS=0 -C link-arg=/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/libsjlj-standard.a

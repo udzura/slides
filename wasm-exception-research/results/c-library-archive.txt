@@ -1,0 +1,3 @@
+$ /opt/homebrew/opt/emscripten/bin/emar rcs /Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/libsjlj-standard.a /Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/c-library-standard.o
+
+exit=0

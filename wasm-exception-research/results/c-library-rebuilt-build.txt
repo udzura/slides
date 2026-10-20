@@ -1,0 +1,36 @@
+$ cargo +nightly -Zbuild-std build --offline --manifest-path rust-demo/Cargo.toml --target wasm32-unknown-emscripten
+   Compiling compiler_builtins v0.1.160 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/compiler-builtins/compiler-builtins)
+   Compiling core v0.0.0 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/core)
+   Compiling libc v0.2.189
+   Compiling object v0.39.1
+   Compiling std v0.0.0 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/std)
+   Compiling rustc-std-workspace-core v1.99.0 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/rustc-std-workspace-core)
+   Compiling alloc v0.0.0 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc)
+   Compiling memchr v2.8.3
+   Compiling adler2 v2.0.1
+   Compiling rustc-demangle v0.1.28
+   Compiling panic_abort v0.0.0 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/panic_abort)
+   Compiling cfg-if v1.0.4
+   Compiling rustc-literal-escaper v0.0.8
+   Compiling unwind v0.0.0 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/unwind)
+   Compiling rustc-std-workspace-alloc v1.99.0 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/rustc-std-workspace-alloc)
+   Compiling panic_unwind v0.0.0 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/panic_unwind)
+   Compiling gimli v0.34.0
+   Compiling std_detect v0.1.5 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/std_detect)
+   Compiling miniz_oxide v0.9.1
+   Compiling hashbrown v0.17.1
+   Compiling addr2line v0.27.1
+   Compiling proc_macro v0.0.0 (/Users/udzura/.rustup/toolchains/nightly-aarch64-apple-darwin/lib/rustlib/src/rust/library/proc_macro)
+   Compiling wasm-eh-probe v0.1.0 (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/rust-demo)
+warning: unstable feature specified for `-Ctarget-feature`: `exception-handling`
+  |
+  = note: this feature is not stably supported; its behavior can change in the future
+
+warning: linker stderr: emcc: WASM_BIGINT is deprecated (no longer needed. Should only ever be implicitly disabled by -sWASM=0). Please open a bug if you have a continuing need for this setting [-Wdeprecated]
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `wasm-eh-probe` (bin "wasm-eh-probe") generated 2 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.99s
+
+exit=0

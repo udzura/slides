@@ -1,0 +1,43 @@
+{
+  "instructions": {
+    "try_table": 5,
+    "throw_ref": 0,
+    "try": 709,
+    "catch": 3,
+    "catch_all": 628,
+    "rethrow": 456,
+    "delegate": 78
+  },
+  "first_examples": {
+    "try_table": {
+      "member": "build/librust_c_mixed.a(librust_c_mixed.rust_static.433271419d4af774-cgu.0.rcgu.o)",
+      "function": "00000001 <_RINvNvNtCshwzdhD8hZ8i_3std9panicking12catch_unwind8do_catchNCNvCs5LGFI9YJkyK_11rust_static12rust_c_probe0zEBZ_>:",
+      "line": "      1a: 1f 40 01 02 00       \ttry_table \t (catch_all 0) # 0: down to label1"
+    },
+    "try": {
+      "member": "build/librust_c_mixed.a(panic_unwind-1f89b9c5756032c2.panic_unwind.8ac960362a9a7e4d-cgu.0.rcgu.o)",
+      "function": "00000001 <_RINvNtCsbjJS9Sacp12_4core3ptr9drop_glueINtNtCs2FjtEJnHIbK_5alloc5boxed3BoxNtNtCsbUKZxqEeGcH_12panic_unwind3imp9ExceptionEEB1e_>:",
+      "line": "      2c: 06 40        \ttry     \t"
+    },
+    "catch_all": {
+      "member": "build/librust_c_mixed.a(panic_unwind-1f89b9c5756032c2.panic_unwind.8ac960362a9a7e4d-cgu.0.rcgu.o)",
+      "function": "00000001 <_RINvNtCsbjJS9Sacp12_4core3ptr9drop_glueINtNtCs2FjtEJnHIbK_5alloc5boxed3BoxNtNtCsbUKZxqEeGcH_12panic_unwind3imp9ExceptionEEB1e_>:",
+      "line": "      3d: 19           \tcatch_all                       # catch1:"
+    },
+    "rethrow": {
+      "member": "build/librust_c_mixed.a(panic_unwind-1f89b9c5756032c2.panic_unwind.8ac960362a9a7e4d-cgu.0.rcgu.o)",
+      "function": "00000001 <_RINvNtCsbjJS9Sacp12_4core3ptr9drop_glueINtNtCs2FjtEJnHIbK_5alloc5boxed3BoxNtNtCsbUKZxqEeGcH_12panic_unwind3imp9ExceptionEEB1e_>:",
+      "line": "      6e: 09 00        \trethrow \t0                       # to caller"
+    },
+    "delegate": {
+      "member": "build/librust_c_mixed.a(std-2ad5c65b334cb4fa.std.cc20bd70d9fcd4d0-cgu.0.rcgu.o)",
+      "function": "00003e93 <_RNvMs_NtNtNtCs2FjtEJnHIbK_5alloc2io8buffered9bufwriterINtB4_9BufWriterNtNtNtCshwzdhD8hZ8i_3std2io5stdio9StdoutRawE9flush_bufB1c_>:",
+      "line": "    4036: 18 03        \tdelegate \t 3              # label/catch359: down to catch355"
+    },
+    "catch": {
+      "member": "build/librust_c_mixed.a(std-2ad5c65b334cb4fa.std.cc20bd70d9fcd4d0-cgu.0.rcgu.o)",
+      "function": "00021e24 <_RNvNtCshwzdhD8hZ8i_3std2rt19lang_start_internal>:",
+      "line": "   21efb: 07 80 80 80 80 00    \tcatch   \t0               # catch3141:"
+    }
+  }
+}

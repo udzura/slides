@@ -1,0 +1,4 @@
+$ cargo +nightly clean --manifest-path rust-demo/Cargo.toml --target wasm32-unknown-emscripten -p wasm-eh-probe
+     Removed 0 files
+
+exit=0

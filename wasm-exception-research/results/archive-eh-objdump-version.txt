@@ -1,0 +1,16 @@
+$ /opt/homebrew/opt/emscripten/libexec/llvm/bin/llvm-objdump --version
+LLVM (http://llvm.org/):
+  LLVM version 24.0.0git
+  Optimized build.
+
+
+  Registered Targets:
+    aarch64    - AArch64 (little endian)
+    aarch64_32 - AArch64 (little endian ILP32)
+    aarch64_be - AArch64 (big endian)
+    arm64      - ARM64 (little endian)
+    arm64_32   - ARM64 (little endian ILP32)
+    wasm32     - WebAssembly 32-bit
+    wasm64     - WebAssembly 64-bit
+
+exit=0

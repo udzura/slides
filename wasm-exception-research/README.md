@@ -258,6 +258,57 @@ module uses a mix of legacy and new exception handling instructions
 
 今回の rustc と配布 std では Legacy 統一が動いた。Rust 全体がどのターゲットでも同じ既定方式だと一般化しない。`wasm32-unknown-unknown` と `wasm32-unknown-emscripten` の既定値やランタイムは別に確認する。[Rust の Emscripten ターゲット文書](https://doc.rust-lang.org/rustc/platform-support/wasm32-unknown-emscripten.html#enabled-webassembly-features)
 
+### 3.4 Cの静的ライブラリをCargoからリンクする（10月21日追試）
+
+発表の状況に合わせ、同じCコードを `emar` で `libsjlj-standard.a` にまとめ、同じCargoプロジェクト・Rustコード・新EH設定で配布済みstdと再ビルドしたstdを比較した。
+
+```sh
+python3 run-rust-c-library.py
+```
+
+[再現スクリプト](run-rust-c-library.py) はCのコンパイル・アーカイブ作成から、`cargo +nightly build` と `cargo +nightly -Zbuild-std build` の比較、Nodeでの実行、最終Wasmの命令数の記録まで行う。nightly、rust-src、ターゲットの配布std、Cargoの依存キャッシュが揃った手元の環境で `--offline` 実行した。Cには `-sSUPPORT_LONGJMP=wasm -sWASM_LEGACY_EXCEPTIONS=0`、Rustのコード生成には `-C llvm-args=-wasm-use-legacy-eh=0`、最終リンクにも新EHとWasm SjLjの設定を指定している。完全な値は [RUSTFLAGS](results/c-library-rustflags.txt) に保存した。
+
+| stdの供給方法 | Cargoビルド | Node実行 | 最終Wasmの `try` / `rethrow` |
+| --- | --- | --- | --- |
+| rustup配布のビルド済みstd | 成功 | 読み込み時に混在エラー、exit 1 | 106 / 63 |
+| 同じ設定で `-Zbuild-std` | 成功 | CのlongjmpとRustのpanic捕捉に成功、exit 0 | 0 / 0 |
+
+成功ログの `intentional panic` はテストで意図的に起こすpanicの診断表示で、続いて `C longjmp=42; Rust panic caught` が出る。CのlongjmpはCの関数内で捕捉しており、Rustフレームをまたぐunwindは試していない。旧命令の残存と読み込みの成否を比較したもので、命令数の性能比較ではない。
+
+[結果集計](results/c-library-summary.json)、[読み込み失敗](results/c-library-prebuilt-run.txt)、[再ビルド後の成功](results/c-library-rebuilt-run.txt)、[stdの再コンパイルログ](results/c-library-rebuilt-build.txt)。
+
+10月21日に確認したRust公式文書も、Emscriptenの版と設定に合わせて `cargo +nightly -Zbuild-std build` でstdを再ビルドするよう案内している。[Emscripten ABI Compatibility](https://doc.rust-lang.org/rustc/platform-support/wasm32-unknown-emscripten.html#emscripten-abi-compatibility)。nightlyのCargoとrustc、および `rust-src` が必要なことは [Cargoのbuild-std文書](https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std) に記載されている。`-Zbuild-std` 自体が新EHを選ぶわけではなく、Rustのコード生成とリンクの設定を揃えた上でstdまで再コンパイルする点が肝になる。
+
+### 3.5 llvm-objdumpでRust staticlib内の新旧命令を調べる（10月21日追試）
+
+`llvm-objdump -d` は `.a` のメンバーも逆アセンブルできる。Rustを新EHでコンパイルし、Cライブラリと配布済みstdを含めた静的ライブラリを作り、同じアーカイブ内に新旧の命令が残ることを確認した。[ソース](src/rust_static.rs) と [再現スクリプト](inspect-eh-archive.py) を保存した。
+
+```sh
+python3 inspect-eh-archive.py
+
+EH='try_table|throw_ref|try|catch|catch_all|rethrow|delegate'
+/opt/homebrew/opt/emscripten/libexec/llvm/bin/llvm-objdump \
+  -d --triple=wasm32-unknown-unknown build/librust_c_mixed.a \
+  | grep -E "[[:space:]]($EH)([[:space:]]|$)"
+```
+
+実測の抜粋（空白を整形し、末尾コメントを省略）：
+
+```text
+1a: 1f 40 01 02 00   try_table (catch_all 0)
+2c: 06 40            try
+3d: 19               catch_all
+6e: 09 00            rethrow 0
+```
+
+`try_table` は今回コンパイルしたRustのメンバー、後の3命令は配布済み `panic_unwind` のメンバーにあった。`try_table (catch_all 0)` の `catch_all` は新命令の即値内の節なので、単独の旧 `catch_all` 命令と区別する。上の検索は「実際の命令位置のみを集計する」ものではなく、命令の候補を抽出して読むためのもの。スクリプトの集計は、アドレスとバイト列の直後にあるニーモニックだけを対象にしている。
+
+Emscripten同梱LLVM 24.0.0gitで、同じ `.a` 内に `try_table` 5、`try` 709、`catch_all` 628、`rethrow` 456、`delegate` 78を確認した。アーカイブには最終リンクで使われないコードも入るので、前節の最終Wasmの命令数とは異なる。**アーカイブの混在は入力の所在を調べる手掛かりであり、最終Wasmの読み込み失敗をそれだけで確定するものではない。** 実行の成否は前節の最終成果物でも確認している。
+
+元の例の ` try ` はタブ区切りや行末の `try` を取りこぼすため、`[[:space:]]` と行末も含む境界にした。また、旧方式の `catch` と `rethrow` も検索対象に加えた。`throw` は新旧共通なので判別には使わない。`--triple` は逆アセンブル対象の指定であり、命令形式の変換ではない。[LLVM公式マニュアル](https://llvm.org/docs/CommandGuide/llvm-objdump.html)
+
+[実行コマンド](results/archive-eh-command.txt)、[抽出した命令](results/archive-eh-matches.txt)、[各命令の出自と集計](results/archive-eh-summary.json)。全逆アセンブルは `build/archive-eh-disassembly.txt` に保存した（Git管理外）。今回は非LTOのWasmオブジェクトを含むアーカイブを対象にしている。
+
 ## 4. 運用での対応
 
 ### 推奨：全ビルド入力の方式を揃える
@@ -359,3 +410,5 @@ Web の文書は調査時点のもの。ローカルの実験版は上表とロ�
 この例は外部の `may_throw()` を呼び、C++ の `catch (...)` で捕捉して 42 を返すだけ。単独実行用ではなく、未解決の例外ランタイム呼び出しも残した命令観察用 `.o` である。C の SjLj 例とのサイズ差には、ソース内容とリンク段階の違いもあるので、コンパイラの優劣の比較には使わない。
 
 学習の順序としては、手書き WAT → この C++ の `.o` → C の SjLj → Rust を含む最終リンク、が読みやすい。純粋な命令の意味なら WAT が最小。生成命令を学ぶなら Clang でも em++ でも `-c` 出力が適している。最終実行ファイルでは libc・例外ランタイム・起動処理などが加わるため、対象関数を切り出して読む。
+
+同じ `catch-only.cpp` を `em++` で Legacy / 標準 EH にコンパイルして比較するには、`sh compare-cpp-eh.sh` を実行する。逆アセンブルは `results/catch-legacy-disassembly.txt` と `results/catch-standard-disassembly.txt`、コンパイラの版は `results/catch-eh-compiler.txt` に保存する。Legacy は `try` / `catch`、標準は `block` と `try_table catch 0 0` を生成し、捕捉後の処理は内側のブロックの後ろに置かれる。`__cxa_begin_catch` / `__cxa_end_catch` の呼び出しは両方式に残る。スライドではこの命令列からローカル変数・スタックポインタ操作などを省略して示している。

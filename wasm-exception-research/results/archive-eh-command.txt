@@ -1,0 +1,1 @@
+/opt/homebrew/opt/emscripten/libexec/llvm/bin/llvm-objdump -d --triple=wasm32-unknown-unknown build/librust_c_mixed.a | grep -E '[[:space:]](try_table|throw_ref|try|catch|catch_all|rethrow|delegate)([[:space:]]|$)'

@@ -1,0 +1,15 @@
+$ node /Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/cargo-c-library-prebuilt/wasm32-unknown-emscripten/debug/wasm-eh-probe.js
+failed to asynchronously prepare wasm: CompileError: WebAssembly.instantiate(): Compiling function #36:"core::ptr::drop_glue::<alloc::boxed::Box<panic_..." failed: module uses a mix of legacy and new exception handling instructions @+3773
+Aborted(CompileError: WebAssembly.instantiate(): Compiling function #36:"core::ptr::drop_glue::<alloc::boxed::Box<panic_..." failed: module uses a mix of legacy and new exception handling instructions @+3773)
+/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/cargo-c-library-prebuilt/wasm32-unknown-emscripten/debug/wasm-eh-probe.js:597
+  var e = new WebAssembly.RuntimeError(what);
+          ^
+
+RuntimeError: Aborted(CompileError: WebAssembly.instantiate(): Compiling function #36:"core::ptr::drop_glue::<alloc::boxed::Box<panic_..." failed: module uses a mix of legacy and new exception handling instructions @+3773)
+    at abort (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/cargo-c-library-prebuilt/wasm32-unknown-emscripten/debug/wasm-eh-probe.js:597:11)
+    at instantiateArrayBuffer (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/cargo-c-library-prebuilt/wasm32-unknown-emscripten/debug/wasm-eh-probe.js:658:5)
+    at async createWasm (/Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/cargo-c-library-prebuilt/wasm32-unknown-emscripten/debug/wasm-eh-probe.js:747:16)
+
+Node.js v26.8.1
+
+exit=1
