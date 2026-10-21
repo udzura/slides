@@ -733,10 +733,10 @@ wasm-objdumpで最終成果物も確認。旧命令がなくなることを示�
 
 # 参考資料：今回の実験
 
-- [日本語の調査メモ](../wasm-exception-research/README.md)
-- [WATの例](../wasm-exception-research/src/standard.wat) / [C++の例](../wasm-exception-research/src/catch-only.cpp) / [Cの例](../wasm-exception-research/src/sjlj.c)
-- [比較実験](../wasm-exception-research/run.py) / [修正方法の実験](../wasm-exception-research/run-recovery.py)
-- [C本体 + Rust静的ライブラリの再現](../wasm-exception-research/run-c-rust-staticlib.py) / [mruby-jsonrs](https://github.com/udzura/mruby-jsonrs/)
+- [日本語の調査メモ](https://github.com/udzura/slides/blob/master/wasm-exception-research/README.md)
+- [WATの例](https://github.com/udzura/slides/blob/master/wasm-exception-research/src/standard.wat) / [C++の例](https://github.com/udzura/slides/blob/master/wasm-exception-research/src/catch-only.cpp) / [Cの例](https://github.com/udzura/slides/blob/master/wasm-exception-research/src/sjlj.c)
+- [比較実験](https://github.com/udzura/slides/blob/master/wasm-exception-research/run.py) / [修正方法の実験](https://github.com/udzura/slides/blob/master/wasm-exception-research/run-recovery.py)
+- [C本体 + Rust静的ライブラリの再現](https://github.com/udzura/slides/blob/master/wasm-exception-research/run-c-rust-staticlib.py) / [mruby-jsonrs](https://github.com/udzura/mruby-jsonrs/)
 
 Emscripten 6.0.9 / Node.js 26.8.1 / Binaryen 133
 Rust 1.100.0-nightly（2026-08-17）
@@ -744,6 +744,6 @@ Rust 1.100.0-nightly（2026-08-17）
 調査・実測：2026年10月19〜21日
 
 <!--
-本編時間外。リンクはリポジトリ内の相対パス。公開時には掲載先に合わせて調整する。
+本編時間外。サンプルと調査メモはGitHubのudzura/slidesのmaster上のファイルへリンクする。
 既定値やランタイム対応は変わり得るため、実測した版を明示する。
 -->
