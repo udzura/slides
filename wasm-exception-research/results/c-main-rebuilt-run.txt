@@ -1,0 +1,8 @@
+$ node /Users/udzura/ghq/github.com/udzura/slides/wasm-exception-research/build/c-main-rebuilt.js
+
+thread '<unnamed>' (1) panicked at ../src/rust_library.rs:4:46:
+intentional library panic
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+C main: longjmp=42; Rust library: panic caught
+
+exit=0

@@ -193,6 +193,19 @@ wasm-objdump -dx build/standard.wasm
 
 詳細：[Legacy 逆アセンブル](results/legacy-disassembly.txt)、[標準 逆アセンブル](results/standard-disassembly.txt)、[JS 方式](results/js-disassembly.txt)。
 
+### 通常のgotoはEHにならない（10月21日追試）
+
+Cの `goto` は同じ関数内のラベルへの分岐であり、通常は `block` / `loop` と `br` / `br_if` などの制御命令で表現される。関数呼び出しをまたいで保存した地点へ戻る `setjmp/longjmp` とは異なる。今回の `SUPPORT_LONGJMP=wasm` は非局所ジャンプをWasm EHで実装する設定であり、通常のgotoをすべて例外にする設定ではない。[Wasmの制御命令](https://webassembly.github.io/spec/core/syntax/instructions.html#control-instructions)、[Emscriptenの説明](https://emscripten.org/docs/porting/setjmp-longjmp.html)
+
+[goto.c](src/goto.c) はgotoでループを作り、引数から1までの整数を足す例。[compare-goto.sh](compare-goto.sh) で `-fwasm-exceptions -sSUPPORT_LONGJMP=wasm -sWASM_LEGACY_EXCEPTIONS=0` を付けて `-O0` / `-O1` の `.o` を調べた。
+
+| 最適化 | `loop` | `br` | `br_if` | EH命令 |
+| --- | ---: | ---: | ---: | ---: |
+| `-O0` | 1 | 2 | 1 | 0 |
+| `-O1` | 0 | 0 | 1 | 0 |
+
+最適化によってループ自体も変形されるが、どちらにも `try` / `catch` / `try_table` / `throw` などはなかった。これはgotoだけを持つCの例の結果であり、別途例外処理やlongjmpを含む関数の全体にEH命令が存在しないと主張するものではない。[命令集計](results/goto-instructions.json)、[O0逆アセンブル](results/goto-O0-disassembly.txt)、[O1逆アセンブル](results/goto-O1-disassembly.txt)
+
 ## 3. 不一致を作って観察する
 
 ### 3.1 最終リンクのフラグだけ変えても直らない
@@ -260,7 +273,7 @@ module uses a mix of legacy and new exception handling instructions
 
 ### 3.4 Cの静的ライブラリをCargoからリンクする（10月21日追試）
 
-発表の状況に合わせ、同じCコードを `emar` で `libsjlj-standard.a` にまとめ、同じCargoプロジェクト・Rustコード・新EH設定で配布済みstdと再ビルドしたstdを比較した。
+当初の追試では、同じCコードを `emar` で `libsjlj-standard.a` にまとめ、同じCargoプロジェクト・Rustコード・新EH設定で配布済みstdと再ビルドしたstdを比較した。これはRustが本体、Cがライブラリの構成。発表の実際の背景であるC本体＋Rustライブラリの追試は3.6節に追加した。
 
 ```sh
 python3 run-rust-c-library.py
@@ -308,6 +321,36 @@ Emscripten同梱LLVM 24.0.0gitで、同じ `.a` 内に `try_table` 5、`try` 709
 元の例の ` try ` はタブ区切りや行末の `try` を取りこぼすため、`[[:space:]]` と行末も含む境界にした。また、旧方式の `catch` と `rethrow` も検索対象に加えた。`throw` は新旧共通なので判別には使わない。`--triple` は逆アセンブル対象の指定であり、命令形式の変換ではない。[LLVM公式マニュアル](https://llvm.org/docs/CommandGuide/llvm-objdump.html)
 
 [実行コマンド](results/archive-eh-command.txt)、[抽出した命令](results/archive-eh-matches.txt)、[各命令の出自と集計](results/archive-eh-summary.json)。全逆アセンブルは `build/archive-eh-disassembly.txt` に保存した（Git管理外）。今回は非LTOのWasmオブジェクトを含むアーカイブを対象にしている。
+
+### 3.6 C本体にRustの静的ライブラリをリンクする（10月21日追試）
+
+発表の背景は、[mruby-jsonrs](https://github.com/udzura/mruby-jsonrs/) を `wasm32-unknown-emscripten` 向けにビルドしてmrubyへリンクした際の問題（発表者からの説明）。Cのmrubyが本体で、C shimからRustのSerde / serde_jsonを利用する。Rust側は `staticlib` を生成し、mrubyの最終リンクに加わる。
+
+この呼び出し方向に合わせ、[Cのmain](src/c_main.c) がCのSjLj関数と [Rustのライブラリ関数](src/rust_library.rs) をそれぞれ呼ぶ最小再現を追加した。mrubyやSerde全体を再ビルドするものではない。
+
+```sh
+python3 run-c-rust-staticlib.py
+```
+
+Rustライブラリは `crate-type = ["staticlib"]`。コード生成を新EHに指定し、配布済みstdと `-Zbuild-std` を使う場合で `.a` を別々に生成する。Cの本体とSjLjコードは共通とし、どちらもemccで最終リンクする。Cargoは最終実行ファイルのリンクには使わない。
+
+| Rust staticlibのstd | emccリンク | Node実行 | 最終Wasmの `try` / `rethrow` |
+| --- | --- | --- | --- |
+| 配布済みstd | 成功 | 読み込み時に混在エラー、exit 1 | 71 / 43 |
+| 同じ設定で `-Zbuild-std` | 成功 | CのSjLj・Rustのpanic捕捉に成功、exit 0 | 0 / 0 |
+
+成功出力は `C main: longjmp=42; Rust library: panic caught`。CのlongjmpはC内、Rustのpanic捕捉はRust内で完結し、例外はFFI境界を越えない。Rustのpanicは配布stdのEHを観察するためのもので、JSON処理にpanic捕捉が必要という意味ではない。mruby-jsonrsの現行release設定は `panic=abort` であり、同リポジトリは `-Z build-std=std,panic_abort` を指定している。この `panic=unwind` の最小再現を、実プロジェクトそのものの実行ログとは扱わない。
+
+アーカイブの検査用に配布std版を `build/librust_eh_prebuilt.a` にも保存する。この `.a` はCオブジェクトを含まないが、Rust本体の `try_table` とstd由来の旧命令が共存する。
+
+```sh
+EH='try_table|throw_ref|try|catch|catch_all|rethrow|delegate'
+llvm-objdump -d --triple=wasm32-unknown-unknown \
+  build/librust_eh_prebuilt.a \
+  | grep -E "[[:space:]]($EH)([[:space:]]|$)"
+```
+
+[再現スクリプト](run-c-rust-staticlib.py)、[結果集計](results/c-main-summary.json)、[Rustのフラグ](results/c-main-rustflags.txt)、[emcc最終リンク](results/c-main-prebuilt-link.txt)、[読み込み失敗](results/c-main-prebuilt-run.txt)、[再ビルド後の成功](results/c-main-rebuilt-run.txt)、[アーカイブの命令抜粋](results/c-main-archive-examples.txt)。全逆アセンブルは `build/c-main-archive-disassembly.txt` に保存する（Git管理外）。
 
 ## 4. 運用での対応
 

@@ -1,0 +1,1 @@
+RUSTFLAGS=-C panic=unwind -C target-feature=+exception-handling -C llvm-args=-wasm-use-legacy-eh=0

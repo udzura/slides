@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="sjlj-flow" viewBox="0 0 1120 404" width="1120" height="404" role="group" aria-labelledby="sjlj-resume-title sjlj-resume-desc">
+<title id="sjlj-resume-title">CとWasmの対応：捕捉後は42</title>
+<desc id="sjlj-resume-desc">左がCのコード、右がコンパイラが作る処理の模式図。同じ番号の箇所を対応づける。捕捉した42で case 42 へ。setjmp を呼び直すのではなく、その後の経路に復帰する。</desc>
+<style>
+svg.sjlj-flow { display:block; width:100%; max-width:100%; height:auto; overflow:visible; }
+.sjlj-flow text { fill:#252924; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif; letter-spacing:0; pointer-events:none; }
+.sjlj-flow .column-label { font-size:17px; fill:#686c63; }
+.sjlj-flow .c-panel,.sjlj-flow .node-bg { fill:#eeeee4; stroke:#d5d7cd; stroke-width:1; transition:fill 120ms ease,stroke 120ms ease; }
+.sjlj-flow .code { font-family:Menlo,monospace; font-size:19px; white-space:pre; }
+.sjlj-flow .node-heading { font-size:18px; fill:#686c63; }
+.sjlj-flow .detail { font-size:18px; }
+.sjlj-flow .takeaway { font-size:20px; }
+.sjlj-flow .c-highlight { fill:transparent; transition:fill 120ms ease; }
+.sjlj-flow .line-mark { fill:#b53d27; opacity:0; transition:opacity 120ms ease; pointer-events:none; }
+.sjlj-flow .flow-node { outline:none; }
+.sjlj-flow .phase-active .node-bg,.sjlj-flow .phase-active .c-highlight { fill:#fffdf9; }
+.sjlj-flow .phase-active .node-bg { stroke:#b53d27; }
+.sjlj-flow .phase-active .line-mark { opacity:1; }
+.sjlj-flow .edge { fill:none; stroke:#686c63; stroke-width:2; }
+.sjlj-flow .edge.unwind { stroke:#b53d27; stroke-dasharray:4 3; }
+.sjlj-flow:has(.flow-node:focus-visible) .c-panel,.sjlj-flow:has(.flow-node:focus-visible) .node-bg { fill:#d3d5c9; stroke:#d5d7cd; }
+.sjlj-flow:has(.flow-node:focus-visible) .c-highlight { fill:transparent; }
+.sjlj-flow:has(.flow-node:focus-visible) .line-mark { opacity:0; }
+.sjlj-flow:has(.flow-node:focus-visible) .flow-node:focus-visible .node-bg,.sjlj-flow:has(.flow-node:focus-visible) .flow-node:focus-visible .c-highlight { fill:#fffdf9; }
+.sjlj-flow:has(.flow-node:focus-visible) .flow-node:focus-visible .node-bg { stroke:#b53d27; stroke-width:2; }
+.sjlj-flow:has(.flow-node:focus-visible) .flow-node:focus-visible .line-mark { opacity:1; }
+@media (hover:hover) {
+  .sjlj-flow:has(.flow-node:hover) .c-panel,.sjlj-flow:has(.flow-node:hover) .node-bg { fill:#d3d5c9; stroke:#d5d7cd; }
+  .sjlj-flow:has(.flow-node:hover) .c-highlight { fill:transparent; }
+  .sjlj-flow:has(.flow-node:hover) .line-mark { opacity:0; }
+  .sjlj-flow:has(.flow-node:hover) .flow-node:hover .node-bg,.sjlj-flow:has(.flow-node:hover) .flow-node:hover .c-highlight { fill:#fffdf9; }
+  .sjlj-flow:has(.flow-node:hover) .flow-node:hover .node-bg { stroke:#b53d27; stroke-width:2; }
+  .sjlj-flow:has(.flow-node:hover) .flow-node:hover .line-mark { opacity:1; }
+}
+@media (prefers-reduced-motion:reduce) { .sjlj-flow rect { transition:none; } }
+@media print {
+  .sjlj-flow .c-panel,.sjlj-flow .flow-node .node-bg { fill:#eeeee4 !important; stroke:#d5d7cd !important; stroke-width:1 !important; }
+  .sjlj-flow .flow-node .c-highlight { fill:transparent !important; }
+  .sjlj-flow .flow-node .line-mark { opacity:0 !important; }
+  .sjlj-flow .phase-active .node-bg,.sjlj-flow .phase-active .c-highlight { fill:#fffdf9 !important; }
+  .sjlj-flow .phase-active .node-bg { stroke:#b53d27 !important; }
+  .sjlj-flow .phase-active .line-mark { opacity:1 !important; }
+}
+</style>
+<defs><marker id="sjlj-resume-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#686c63" stroke-width="1.5" /></marker></defs>
+<g aria-hidden="true">
+<text x="0" y="18" class="column-label" xml:space="preserve">C（前の例と同じ処理・抜粋）</text>
+<text x="620" y="18" class="column-label" xml:space="preserve">コンパイラが作る処理（模式図）</text>
+<rect class="c-panel" x="0" y="32" width="520" height="334" />
+<path class="edge" d="M870 99 V109" marker-end="url(#sjlj-resume-arrow)" />
+<path class="edge" d="M870 193 V203" marker-end="url(#sjlj-resume-arrow)" />
+<path class="edge unwind" d="M870 275 V285" marker-end="url(#sjlj-resume-arrow)" />
+<text x="18" y="54" class="code" xml:space="preserve">static jmp_buf env;</text>
+<text x="18" y="78" class="code" xml:space="preserve"></text>
+<text x="18" y="102" class="code" xml:space="preserve">static void jump(void) {</text>
+<text x="18" y="150" class="code" xml:space="preserve">}</text>
+<text x="18" y="174" class="code" xml:space="preserve"></text>
+<text x="18" y="198" class="code" xml:space="preserve">int probe(void) {</text>
+<text x="18" y="294" class="code" xml:space="preserve">    default: return -1;</text>
+<text x="18" y="318" class="code" xml:space="preserve">  }</text>
+<text x="18" y="342" class="code" xml:space="preserve">}</text>
+</g>
+<g class="flow-node" tabindex="0" role="group" aria-label="① 再開地点を env に記録">
+<rect class="c-highlight" x="3" y="202" width="514" height="24" />
+<rect class="line-mark" x="0" y="202" width="3" height="24" />
+<text x="18" y="222" class="code" xml:space="preserve">  switch (setjmp(env)) { // ①</text>
+<rect class="node-bg" x="620" y="32" width="500" height="62" />
+<text x="640" y="54" class="node-heading" xml:space="preserve">① 再開地点を env に記録</text>
+<text x="640" y="80" class="code" xml:space="preserve">判定用の値 = 0</text>
+</g>
+<g class="flow-node" tabindex="0" role="group" aria-label="② 呼び出しを捕捉対象にする">
+<rect class="c-highlight" x="3" y="226" width="514" height="24" />
+<rect class="line-mark" x="0" y="226" width="3" height="24" />
+<text x="18" y="246" class="code" xml:space="preserve">    case 0: jump(); return -1; // ②</text>
+<rect class="node-bg" x="620" y="114" width="500" height="74" />
+<text x="640" y="136" class="node-heading" xml:space="preserve">② 呼び出しを捕捉対象にする</text>
+<text x="640" y="158" class="code" xml:space="preserve">try_table …</text>
+<text x="640" y="180" class="code" xml:space="preserve">  call jump</text>
+</g>
+<g class="flow-node phase-active" tabindex="0" role="group" aria-label="③ longjmp(env, 42) の実行">
+<rect class="c-highlight" x="3" y="106" width="514" height="24" />
+<rect class="line-mark" x="0" y="106" width="3" height="24" />
+<text x="18" y="126" class="code" xml:space="preserve">  longjmp(env, 42);   // ③</text>
+<rect class="node-bg" x="620" y="208" width="500" height="62" />
+<text x="640" y="230" class="node-heading" xml:space="preserve">③ longjmp(env, 42) の実行</text>
+<text x="640" y="256" class="code" xml:space="preserve">__wasm_longjmp → throw</text>
+</g>
+<g class="flow-node phase-active" tabindex="0" role="group" aria-label="④ 捕捉し、env の戻り先を照合">
+<rect class="c-highlight" x="3" y="250" width="514" height="24" />
+<rect class="line-mark" x="0" y="250" width="3" height="24" />
+<text x="18" y="270" class="code" xml:space="preserve">    case 42: return 42; // ④</text>
+<rect class="node-bg" x="620" y="290" width="500" height="76" />
+<text x="640" y="312" class="node-heading" xml:space="preserve">④ 捕捉し、env の戻り先を照合</text>
+<text x="640" y="336" class="code" xml:space="preserve">判定用の値 = 42</text>
+<text x="640" y="358" class="detail" xml:space="preserve">switch を再判定 → case 42</text>
+</g>
+<text x="0" y="394" class="takeaway" xml:space="preserve">捕捉した42で case 42 へ。setjmp を呼び直すのではなく、その後の経路に復帰する。</text>
+</svg>

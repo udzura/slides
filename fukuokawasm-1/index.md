@@ -15,17 +15,51 @@ footer: "Fukuoka.wasm #1"
 
 Legacy EHと、新しい例外命令
 
-Fukuoka Wasm #1 / @udzura
+Fukuoka.wasm #1
 
 <!--
-目安 0:00–0:20（20秒）。本編25枚、合計15分。参考資料2枚は時間外。
+目安 0:00–0:15（15秒）。本編32枚、合計15分。参考資料2枚は時間外。
 タイトルとイベント表記は仮。開催日や所属などは未記入。
 今日は言語の例外がWasmでどう動くか、生成された命令から見ていきます。
 -->
 
 ---
 
-# きっかけ： `mix of legacy and new exception`
+<!-- _class: profile -->
+
+<style scoped>
+.bio-layout { display:grid; grid-template-columns:260px 1fr; gap:56px; align-items:center; margin:16px 0 24px; }
+.bio-photo { display:block; width:260px; height:260px; object-fit:cover; border:1px solid var(--line); border-radius:50%; }
+.bio-name { margin:0 0 6px; font-size:36px; font-weight:650; line-height:1.3; }
+.bio-handle { margin:0 0 20px; font-size:23px; color:var(--accent); }
+.bio-details { margin:0; padding-left:1.2em; font-size:25px; }
+.bio-details li { margin:8px 0; }
+</style>
+
+# 自己紹介
+
+<div class="bio-layout">
+  <img class="bio-photo" src="images/profile.png" alt="近藤うちお" />
+  <div>
+    <p class="bio-name">近藤うちお / Uchio Kondo</p>
+    <p class="bio-handle"><a href="https://github.com/udzura">@udzura</a></p>
+    <ul class="bio-details">
+      <li>株式会社SmartHR プロダクトエンジニア</li>
+      <li>Fukuoka.rb / Fukuoka.wasm</li>
+      <li>エンジニアカフェ ハッカーサポーター</li>
+      <li>Ruby / mruby / Rust / Wasm</li>
+    </ul>
+  </div>
+</div>
+
+<!--
+0:15–0:45（30秒）。所属とコミュニティ、Ruby/Rust/Wasmに触れていることを短く紹介する。
+プロフィールと写真はcloudflare-workers-in-fukuoka-2/index.mdの自己紹介から再利用。
+-->
+
+---
+
+# きっかけ： `mix of legacy and new...`
 
 ```text
 CompileError: WebAssembly.instantiate():
@@ -38,23 +72,33 @@ Rust + Emscripten + C の組み合わせで発生
 「例外の命令に、新旧がある……？」
 
 <!--
-0:20–0:50（30秒）。エラーは今回の調査で実際に再現したもの。個人の過去の障害体験としては語らない。
-まずエラーを見せ、最後にここへ戻る。
-実測: ../wasm-exception-research/results/rust-standard-run.txt
+0:45–1:10（25秒）。mruby-jsonrsをEmscripten向けにリンクした際に遭遇した問題が調査のきっかけ（発表者の体験）。
+まずエラーを見せ、最後にmruby-jsonrsの構成を説明してここへ戻る。表示したエラーは最小再現でも確認したもの。
+実測: ../wasm-exception-research/results/c-main-prebuilt-run.txt
 -->
 
 ---
 
 # 今日見るもの
 
-1. Wasmの例外の概要、経緯
-2. WATで投げる・捕まえる
-3. C++の `try/catch` をコンパイルする
-4. Cの `setjmp/longjmp` も例外になる
-5. 新旧の命令が混ざるとどうなるか
+1. Wasmの例外の概要
+2. WATで書いてみる
+3. C++での最小例
+4. Cの `setjmp/longjmp`
+5. 新旧例外が混ざる時
 
 <!--
-0:50–1:10（20秒）。WATはWasmのテキスト表現。読めなくても、値を積む・投げる・捕まえるの順で追えば大丈夫と伝える。
+1:10–1:25（15秒）。WATはWasmのテキスト表現。読めなくても、値を積む・投げる・捕まえるの順で追えば大丈夫と伝える。
+-->
+
+---
+
+<!-- _class: hero -->
+
+# Wasmの例外の概要
+
+<!--
+1:25–1:30（5秒）。まずWasm EHの基本と、新旧の命令の経緯を紹介する。
 -->
 
 ---
@@ -69,7 +113,7 @@ Rust + Emscripten + C の組み合わせで発生
 メモリ範囲外アクセスなどの trap とは別の仕組み
 
 <!--
-1:10–1:55（45秒）。タグは例外を区別するための識別子で、ペイロードの型も定める。
+1:30–1:55（25秒）。タグは例外を区別するための識別子で、ペイロードの型も定める。
 Wasm内のcatchではtrapを捕捉しない。JS側からRuntimeErrorをcatchできることと区別する。
 出典: https://github.com/WebAssembly/spec/blob/main/proposals/exception-handling/Exceptions.md
 -->
@@ -113,6 +157,16 @@ throw命令は新旧で共通。表は方式を見分ける主な命令だけを
 
 ---
 
+<!-- _class: hero -->
+
+# WATで書いてみる
+
+<!--
+3:20–3:25（5秒）。新旧の命令を小さなWATで見比べるパートへ。
+-->
+
+---
+
 <!-- _class: small-code -->
 
 # まずはWAT：Legacyで42を投げる
@@ -132,14 +186,14 @@ throw命令は新旧で共通。表は方式を見分ける主な命令だけを
 `throw` で投げ、タグが一致する `catch` で受け取る
 
 <!--
-3:20–4:00（40秒）。i32.constはスタックに整数を積む。throwがその値を例外のペイロードにする。
+3:25–4:00（35秒）。i32.constはスタックに整数を積む。throwがその値を例外のペイロードにする。
 catch後には同じ値がスタックにあり、そのまま関数の戻り値になる。
 検証済みのソース: ../wasm-exception-research/src/legacy.wat
 -->
 
 ---
 
-<!-- _class: small-code svg-hover -->
+<!-- _class: small-code -->
 
 # 新方式：捕まえたらラベルへ分岐する
 
@@ -244,6 +298,16 @@ catch_all_refはタグを問わず例外参照を受け取る。trapまで捕ま
 
 ---
 
+<!-- _class: hero -->
+
+# C++での最小例
+
+<!--
+6:10–6:15（5秒）。C++の最小コードからem++の生成命令を見る。
+-->
+
+---
+
 # C++の例外をコンパイルする
 
 ```cpp
@@ -261,7 +325,7 @@ int catch_only() {
 まずはリンクせず、関数一つの `.o` を見る
 
 <!--
-6:10–6:45（35秒）。ランタイム全体をリンクすると命令が増えて追いづらいので、オブジェクトで読む。
+6:15–6:45（30秒）。ランタイム全体をリンクすると命令が増えて追いづらいので、オブジェクトで読む。
 may_throwの定義は不要。これは単独実行できるプログラムではなく、生成命令を調べる例。
 ソース: ../wasm-exception-research/src/catch-only.cpp
 -->
@@ -358,6 +422,16 @@ try_table catch 0 0は「タグ0を捕捉し、try_tableの外側で深さ0の�
 
 ---
 
+<!-- _class: hero -->
+
+# Cの `setjmp/longjmp`
+
+<!--
+8:05–8:10（5秒）。Cの非局所ジャンプにもWasm EHが使われることを見る。
+-->
+
+---
+
 # Cにはtry/catchがないけれど
 
 ```c
@@ -377,7 +451,7 @@ int probe(void) {
 ```
 
 <!--
-8:05–8:50（45秒）。ヘッダ#include <setjmp.h>とmainは省略。
+8:10–8:50（40秒）。ヘッダ#include <setjmp.h>とmainは省略。
 setjmpは初回0を返す。jumpの中のlongjmpで戻ってくると42を返す。
 C規格の呼び出し位置の制約に合わせ、setjmpをswitchの制御式に置いている。
 ソース: ../wasm-exception-research/src/sjlj.c
@@ -408,19 +482,36 @@ emcc -O1 -sSUPPORT_LONGJMP=wasm \
 
 ---
 
-# Cの関数へ戻るまで
+# CとWasmの対応①：初回は0
 
-<div class="sjlj-diagram"><img src="images/sjlj-flow.svg" alt="setjmpからlongjmp、Wasm EHによる捕捉と復帰までの流れ" /></div>
-
-「例外を書いていないC資産」にもEH命令が入る
+<div class="sjlj-diagram"><img src="images/sjlj-flow.svg" alt="同じ番号のCコードとWasm側の処理を対応づけ、setjmpの初回の0からcase 0、jump呼び出しまでを追う図" /></div>
 
 <!--
-9:35–10:15（40秒）。setjmpというWasm命令があるわけではない。
-図は上段を左から右へ、下段を右から左へたどる。要素へのホバーで背景を強調できる。
-try_tableはコンパイラがprobe()の呼び出し経路を囲むように生成する。図の5番はそのハンドラが働く段階を表す。
-6番はsetjmp関数をもう一度呼ぶという意味ではなく、setjmpが42を返した場合と同じ経路へ復帰することを表す。
-longjmpのペイロードは単純な整数42だけではなく、ジャンプ環境を扱うランタイム情報。図は制御の流れ。
-対象が外側のsetjmpなら、そこまで伝播させる処理も必要になる。
+9:35–9:55（20秒）。Cの①setjmpと②case 0/jump()を、右の①②と対応づけて説明する。
+ホバーすると左右の同じ番号を同時に強調できる。最初から①②を明るくして初回経路を示す。
+初回は__wasm_setjmpでenvに再開地点を記録し、判定に使うローカル値を0にする。setjmpというWasm命令はない。
+setjmpがソース上の範囲を囲むわけではなく、コンパイラがこの例のjump()呼び出しをtry_tableで捕捉できるようにする。
+右はローカル変数操作などを省略した処理の模式図で、実行可能なWATではない。
+Cのヘッダとnoinline属性は省略。static jmp_buf envは両関数で共有する戻り先の情報。case 0のreturn -1は、jumpがlongjmpするこの例では実行されない。
+実測: ../wasm-exception-research/results/standard-wat.txt のprobe
+-->
+
+---
+
+# CとWasmの対応②：捕捉後は42
+
+<div class="sjlj-diagram"><img src="images/sjlj-return.svg" alt="longjmpのthrowを捕捉し、envを照合して42を判定値に戻し、Cのcase 42へ復帰する図" /></div>
+
+<!--
+9:55–10:15（20秒）。同じCコードを置いたまま、③longjmpと④case 42を明るくする。
+longjmpは__wasm_longjmpを呼ぶ。その中でenvと42を保持する情報を用意し、Cのlongjmp用タグでthrowする。
+例外のペイロードは整数42そのものではなく、その情報を指すポインタ。この実測のタグのペイロード型はi32が一つ。
+try_tableが捕捉するとブロックの後ろの処理へ分岐し、envから復帰先がこの呼び出しかを__wasm_setjmp_testで確認する。
+一致した場合は42を判定用ローカル変数へ入れ、再開用のloopへbrする。setjmpを呼び直さず、switchの判定を再び行う。
+これによりCからはsetjmpが42を返したように見え、case 42のreturn 42へ進む。throwが直接probeの戻り値になるわけではない。
+別の呼び出しのenvならさらに伝播させる処理があるが、この図では省略する。
+実測: ../wasm-exception-research/results/standard-wat.txt のprobe、jump、__wasm_longjmp
+出典: https://emscripten.org/docs/porting/setjmp-longjmp.html
 -->
 
 ---
@@ -429,16 +520,34 @@ longjmpのペイロードは単純な整数42だけではなく、ジャンプ�
 
 # 新旧例外が混ざる時
 
-Rustの `wasm32-unknown-emscripten` ターゲット
+<!--
+10:15–10:20（5秒）。ここからはCのmruby本体へRustのライブラリを組み込む場面。
+今回は言語間のunwindではなく、リンクするコードの命令形式の不一致の話。
+-->
 
-`setjmp/longjmp` を使うCライブラリをリンクすると……
+---
+
+# mrubyにRust製のJSON実装を組み込む
+
+[mruby-jsonrs](https://github.com/udzura/mruby-jsonrs/)：mrubyでSerde / serde_jsonを使うgem
+
+- **本体はC**：mruby（`setjmp/longjmp` を利用）
+- **ライブラリはRust**：JSON実装を静的ライブラリ `.a` にする
+
+`wasm32-unknown-emscripten` 向けにビルドしてリンク
+
+リンクは通るのに、Wasmを読み込めない……
 
 <!--
-10:15–10:35（20秒）。ここからはRustのアプリが既存のC資産を利用する場面に絞る。
-先ほどのCのprobe()を、静的ライブラリlibsjlj-standard.aにしてRustから呼ぶ。
-RustのサンプルはCのprobeが42を返すことと、Rustのpanicをcatch_unwindで捕捉できることを確認する。
-CのlongjmpはC内で完結し、Rustフレームを越えない。今回は言語間のunwindではなく命令形式の不一致の話。
-再現: python3 ../wasm-exception-research/run-rust-c-library.py
+10:20–10:40（20秒）。このgemをWasmビルドしてmrubyへリンクした際に遭遇した、という発表者からの背景説明。
+Rustがアプリ本体ではない。CのmrubyとC shimから、RustのJSON実装を呼ぶ構成。
+READMEとmrbgem.rakeで、emcc使用時のターゲット自動選択とRust staticlibの最終リンクへの追加を確認した。
+以降の実測は同じ構成の最小再現。mruby/Serde全体はビルドせず、C main＋CのSjLj＋Rust staticlibで確認する。
+最小例のpanic捕捉は配布stdのEHを観察するためで、mruby-jsonrsにpanic捕捉が必須という意味ではない。
+mruby-jsonrsの現行release設定はpanic=abortで、build-std=std,panic_abortを指定する。以下のpanic=unwindの実験とは区別する。
+出典: https://github.com/udzura/mruby-jsonrs/
+出典: https://github.com/udzura/mruby-jsonrs/blob/main/mrbgem.rake
+出典: https://github.com/udzura/mruby-jsonrs/blob/main/rust/Cargo.toml
 -->
 
 ---
@@ -448,8 +557,8 @@ CのlongjmpはC内で完結し、Rustフレームを越えない。今回は言�
 # CもRustも、新形式にしたのに
 
 ```text
-C:    -sWASM_LEGACY_EXCEPTIONS=0
-Rust: -C llvm-args=-wasm-use-legacy-eh=0
+C本体:          -sWASM_LEGACY_EXCEPTIONS=0
+Rustライブラリ: -C llvm-args=-wasm-use-legacy-eh=0
 ```
 
 リンクは成功 → Node.jsでWasmを読み込むと失敗
@@ -461,14 +570,15 @@ exception handling instructions
 ```
 
 <!--
-10:35–11:20（45秒）。冒頭のエラーへ戻る。命令形式を揃えたつもりなのに実行できない。
+10:40–11:20（40秒）。冒頭のエラーへ戻る。命令形式を揃えたつもりなのに実行できない。
 表示は新形式を選ぶフラグの抜粋。CにはSUPPORT_LONGJMP=wasmも指定済み。
 Rustにはpanic=unwindとtarget-feature=+exception-handling、最終リンクには-fwasm-exceptions、
 -sSUPPORT_LONGJMP=wasm、-sWASM_LEGACY_EXCEPTIONS=0も指定した。link-argだけの指定漏れではない。
 正確にはmainやlongjmpの実行中ではなく、WebAssembly.instantiate()のコンパイル段階で拒否される。
-同一設定のCargoビルドで、配布済みstdを使うとリンク成功・Node終了コード1になる。
-実測: ../wasm-exception-research/results/c-library-prebuilt-build.txt
-実測: ../wasm-exception-research/results/c-library-prebuilt-run.txt
+CのmainからRustのstaticlibを呼ぶ最小再現で確認。配布済みstdを含む.aをemccでリンクすると成功し、Node終了コード1になる。
+実測: ../wasm-exception-research/results/c-main-prebuilt-build.txt
+実測: ../wasm-exception-research/results/c-main-prebuilt-link.txt
+実測: ../wasm-exception-research/results/c-main-prebuilt-run.txt
 -->
 
 ---
@@ -477,22 +587,22 @@ Rustにはpanic=unwindとtarget-feature=+exception-handling、最終リンクに
 
 | リンクするもの | 例外形式 |
 | --- | --- |
-| Cライブラリ（今回コンパイル） | 新形式 |
-| Rustのアプリ（今回コンパイル） | 新形式 |
-| rustup配布のstd（ビルド済み） | **Legacy** |
+| Cのmruby本体 | 新形式 |
+| Rustのgem本体（今回コンパイル） | 新形式 |
+| Rustの `.a` に入る配布済みstd | **Legacy** |
 
 `RUSTFLAGS` は、配布済みstdの中身まで変えない
 
 <small>今回のRust 1.100.0-nightly / Emscripten 6.0.9で確認</small>
 
 <!--
-11:20–12:00（40秒）。Cargoで今回作るアプリや依存crateと、rustupが配布するビルド済み標準ライブラリは別。
-今回の配布stdには旧EHのコードがあり、アプリとCを新方式にしても最終Wasmにtry/rethrowが残った。
+11:20–12:00（40秒）。Cargoで今回作るgem本体や依存crateと、rustupが配布するビルド済み標準ライブラリは別。
+表はmruby-jsonrsの構成に対応させた説明。最小再現ではC本体とRustライブラリを新方式にしても、std由来のtry/rethrowが最終Wasmに残った。
 ここでstdは標準ライブラリ一式を指し、panic_unwindなどの関連crateも含む。
 Rust公式も、Emscriptenの版や設定と配布済みstdのABIが合わない場合があると説明している。
 このターゲットのRust公式文書は、panic=abortを使わない既定設定をLegacy Wasm EHとして説明している。
 すべてのRustターゲットや将来の配布stdが旧方式だと一般化しない。
-実測: ../wasm-exception-research/results/c-library-prebuilt-instructions.json
+実測: ../wasm-exception-research/results/c-main-prebuilt-instructions.json
 出典: https://doc.rust-lang.org/rustc/platform-support/wasm32-unknown-emscripten.html#emscripten-abi-compatibility
 出典: https://doc.rust-lang.org/rustc/platform-support/wasm32-unknown-emscripten.html#enabled-webassembly-features
 -->
@@ -506,12 +616,12 @@ Rust公式も、Emscriptenの版や設定と配布済みstdのABIが合わない
 ```sh
 EH='try_table|throw_ref|try|catch|catch_all|rethrow|delegate'
 llvm-objdump -d --triple=wasm32-unknown-unknown \
-  build/librust_c_mixed.a \
+  build/librust_eh_prebuilt.a \
   | grep -E "[[:space:]]($EH)([[:space:]]|$)"
 ```
 
 ```text
-1a: 1f 40 01 02 00   try_table (catch_all 0)
+21: 1f 40 01 02 00   try_table (catch_all 0)
 2c: 06 40            try
 3d: 19               catch_all
 6e: 09 00            rethrow 0
@@ -520,8 +630,8 @@ llvm-objdump -d --triple=wasm32-unknown-unknown \
 Rustは新形式、同梱した配布済みstdには旧形式（抜粋）
 
 <!--
-12:00–12:35（35秒）。元の関数呼び出しとpanic捕捉を持つRust staticlibを追加して観察した。
-Rustコードは新EHでコンパイルし、Cの.aをバンドル。ビルド済みstdも含まれるため同じ.aで新旧を確認できる。
+12:00–12:35（35秒）。C本体にリンクするRust staticlibを観察する。
+新EHでコンパイルしたRustコードとビルド済みstdが同じ.aに含まれる。ここで検査する.aにはCオブジェクトを含めていない。
 出力は4命令を選び、空白を整形・コメントを省略した抜粋。アドレスとバイト列は実測のまま。
 try_tableは今回コンパイルしたRustのオブジェクト、try/catch_all/rethrowは配布stdのpanic_unwindにあった。
 try_table (catch_all 0)のcatch_allは即値内の節であり、単独の旧catch_all命令とは別。
@@ -529,10 +639,9 @@ try_table (catch_all 0)のcatch_allは即値内の節であり、単独の旧cat
 --tripleは逆アセンブル対象の指定で、入力の例外形式を変換するオプションではない。
 手元ではEmscripten同梱LLVM 24.0.0gitのllvm-objdumpを使用。PATHにない場合はlibexec/llvm/bin/llvm-objdumpの絶対パスを使う。
 アーカイブは未使用のオブジェクトも含む。ここは混在する入力の所在を探す検査で、最終Wasmの読み込みと実行も別途確認する。
-再現: python3 ../wasm-exception-research/inspect-eh-archive.py
-実測: ../wasm-exception-research/results/archive-eh-command.txt
-実測: ../wasm-exception-research/results/archive-eh-matches.txt
-実測: ../wasm-exception-research/results/archive-eh-summary.json
+再現: python3 ../wasm-exception-research/run-c-rust-staticlib.py
+実測: ../wasm-exception-research/results/c-main-archive-examples.txt
+全逆アセンブル: ../wasm-exception-research/build/c-main-archive-disassembly.txt（Git管理外）
 出典: https://llvm.org/docs/CommandGuide/llvm-objdump.html
 -->
 
@@ -540,7 +649,7 @@ try_table (catch_all 0)のcatch_allは即値内の節であり、単独の旧cat
 
 # nightlyで、stdごと新形式にする
 
-新形式を指定した `RUSTFLAGS` を保ったまま：
+Rustライブラリ側で、新形式の `RUSTFLAGS` を保ったまま：
 
 ```sh
 rustup component add rust-src --toolchain nightly
@@ -549,7 +658,8 @@ cargo +nightly -Zbuild-std build \
 ```
 
 - `-Zbuild-std`：stdもソースから再コンパイルする
-- Cライブラリ・Rust・std・最終リンクの設定を揃える
+- 生成した `.a` を、C本体へリンクし直す
+- C本体・Rustライブラリ・std・最終リンクの設定を揃える
 
 <small><a href="https://doc.rust-lang.org/rustc/platform-support/wasm32-unknown-emscripten.html#emscripten-abi-compatibility">Rust公式も、設定を揃えたstdの再ビルドを案内している</a></small>
 
@@ -557,10 +667,11 @@ cargo +nightly -Zbuild-std build \
 12:35–13:30（55秒）。nightlyに切り替えるだけでは配布済みstdの形式は変わらない。-Zbuild-stdが必要。
 このオプション自体が新EHを指定するのではなく、同じ新EH設定でstdまでビルドし直せる点が肝。
 rust-srcは標準ライブラリのソース。nightlyのCargoとrustc、rust-srcを揃えて使う。
-コードはCargoプロジェクト内で実行する例。Cライブラリのリンク設定は済んでいる前提。
-追試スクリプトはCをコンパイルして.aを作り、同じRUSTFLAGSで-Zbuild-stdの有無を比較する。
-RUSTFLAGSの完全な値はresults/c-library-rustflags.txt、再現コードはrun-rust-c-library.pyに保存。
-cc crateやCMakeを使う実プロジェクトでは、C側のコンパイル設定も別途渡す。
+コードはRustライブラリのCargoプロジェクト内で実行する例。crate-type=staticlibを指定済み。
+追試スクリプトは同じRUSTFLAGSで-Zbuild-stdの有無を比較し、それぞれの.aを同じC本体にemccでリンクする。
+RUSTFLAGSの完全な値はresults/c-main-rustflags.txt、再現コードはrun-c-rust-staticlib.pyに保存。
+この最小例はpanic=unwindで比較する。mruby-jsonrsのpanic=abort構成ではstd,panic_abortを再ビルド対象に指定する。
+実プロジェクトでは、mruby側のコンパイルと最終emccリンクの設定も別途揃える。
 出典: https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std
 出典: https://doc.rust-lang.org/rustc/platform-support/wasm32-unknown-emscripten.html#emscripten-abi-compatibility
 -->
@@ -569,27 +680,20 @@ cc crateやCMakeを使う実プロジェクトでは、C側のコンパイル設
 
 # stdを揃えたら、動いた
 
-```text
-C longjmp=42; Rust panic caught
-exit=0
-```
-
 | 最終Wasmの命令 | 配布済みstd | std再ビルド後 |
 | --- | ---: | ---: |
-| `try`（旧） | 106 | 0 |
-| `rethrow`（旧） | 63 | 0 |
-
-アプリのフラグだけでなく、リンクするstdまで揃える
+| `try`（旧） | 71 | 0 |
+| `rethrow`（旧） | 43 | 0 |
 
 <!--
-13:30–14:15（45秒）。同じRustソース・C静的ライブラリ・新EH設定で、stdの供給方法を変えて比較する。
-出力は意図的なpanicの診断表示を省略した抜粋。catch_unwindで捕捉後にこの成功メッセージが出る。
+13:30–14:15（45秒）。同じC本体・Rustライブラリのソース・新EH設定で、Rust staticlibに含まれるstdの供給方法を変えて比較する。
+C本体だけでなく、Rustの.aに入るstdまで揃えることを伝える。再ビルド後はNodeでの実行も成功した。
 CのlongjmpとRustのpanic捕捉をそれぞれ試しており、例外がRustとCのフレームをまたぐテストではない。
 wasm-objdumpで最終成果物も確認。旧命令がなくなることを示す数であり、性能比較ではない。
 今回の実行環境はNode 26.8.1。版・ターゲット・設定を変える場合は改めて検証する。
-実測: ../wasm-exception-research/results/c-library-rebuilt-run.txt
-実測: ../wasm-exception-research/results/c-library-prebuilt-instructions.json
-実測: ../wasm-exception-research/results/c-library-rebuilt-instructions.json
+実測: ../wasm-exception-research/results/c-main-rebuilt-run.txt
+実測: ../wasm-exception-research/results/c-main-prebuilt-instructions.json
+実測: ../wasm-exception-research/results/c-main-rebuilt-instructions.json
 -->
 
 ---
@@ -632,7 +736,7 @@ wasm-objdumpで最終成果物も確認。旧命令がなくなることを示�
 - [日本語の調査メモ](../wasm-exception-research/README.md)
 - [WATの例](../wasm-exception-research/src/standard.wat) / [C++の例](../wasm-exception-research/src/catch-only.cpp) / [Cの例](../wasm-exception-research/src/sjlj.c)
 - [比較実験](../wasm-exception-research/run.py) / [修正方法の実験](../wasm-exception-research/run-recovery.py)
-- [Rust + C静的ライブラリの再現](../wasm-exception-research/run-rust-c-library.py) / [アーカイブの検査](../wasm-exception-research/inspect-eh-archive.py)
+- [C本体 + Rust静的ライブラリの再現](../wasm-exception-research/run-c-rust-staticlib.py) / [mruby-jsonrs](https://github.com/udzura/mruby-jsonrs/)
 
 Emscripten 6.0.9 / Node.js 26.8.1 / Binaryen 133
 Rust 1.100.0-nightly（2026-08-17）

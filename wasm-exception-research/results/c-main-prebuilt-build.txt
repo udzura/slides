@@ -1,0 +1,9 @@
+$ cargo +nightly build --offline --manifest-path rust-library/Cargo.toml --target wasm32-unknown-emscripten
+warning: unstable feature specified for `-Ctarget-feature`: `exception-handling`
+  |
+  = note: this feature is not stably supported; its behavior can change in the future
+
+warning: `rust-eh-library` (lib) generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+
+exit=0

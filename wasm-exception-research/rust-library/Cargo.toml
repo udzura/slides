@@ -1,0 +1,12 @@
+[package]
+name = "rust-eh-library"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["staticlib"]
+path = "../src/rust_library.rs"
+
+[profile.dev]
+panic = "unwind"

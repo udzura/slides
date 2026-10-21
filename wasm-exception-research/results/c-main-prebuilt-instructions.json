@@ -1,0 +1,9 @@
+{
+  "catch_all": 62,
+  "delegate": 9,
+  "rethrow": 43,
+  "throw": 2,
+  "throw_ref": 2,
+  "try": 71,
+  "try_table": 9
+}

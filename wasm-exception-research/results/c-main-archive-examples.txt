@@ -1,0 +1,4 @@
+      21: 1f 40 01 02 00       	try_table 	 (catch_all 0) # 0: down to label1
+      2c: 06 40        	try     	
+      3d: 19           	catch_all                       # catch1:
+      6e: 09 00        	rethrow 	0                       # to caller

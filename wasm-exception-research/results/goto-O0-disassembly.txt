@@ -1,0 +1,50 @@
+
+goto-O0.o:	file format wasm 0x1
+
+Code Disassembly:
+
+000059 func[0] <goto_sum>:
+ 00005a: 01 7f                      | local[1] type=i32
+ 00005c: 23 80 80 80 80 00          | global.get 0 <env.__stack_pointer>
+ 000062: 41 10                      | i32.const 16
+ 000064: 6b                         | i32.sub
+ 000065: 21 01                      | local.set 1
+ 000067: 20 01                      | local.get 1
+ 000069: 20 00                      | local.get 0
+ 00006b: 36 02 0c                   | i32.store 2 12
+ 00006e: 20 01                      | local.get 1
+ 000070: 41 00                      | i32.const 0
+ 000072: 36 02 08                   | i32.store 2 8
+ 000075: 02 40                      | block
+ 000077: 03 40                      |   loop
+ 000079: 02 40                      |     block
+ 00007b: 20 01                      |       local.get 1
+ 00007d: 28 02 0c                   |       i32.load 2 12
+ 000080: 41 00                      |       i32.const 0
+ 000082: 4c                         |       i32.le_s
+ 000083: 41 01                      |       i32.const 1
+ 000085: 71                         |       i32.and
+ 000086: 45                         |       i32.eqz
+ 000087: 0d 00                      |       br_if 0
+ 000089: 0c 02                      |       br 2
+ 00008b: 0b                         |     end
+ 00008c: 20 01                      |     local.get 1
+ 00008e: 20 01                      |     local.get 1
+ 000090: 28 02 0c                   |     i32.load 2 12
+ 000093: 20 01                      |     local.get 1
+ 000095: 28 02 08                   |     i32.load 2 8
+ 000098: 6a                         |     i32.add
+ 000099: 36 02 08                   |     i32.store 2 8
+ 00009c: 20 01                      |     local.get 1
+ 00009e: 20 01                      |     local.get 1
+ 0000a0: 28 02 0c                   |     i32.load 2 12
+ 0000a3: 41 7f                      |     i32.const 4294967295
+ 0000a5: 6a                         |     i32.add
+ 0000a6: 36 02 0c                   |     i32.store 2 12
+ 0000a9: 0c 00                      |     br 0
+ 0000ab: 0b                         |   end
+ 0000ac: 0b                         | end
+ 0000ad: 20 01                      | local.get 1
+ 0000af: 28 02 08                   | i32.load 2 8
+ 0000b2: 0f                         | return
+ 0000b3: 0b                         | end

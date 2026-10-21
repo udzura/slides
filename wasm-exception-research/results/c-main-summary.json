@@ -1,0 +1,24 @@
+{
+  "prebuilt": {
+    "link_exit": 0,
+    "run_exit": 1,
+    "instructions": {
+      "catch_all": 62,
+      "delegate": 9,
+      "rethrow": 43,
+      "throw": 2,
+      "throw_ref": 2,
+      "try": 71,
+      "try_table": 9
+    }
+  },
+  "rebuilt": {
+    "link_exit": 0,
+    "run_exit": 0,
+    "instructions": {
+      "throw": 2,
+      "throw_ref": 97,
+      "try_table": 300
+    }
+  }
+}
