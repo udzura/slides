@@ -23,6 +23,13 @@ OGPは1枚目を1920×1080のPNGに書き出した `ogp.png`。Markdownの `imag
 marp --no-stdin index.md --image png --image-scale 1.5 --allow-local-files -o ogp.png
 ```
 
+最後のページは公開予定URLとQRコードを掲示する。`images/slides-qr.png` はmacOSのCore Imageで生成し、保存したPNGをデコードしてURLを検証する。
+URLを変更した場合は、`generate-qr.swift` とスライドのリンクを更新してから再生成する。
+
+```sh
+swift generate-qr.swift
+```
+
 行の横幅全体がホバー対象。対象行は明るい背景（#fffdf9）と朱色のマーカー、他行は濃い背景（#d3d5c9）。文字の不透明度は変えない。
 ホバー中は枠の上下の余白も同じ濃い背景にする。切り替えは120ms。行から離れると全行を通常表示する。
 印刷では全行を通常表示し、動きを減らす設定ではtransitionを無効にする。

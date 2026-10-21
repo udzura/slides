@@ -19,7 +19,7 @@ Legacy EHと、新しい例外命令
 Fukuoka.wasm #1
 
 <!--
-目安 0:00–0:15（15秒）。本編32枚、合計15分。参考資料2枚は時間外。
+目安 0:00–0:15（15秒）。本編32枚、合計15分。参考資料2枚と公開先1枚は時間外。
 タイトルとイベント表記は仮。開催日や所属などは未記入。
 今日は言語の例外がWasmでどう動くか、生成された命令から見ていきます。
 -->
@@ -80,7 +80,7 @@ Rust + Emscripten + C の組み合わせで発生
 
 ---
 
-# 今日見るもの
+# Table of Contents
 
 1. Wasmの例外の概要
 2. WATで書いてみる
@@ -132,7 +132,7 @@ Rust + Emscripten + C の組み合わせで発生
 @media print { .term-tooltip { display:none !important; } .term-help-trigger { text-decoration:none; } }
 </style>
 
-# Wasmにも例外処理の命令がある
+# Wasmの例外処理の命令とは
 
 - EH = Exception Handling
 - 例外は「タグ」と「値の組」で表される
@@ -178,7 +178,7 @@ throw命令は新旧で共通。表は方式を見分ける主な命令だけを
 
 ---
 
-# 新方式では、例外そのものを値として扱う
+# 参考: 新方式では例外そのものを値として扱う
 
 - 2023年10月：`exnref` を使う方式への変更に合意
 - `try_table`：捕捉する例外と分岐先を並べる
@@ -247,7 +247,7 @@ catch後には同じ値がスタックにあり、そのまま関数の戻り値
 
 <!-- _class: small-code -->
 
-# 新方式：捕まえたらラベルへ分岐する
+# 新方式は捕まえたらラベルへ分岐する
 
 ```wat
 (module
@@ -310,7 +310,7 @@ figcaption { margin-top: 12px; font-size: 20px; line-height: 1.5; }
 
 ---
 
-# 実際に動かすと、どちらも42
+# 同じように捕捉し、同じ結果を得る
 
 ```sh
 wasm-tools parse standard.wat -o standard.wasm
@@ -335,7 +335,7 @@ node src/check-wat.cjs build/wat-standard.wasm
 
 ---
 
-# 再送出には例外参照を使う
+# 新方式: 再送出には例外参照を使う
 
 ```wat
 block $saved (result exnref)
@@ -383,7 +383,7 @@ int catch_only() {
 }
 ```
 
-まずはリンクせず、関数一つの `.o` を見る
+まずはリンクせず、関数一つのオブジェクト `.o` を見る
 
 <!--
 6:15–6:45（30秒）。ランタイム全体をリンクすると命令が増えて追いづらいので、オブジェクトで読む。
@@ -495,7 +495,7 @@ __cxa_begin_catchは捕捉中の例外として登録し、ハンドラ数など
 
 ---
 
-# Cにはtry/catchがないけれど
+# Cでtry/catch的なことをする例
 
 ```c
 static jmp_buf env;
@@ -522,7 +522,7 @@ C規格の呼び出し位置の制約に合わせ、setjmpをswitchの制御式�
 
 ---
 
-# setjmp/longjmpにもWasm EHを使える
+# setjmp/longjmpもWasm EHが使われる
 
 ```sh
 emcc -O1 -sSUPPORT_LONGJMP=wasm \
@@ -646,7 +646,7 @@ CのmainからRustのstaticlibを呼ぶ最小再現で確認。配布済みstd�
 
 ---
 
-# 配布済みstdが、旧形式だった
+# Rustの配布済みstdが、旧形式だった
 
 | リンクするもの | 例外形式 |
 | --- | --- |
@@ -674,7 +674,7 @@ Rust公式も、Emscriptenの版や設定と配布済みstdのABIが合わない
 
 <!-- _class: small-code -->
 
-# アーカイブの中にも、新旧の命令
+# できたアーカイブの中に、新旧の命令
 
 ```sh
 EH='try_table|throw_ref|try|catch|catch_all|rethrow|delegate'
@@ -741,7 +741,7 @@ RUSTFLAGSの完全な値はresults/c-main-rustflags.txt、再現コードはrun-
 
 ---
 
-# stdを揃えたら、動いた
+# stdを揃えたら解決した
 
 | 最終Wasmの命令 | 配布済みstd | std再ビルド後 |
 | --- | ---: | ---: |
@@ -761,14 +761,14 @@ wasm-objdumpで最終成果物も確認。旧命令がなくなることを示�
 
 ---
 
-# Wasmの例外、見えてきたでしょうか
+# Wasmの例外完全に理解できました
 
 - 新方式は、例外参照とラベルへの分岐を使う
-- C++もCも、コンパイラとランタイムが協調する
+- C++もCも、コンパイラとランタイムが協調し実現
 - `setjmp/longjmp` を使うCにも例外命令が入る
-- 新旧を揃えるときは、標準ライブラリまで見る
+- 新旧を揃えるときは、標準ライブラリも考慮する
 
-まずは小さいWATと `.o` から読んでみるとよさそう
+まずは小さいWATで試すと理解が進むかも？
 
 <!--
 14:15–15:00（45秒）。概要、WAT、C++、C、混在問題を一周したことを振り返る。
@@ -809,4 +809,27 @@ Rust 1.100.0-nightly（2026-08-17）
 <!--
 本編時間外。サンプルと調査メモはGitHubのudzura/slidesのmaster上のファイルへリンクする。
 既定値やランタイム対応は変わり得るため、実測した版を明示する。
+-->
+
+---
+
+<!-- _class: share-link -->
+
+<style scoped>
+h1 { text-align:left; }
+.share-code { flex-shrink:0; margin:0 auto 22px; width:340px; }
+.share-code img { display:block; width:340px; height:340px; }
+.share-url { margin:0; text-align:center; font-size:27px; letter-spacing:0; }
+</style>
+
+# Thank You!!
+
+<div class="share-code"><img src="images/slides-qr.png" width="340" height="340" alt="資料の公開予定URLを開くQRコード" /></div>
+
+<p class="share-url"><a href="https://udzura.jp/slides/2026/fukuokawasm-1/">https://udzura.jp/slides/2026/fukuokawasm-1/</a></p>
+
+<!--
+本編時間外。資料をアップロードする予定のURLを掲示する最後のページ。
+QRコードは表示したURLと同じ内容で、末尾のスラッシュを含む。
+generate-qr.swiftでローカル生成し、生成したPNGをデコードしてURLの一致を確認する。
 -->
