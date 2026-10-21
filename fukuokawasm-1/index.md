@@ -5,6 +5,7 @@ paginate: true
 size: 16:9
 title: "入門 Wasmの例外命令"
 description: "Fukuoka.wasm #1 / 入門 Wasmの例外命令"
+image: "https://udzura.jp/slides/2026/fukuokawasm-1/ogp.png"
 header: "**Uchio Kondo** / [Slides](https://udzura.jp/slides/) / [2026](https://udzura.jp/slides/2026/) / 入門 Wasmの例外命令"
 footer: "Fukuoka.wasm #1"
 ---
@@ -103,6 +104,34 @@ Rust + Emscripten + C の組み合わせで発生
 
 ---
 
+<style>
+.term-help { --tooltip-x:-50%; position:relative; display:inline-block; }
+.term-help-start { --tooltip-x:0%; }
+.term-help-start .term-tooltip { left:0; }
+.term-help-below .term-tooltip { bottom:auto; top:calc(100% + 14px); }
+.term-help-below .term-tooltip::after { top:auto; bottom:100%; }
+.term-help-trigger { cursor:help; text-decoration:underline dotted var(--accent); text-underline-offset:6px; }
+.term-help-trigger:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
+.term-tooltip {
+  position:absolute; z-index:10; left:50%; bottom:calc(100% + 14px);
+  box-sizing:border-box; width:560px; padding:20px 24px;
+  background:#fffdf9; color:var(--ink); border:1px solid var(--line); border-radius:4px;
+  box-shadow:0 8px 28px rgb(37 41 36 / 16%);
+  font-size:21px; line-height:1.55; letter-spacing:0; text-align:left;
+  opacity:0; visibility:hidden; pointer-events:none; transform:translate(var(--tooltip-x), 6px);
+  transition:opacity 180ms ease-out, transform 180ms ease-out, visibility 0s linear 180ms;
+}
+.term-tooltip::after { content:''; position:absolute; top:100%; left:0; width:100%; height:15px; }
+.term-tooltip strong, .term-tooltip-body { display:block; }
+.term-tooltip strong { margin-bottom:8px; }
+.term-tooltip-body + .term-tooltip-body { margin-top:8px; }
+.term-help:hover .term-tooltip, .term-help:focus-within .term-tooltip {
+  opacity:1; visibility:visible; pointer-events:auto; transform:translate(var(--tooltip-x), 0); transition-delay:0s;
+}
+@media (prefers-reduced-motion:reduce) { .term-tooltip { transition:none; } }
+@media print { .term-tooltip { display:none !important; } .term-help-trigger { text-decoration:none; } }
+</style>
+
 # Wasmにも例外処理の命令がある
 
 - EH = Exception Handling
@@ -110,12 +139,23 @@ Rust + Emscripten + C の組み合わせで発生
 - 投げると、呼び出し元をたどってハンドラを探す
 - C++の例外や、Cの非局所ジャンプの実装に使える
 
-メモリ範囲外アクセスなどの trap とは別の仕組み
+メモリ範囲外アクセスなどの <span class="term-help"><span class="term-help-trigger" tabindex="0" aria-describedby="trap-tooltip">trap</span><span class="term-tooltip" id="trap-tooltip" role="tooltip"><strong>trap：実行時の異常終了</strong><span class="term-tooltip-body">命令名ではありません。<code>i32.load</code> などで線形メモリの範囲外にアクセスすると発生します。</span><span class="term-tooltip-body"><code>unreachable</code> は必ずtrapを起こす命令。WasmのEHではtrapを捕捉できません。</span></span></span> とは別の仕組み
 
 <!--
 1:30–1:55（25秒）。タグは例外を区別するための識別子で、ペイロードの型も定める。
+本文のtrapはホバーまたはTabによるフォーカスで補足説明を表示する。印刷時はポップアップを隠す。
+補足：trapという名前のバイトコード命令はない。trapは命令の実行が失敗して、そのWasm呼び出しが異常終了すること。
+仕様の実行規則ではtrapをadministrative instructionと呼ぶが、意味を記述するための補助記法で、Wasmファイルにエンコードする命令ではない。
+メモリ範囲外アクセスでは、i32.load/i32.storeなどを実行した時点でWasmエンジンが範囲を保証し、範囲外ならtrapする。
+ソースのコンパイラが範囲外を発見してtrap命令を挿入する、という一般的な仕組みではない。具体的な検出方法はエンジンの実装に依存する。
+例：memoryが1ページ（65,536バイト）なら、i32.const 65536; i32.loadを実行すると範囲外でtrapする。load自体が失敗し、別のtrap命令へ移るわけではない。
+必ずtrapを起こす実際の命令はunreachable。これは後のWAT例にも登場するが、その例では実行されない経路に置いてある。
+ここでのメモリ範囲は線形メモリ全体。Cの配列一つの境界などを自動的に検査するという意味ではない。
 Wasm内のcatchではtrapを捕捉しない。JS側からRuntimeErrorをcatchできることと区別する。
 出典: https://github.com/WebAssembly/spec/blob/main/proposals/exception-handling/Exceptions.md
+出典: https://webassembly.github.io/spec/core/exec/runtime.html#administrative-instructions
+出典: https://webassembly.github.io/spec/core/exec/instructions.html#exec-load
+出典: https://webassembly.github.io/spec/core/exec/instructions.html#exec-unreachable
 -->
 
 ---
@@ -142,7 +182,7 @@ throw命令は新旧で共通。表は方式を見分ける主な命令だけを
 
 - 2023年10月：`exnref` を使う方式への変更に合意
 - `try_table`：捕捉する例外と分岐先を並べる
-- `exnref`：捕捉した例外への参照
+- <span class="term-help term-help-start term-help-below"><span class="term-help-trigger" tabindex="0" aria-describedby="exnref-tooltip"><code>exnref</code></span><span class="term-tooltip" id="exnref-tooltip" role="tooltip"><strong>exnref：例外への参照を表す型</strong><span class="term-tooltip-body"><code>(ref null exn)</code> の略。nullも許す参照型です。</span><span class="term-tooltip-body">捕捉した例外を保持し、<code>throw_ref</code> で同じ例外を投げ直せます。</span></span></span>：捕捉した例外への参照を表す型
 - `throw_ref`：その参照を使って再送出する
 
 現在のWebAssembly 3.0仕様には新方式が載っている
@@ -150,9 +190,21 @@ throw命令は新旧で共通。表は方式を見分ける主な命令だけを
 <!--
 2:40–3:20（40秒）。Legacyはcatchのスコープを指定してrethrowする。
 新方式は例外への参照を受け取り、元のcatchの構造に縛られず再送出できる。単なる名前変更ではない。
+exnrefは命令名ではなく値の型。正式には(ref null exn)の略で、例外への参照またはnullを表す。
+exnは例外を表すheap type、exnrefはそれを参照するnullableなreference type。タグごとに別のexnref型があるわけではない。
+例外の実体はタグとペイロードを持ち、exnref型の値はその例外を参照する。ペイロードの整数42そのものやタグの識別子とは区別する。
+参照は不透明な値で、i32のポインタのような線形メモリのアドレスではない。スタック上で渡したり、ローカル変数に保持したりできる。
+catchはペイロードだけ、catch_refはペイロードと例外参照、catch_all_refは例外参照だけを分岐先へ渡す。
+catch_ref/catch_all_refが渡す参照は非nullの(ref exn)。nullableなexnref型としても保持できる。
+throw_refはスタック上の参照を消費して同じ例外を投げ直す。nullを渡すとtrapする。
+本文の定義行のexnrefは、ホバーまたはTabによるフォーカスで補足説明を表示する。
 2023年10月は設計変更の合意時期であり、全ブラウザでの実装完了時期ではない。
 出典: https://github.com/WebAssembly/meetings/blob/main/main/2023/CG-10.md#exception-handling-vote-on-proposal-to-re-introduce-exnref
 出典: https://webassembly.github.io/spec/core/syntax/instructions.html#control-instructions
+出典: https://webassembly.github.io/spec/core/syntax/types.html#reference-types
+出典: https://github.com/WebAssembly/spec/blob/main/proposals/exception-handling/Exceptions.md#exception-references
+出典: https://webassembly.github.io/spec/core/valid/instructions.html#valid-catch
+出典: https://webassembly.github.io/spec/core/exec/instructions.html#exec-throw_ref
 -->
 
 ---
@@ -212,11 +264,20 @@ catch後には同じ値がスタックにあり、そのまま関数の戻り値
 
 `$caught` のブロックを抜け、42を結果として受け取る
 
+<small><span class="term-help term-help-start"><span class="term-help-trigger" tabindex="0" aria-describedby="eh-scope-tooltip">（参考: 旧方式との違い）</span><span class="term-tooltip" id="eh-scope-tooltip" role="tooltip"><strong>スコープと、例外の値としての扱い</strong><span class="term-tooltip-body">旧方式：<code>catch</code> で取り出せるのはペイロード。例外自体はcatchに結び付き、<code>rethrow</code> で対象のスコープを指定します。</span><span class="term-tooltip-body">新方式：<code>catch_ref</code> などなら例外参照も値として保持でき、catchの外でも <code>throw_ref</code> で再送出できます。</span><span class="term-tooltip-body">※この例の <code>catch</code> は、ペイロードの42だけを受け取ります。</span></span></span></small>
+
 <!--
 4:00–4:35（35秒）。catch節はtry_tableの先頭に移った。捕捉後にブロックの末尾を抜けることを指で追う。
 unreachableは通常経路用。この例ではthrowして捕捉されるので実行されない。
 新方式のcatchは独立した旧catch命令ではなく、try_tableの即値に含まれる節。
+「（参考: 旧方式との違い）」のホバー説明に、catchのスコープと例外参照の違いをまとめた。
+旧方式もタグとペイロードを持つ例外を伝搬するが、catchでWasmコードに取り出せるのはペイロード。エンジンが保持する捕捉中の例外を、catchのスコープを指定したrethrowで再送出する。
+新方式はcatch_ref/catch_all_refで例外参照を値として取り出せる。ローカル変数などに保持し、catchのスコープ外でもthrow_refへ渡せる。
+新方式でも通常のcatchは参照を渡さない。このスライドは42を受け取る例で、例外参照を受け取って再送出する例は後のスライドで示す。
+新旧ともペイロードはタグで定義したWasmの値型の列。新方式で値の型の制限がなくなる、という説明にはしない。
 検証済みのソース: ../wasm-exception-research/src/standard.wat
+出典: https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/legacy/Exceptions.md#rethrowing-an-exception
+出典: https://github.com/WebAssembly/spec/blob/main/proposals/exception-handling/Exceptions.md#exception-references
 -->
 
 ---
@@ -405,9 +466,7 @@ block
 end
 ```
 
-捕捉すると内側の `block` を抜け、後続の処理へ
-
-<small>補足：<code>__cxa_begin_catch</code> などは、C++の例外を管理する補助関数</small>
+<span class="term-help term-help-start"><span class="term-help-trigger" tabindex="0" aria-describedby="cpp-catch-tooltip">捕捉する</span><span class="term-tooltip" id="cpp-catch-tooltip" role="tooltip"><strong>C++ランタイムとの協働</strong><span class="term-tooltip-body"><code>try_table</code> は捕捉後の制御を移します。</span><span class="term-tooltip-body">C++側では <code>__cxa_begin_catch</code> が捕捉状態を登録し、<code>__cxa_end_catch</code> が終了処理や必要な例外オブジェクトの破棄を担います。</span></span></span>と内側の `block` を抜け、後続の処理へ
 
 <!--
 7:45–8:05（20秒）。em++ -O1のstandard.oをwasm-objdump -dで読んだ抜粋。完全なWATではない。
@@ -415,9 +474,13 @@ try_table catch 0 0は「タグ0を捕捉し、try_tableの外側で深さ0の�
 通常経路のi32.const 0、local.set、br 2などと、捕捉後のスタックポインタ復元・ローカル変数操作を省略している。
 末尾のlocal.setも省略。i32.const 42の値は実際にはローカル変数に保存し、外側のblockを抜けて関数結果として返す。
 手書きの新方式WATと同じく、捕捉先の処理がtry_tableの外に置かれることを強調。
-新旧とも__cxa_begin_catch / __cxa_end_catchを呼ぶ。ここは一言だけ触れ、命令の違いに集中する。
+新旧とも__cxa_begin_catch / __cxa_end_catchを呼ぶ。本文の「捕捉する」から補足ポップアップを開ける。
+WasmのEH命令は捕捉と制御の移動を担い、C++ランタイムのライブラリ関数がC++としての例外管理を補う。
+__cxa_begin_catchは捕捉中の例外として登録し、ハンドラ数などを更新する。__cxa_end_catchはハンドラ数を減らし、条件を満たせば例外オブジェクトを破棄する。
+これらはWasmの専用命令ではなく、コンパイラが呼び出しを生成するC++ランタイムの関数。上の命令抜粋では省略している。
 このcatch-only例は投げる側を含まないので、throw_refが生成される例ではない。
 実測: ../wasm-exception-research/results/catch-standard-disassembly.txt
+出典: https://libcxxabi.llvm.org/spec.html
 -->
 
 ---
