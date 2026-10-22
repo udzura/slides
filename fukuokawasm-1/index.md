@@ -172,8 +172,18 @@ Wasm内のcatchではtrapを捕捉しない。JS側からRuntimeErrorをcatchで
 <!--
 1:55–2:40（45秒）。Legacy EHと標準のEHで、使う命令が異なることを示す。
 throw命令は新旧で共通。表は方式を見分ける主な命令だけを示している。
+ブラウザ対応の補足（2026年10月22日に互換性データを確認。全ブラウザでの実機追試ではない）：
+Legacy EHはChrome/Edge 95以降、Firefox 100以降、Safari/iOS Safari 15.2以降。
+新方式（try_table、throw_ref、exnref）はChrome/Edge 137以降、Firefox 131以降、Safari/iOS Safari 18.4以降。
+新方式も主要ブラウザに実装済み。「EH対応」という表示だけではどちらの形式を指すか区別が必要。
+新方式への対応はLegacyの廃止を意味しない。WebKitはSafari 18.4の発表で、Legacyも互換性のため継続サポートすると明記している。
+ブラウザが新旧それぞれを実行できることと、同一モジュール内に新旧を混在できることは分けて考える。
 出典: https://emscripten.org/docs/porting/exceptions.html
 出典: https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/legacy/Exceptions.md
+出典: https://github.com/mdn/browser-compat-data/blob/main/webassembly/exception-handling.json
+出典: https://github.com/mdn/browser-compat-data/blob/main/webassembly/exceptionsFinal.json
+出典: https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/131#webassembly
+出典: https://webkit.org/blog/16574/webkit-features-in-safari-18-4/#webassembly
 -->
 
 ---
