@@ -148,6 +148,13 @@ svg.hover-code { display:block; flex-shrink:0; width:100%; max-width:100%;
 </style>
 '''
 page = page.replace('</head>', css + '</head>', 1)
+if len(re.findall(r'<button\b[^>]*\bdata-celebrate\b', page)) != 1:
+    raise SystemExit('Expected one title-slide celebration button')
+before, closing, after = page.rpartition('</body>')
+if not closing:
+    raise SystemExit('Missing HTML body closing tag')
+celebration = (root / 'celebration.js').read_text()
+page = before + '<script id="title-celebration">\n' + celebration + '\n</script>' + closing + after
 output.write_text(page)
 print(f'Converted {sum(converted.values())} source blocks to hoverable inline SVG: {dict(converted)}.')
 print('Inlined two hoverable SjLj diagrams.')

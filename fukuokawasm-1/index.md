@@ -12,11 +12,21 @@ footer: "Fukuoka.wasm #1"
 
 <!-- _class: hero -->
 
+<style scoped>
+.celebrate-trigger {
+  appearance:none; padding:0; border:0; background:none; color:inherit;
+  font:inherit; letter-spacing:inherit; cursor:pointer; touch-action:manipulation;
+}
+.celebrate-trigger:hover { text-decoration:underline; text-underline-offset:6px; }
+.celebrate-trigger:focus-visible { outline:2px solid var(--accent); outline-offset:6px; }
+@media print { .celebrate-trigger { text-decoration:none; outline:none; } }
+</style>
+
 # 入門 Wasmの例外命令
 
 Legacy EHと、新しい例外命令
 
-Fukuoka.wasm #1
+<button class="celebrate-trigger" type="button" data-celebrate aria-label="Fukuoka.wasm #1 をお祝いする">Fukuoka.wasm #1</button>
 
 <!--
 目安 0:00–0:15（15秒）。本編32枚、合計15分。参考資料2枚と公開先1枚は時間外。
