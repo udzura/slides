@@ -142,17 +142,50 @@ Rust + Emscripten + C の組み合わせで発生
 @media print { .term-tooltip { display:none !important; } .term-help-trigger { text-decoration:none; } }
 </style>
 
+<style scoped>
+.exception-layout { display:grid; grid-template-columns:1fr 420px; gap:48px; align-items:center; margin:4px 0 18px; }
+.exception-record { margin:0; grid-column:2; grid-row:1; }
+.exception-layout > div { grid-column:1; grid-row:1; }
+.exception-record figcaption { font-size:21px; color:var(--muted); margin-bottom:12px; }
+.exception-record pre { font-size:27px; line-height:1.6; padding:18px 24px; margin:0 0 12px; }
+.exception-record .record-tag { color:var(--accent); }
+.exception-record .record-value { color:#47614b; }
+.exception-record .record-note { font-size:18px; line-height:1.55; color:var(--muted); margin:0; }
+.exception-layout ul { margin:0; padding-left:1.1em; font-size:26px; }
+.exception-layout li { margin:12px 0; }
+</style>
+
 # Wasmの例外処理の命令とは
 
+<div class="exception-layout">
+<figure class="exception-record">
+  <figcaption>例：整数の42を持つ例外</figcaption>
+  <pre aria-label="例外の概念図。tagはerrorタグへの参照、fieldsは整数42を一つ持つ値の列。">Exception {
+  tag: <span class="record-tag">$error</span>,
+  fields: <span class="record-value">[42]</span>
+}</pre>
+  <p class="record-note">tag：例外を見分けるタグへの参照<br />fields：一緒に運ぶ値の列（ペイロード）<br />※実際のメモリ配置ではなく概念図</p>
+</figure>
+<div>
+
 - EH = Exception Handling
-- 例外は「タグ」と「値の組」で表される
+- 例外は「タグ」と「値の列」を持つ
 - 投げると、呼び出し元をたどってハンドラを探す
 - C++の例外や、Cの非局所ジャンプの実装に使える
+- メモリ範囲外アクセスなどの <span class="term-help"><span class="term-help-trigger" tabindex="0" aria-describedby="trap-tooltip">trap</span><span class="term-tooltip" id="trap-tooltip" role="tooltip"><strong>trap：実行時の異常終了</strong><span class="term-tooltip-body">命令名ではありません。<code>i32.load</code> などで線形メモリの範囲外にアクセスすると発生します。</span><span class="term-tooltip-body"><code>unreachable</code> は必ずtrapを起こす命令。WasmのEHではtrapを捕捉できません。</span></span></span> とは別
 
-メモリ範囲外アクセスなどの <span class="term-help"><span class="term-help-trigger" tabindex="0" aria-describedby="trap-tooltip">trap</span><span class="term-tooltip" id="trap-tooltip" role="tooltip"><strong>trap：実行時の異常終了</strong><span class="term-tooltip-body">命令名ではありません。<code>i32.load</code> などで線形メモリの範囲外にアクセスすると発生します。</span><span class="term-tooltip-body"><code>unreachable</code> は必ずtrapを起こす命令。WasmのEHではtrapを捕捉できません。</span></span></span> とは別の仕組み
+</div>
+</div>
+
 
 <!--
 1:30–1:55（25秒）。タグは例外を区別するための識別子で、ペイロードの型も定める。
+右の図は、i32を一つ受け取るタグ$errorで42を投げた場合の抽象的な構造。
+仕様の例外インスタンスはtag（タグのアドレス）とfields（値の列）を持つ。Cのstructのレイアウトや線形メモリ上の配置を指定する図ではない。
+$errorはWAT上の識別名。文字列の名前やペイロードの型が同じかではなく、タグそのものの同一性で捕捉を判定する。
+fieldsは0個以上の値の列で、個数と型はタグで決まる。この例ではi32の42が一つ。
+読み上げ補足：右は例外の概念図です。タグで何の例外かを見分け、fieldsの42が捕まえた後に受け取るデータです。
+出典: https://webassembly.github.io/spec/core/exec/runtime.html#exception-instances
 本文のtrapはホバーまたはTabによるフォーカスで補足説明を表示する。印刷時はポップアップを隠す。
 補足：trapという名前のバイトコード命令はない。trapは命令の実行が失敗して、そのWasm呼び出しが異常終了すること。
 仕様の実行規則ではtrapをadministrative instructionと呼ぶが、意味を記述するための補助記法で、Wasmファイルにエンコードする命令ではない。
@@ -290,6 +323,11 @@ catch後には同じ値がスタックにあり、そのまま関数の戻り値
 4:00–4:35（35秒）。catch節はtry_tableの先頭に移った。捕捉後にブロックの末尾を抜けることを指で追う。
 unreachableは通常経路用。この例ではthrowして捕捉されるので実行されない。
 新方式のcatchは独立した旧catch命令ではなく、try_tableの即値に含まれる節。
+口頭補足：複数種類の例外を捕捉する場合、旧方式はcatch $foo、catch $barと、それぞれの処理を並べる。
+新方式はtry_tableの先頭に(catch $foo $on_foo) (catch $bar $on_bar)のように「例外タグと飛び先ラベルの組」を並べる。
+(catch $foo $on_foo)の第一引数$fooは例外タグ、第二引数$on_fooは分岐先ラベル。二つの例外タグを指定しているわけではない。
+分岐先のラベルは外側のblockなどで定義する。タグが一致した節の分岐先へ、例外のペイロードを渡す。
+旧方式で一致したcatchの処理を終えるとtry全体を抜ける。次のcatchの処理へ流れ落ちるわけではない。
 「（参考: 旧方式との違い）」のホバー説明に、catchのスコープと例外参照の違いをまとめた。
 旧方式もタグとペイロードを持つ例外を伝搬するが、catchでWasmコードに取り出せるのはペイロード。エンジンが保持する捕捉中の例外を、catchのスコープを指定したrethrowで再送出する。
 新方式はcatch_ref/catch_all_refで例外参照を値として取り出せる。ローカル変数などに保持し、catchのスコープ外でもthrow_refへ渡せる。
@@ -374,6 +412,13 @@ throw_ref
 5:25–6:10（45秒）。検証済みrethrow.watの内側だけを抜粋。外側のハンドラがこれを捕まえて42を返す。
 catchではペイロードだけ、catch_refではペイロードと例外参照を受け取る。
 catch_all_refはタグを問わず例外参照を受け取る。trapまで捕まえるという意味ではない。
+口頭補足：throwの直後に、通常の処理で使える例外参照がスタックに残るわけではない。
+throwはスタック上のペイロード（この例では42）を取り出して例外を作り、通常の処理を中断してハンドラを探す。
+捕捉した節に応じて分岐先のスタックへ値を渡す。catchはペイロード、catch_refはペイロードとその上に例外参照、catch_allは何も渡さず、catch_all_refは例外参照だけを渡す。
+p11のcatchでは42だけが渡るが、このp14のcatch_all_refでは例外参照が渡る。それをblockの結果として受け取り、ブロックの外でthrow_refへ渡している。
+throw_refは参照をスタックへ積む命令ではなく、スタックに積まれた参照を消費して同じ例外を投げ直す命令。
+出典: https://github.com/WebAssembly/spec/blob/main/proposals/exception-handling/Exceptions.md#throwing-an-exception
+出典: https://github.com/WebAssembly/spec/blob/main/proposals/exception-handling/Exceptions.md#rethrowing-an-exception
 ソース: ../wasm-exception-research/src/rethrow.wat
 -->
 
@@ -777,6 +822,44 @@ wasm-objdumpで最終成果物も確認。旧命令がなくなることを示�
 実測: ../wasm-exception-research/results/c-main-rebuilt-run.txt
 実測: ../wasm-exception-research/results/c-main-prebuilt-instructions.json
 実測: ../wasm-exception-research/results/c-main-rebuilt-instructions.json
+-->
+
+---
+
+<!-- _class: browser-compat -->
+
+<style scoped>
+table th, table td { padding:8px 18px; }
+li { font-size:26px; margin:6px 0; }
+small { font-size:18px; }
+</style>
+
+# おまけ：ブラウザでは新方式も使える
+
+| ブラウザ | Legacy EH | 新方式（`try_table` / `exnref`） |
+| --- | :---: | :---: |
+| Chrome / Edge | 95以降 | **137以降** |
+| Firefox | 100以降 | **131以降** |
+| Safari / iOS Safari | 15.2以降 | **18.4以降** |
+
+- 新方式は **2025年5月** に主要ブラウザへ出揃った
+- Legacyも互換性のため残っている
+
+<small>対応開始バージョン。2026年11月2日確認。出典：<a href="https://github.com/mdn/browser-compat-data/blob/main/webassembly/exception-handling.json">MDN（旧）</a> / <a href="https://github.com/mdn/browser-compat-data/blob/main/webassembly/exceptionsFinal.json">MDN（新）</a> / <a href="https://webkit.org/blog/16574/webkit-features-in-safari-18-4/#webassembly">WebKit</a></small>
+
+<!--
+おまけ、60〜90秒。時間に余裕があればまとめの前に紹介する。
+読み上げ例：
+最後に、ブラウザで使えるのかという話です。新方式は、Firefox 131、Safari 18.4、ChromeとEdgeの137から対応しています。
+2025年5月には主要ブラウザへ出揃いました。一方、旧方式が使えなくなったわけではありません。
+WebKitは互換性のためLegacyもサポートし続けると明記しています。
+この表は互換性データによる対応開始バージョン。全ブラウザでの実機追試ではない。
+新方式の公開日：Firefox 131は2024-10-01、Safari/iOS Safari 18.4は2025-03-31、Chrome 137は2025-05-27、Edge 137は2025-05-29。
+WebKitの継続サポート表明を、すべてのエンジンが将来もLegacyを廃止しないという保証に広げない。
+出典: https://github.com/mdn/browser-compat-data/blob/main/webassembly/exception-handling.json
+出典: https://github.com/mdn/browser-compat-data/blob/main/webassembly/exceptionsFinal.json
+出典: https://web-platform-dx.github.io/web-features-explorer/features/wasm-exnref-exceptions/
+出典: https://webkit.org/blog/16574/webkit-features-in-safari-18-4/#webassembly
 -->
 
 ---
