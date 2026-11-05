@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
+  <title id="title">OrangeTap icon</title>
+  <desc id="description">An angular tap with a citrus leaf and a drop of juice, with a dark offset shadow.</desc>
+  <rect width="1024" height="1024" fill="#f8f5f0"/>
+  <path fill="#17141f" d="M418 230h324c75.1 0 136 60.9 136 136v324c0 75.1-60.9 136-136 136H324c-23.2 0-42-18.8-42-42V366c0-75.1 60.9-136 136-136Z"/>
+  <path fill="#e58122" d="M350 162h324c75.1 0 136 60.9 136 136v324c0 75.1-60.9 136-136 136H256c-23.2 0-42-18.8-42-42V298c0-75.1 60.9-136 136-136Z"/>
+  <path d="M456 346h106v44H456zM490 382h40v54h-40zM334 424h270l62 62v58h-62v-36l-22-22H334Z" fill="#fff"/>
+  <path d="M510 330v-38h42l38-38v38l-38 38Z" fill="#fff"/>
+  <path d="m634 562 36 48v26l-36 28-36-28v-26Z" fill="#fff"/>
+</svg>

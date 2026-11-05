@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="600" viewBox="0 0 1640 600" role="img" aria-labelledby="title desc">
+<title id="title">orange_tap の内部構造</title>
+<desc id="desc">TracePoint が対象メソッドの call と return をフックし、Event として Thread::Queue に送り込む。重い処理なので独立した Worker スレッドが Event から span を組み立て、OTLP/JSON に書き出す。あとは専用ビューワで見る。</desc>
+<style>
+/* ポインタを図に乗せている間だけ動く（PDF・画像では静止） */
+.box { transform-box: fill-box; transform-origin: center; transition: transform .2s ease, filter .2s ease; }
+.box > .shape { transition: fill .2s ease; }
+.box:hover { transform: scale(1.04); filter: drop-shadow(0 0 10px #69d9de); }
+.box:hover > .shape { fill: #d4f4f5; }
+.box.queue:hover > .shape { fill: #69d9de; }
+svg:hover .flow { stroke-dasharray: 12 6; animation: flow .8s linear infinite; }
+@keyframes flow { to { stroke-dashoffset: -18; } }
+.token { opacity: 0; }
+svg:hover .token.push { animation: push 1.2s linear infinite; }
+svg:hover .token.pop { animation: pop 1.2s linear infinite; }
+.token.d1 { animation-delay: .4s !important; }
+.token.d2 { animation-delay: .8s !important; }
+@keyframes push { 0% { transform: translateX(0); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(112px); opacity: 0; } }
+@keyframes pop { 0% { transform: translateX(0); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(96px); opacity: 0; } }
+svg:hover .cell { animation: blink 1.2s ease-in-out infinite; }
+.cell.d1 { animation-delay: .3s !important; }
+.cell.d2 { animation-delay: .6s !important; }
+.cell.d3 { animation-delay: .9s !important; }
+@keyframes blink { 50% { fill: #69d9de; } }
+@media (prefers-reduced-motion: reduce) {
+  .box, .box > .shape { transition: none; }
+  .box:hover { transform: none; }
+  svg:hover .flow, svg:hover .token, svg:hover .cell { animation: none; stroke-dasharray: none; }
+}
+</style>
+<defs>
+<marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#12abb1"/></marker>
+</defs>
+<g font-family="'Yu Gothic', YuGothic, sans-serif" font-weight="500" text-anchor="middle" fill="#23221f">
+
+<!-- アプリのスレッド -->
+<rect x="0" y="0" width="500" height="600" rx="18" fill="#f8f7f6"/>
+<rect x="1000" y="0" width="400" height="600" rx="18" fill="#f8f7f6"/>
+<text x="250" y="52" font-size="28" font-weight="700" fill="#4e4c49">アプリのスレッド</text>
+<g class="box">
+<rect class="shape" x="30" y="110" width="440" height="180" rx="14" fill="#ffffff" stroke="#12abb1" stroke-width="3"/>
+<text x="250" y="172" font-size="36" font-weight="700">TracePoint</text>
+<text x="250" y="216" font-size="26" font-family="SFMono-Regular, Menlo, monospace" fill="#4e4c49">:call / :return</text>
+<text x="250" y="256" font-size="22" font-family="SFMono-Regular, Menlo, monospace" fill="#0f7f85">enable(target: iseq)</text>
+</g>
+
+<!-- push -->
+<path class="flow" d="M478 200 H608" fill="none" stroke="#12abb1" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="543" y="180" font-size="24" font-weight="700" fill="#0f7f85">push</text>
+<circle class="token push" cx="490" cy="200" r="9" fill="#00c4cc"/>
+<circle class="token push d1" cx="490" cy="200" r="9" fill="#00c4cc"/>
+<circle class="token push d2" cx="490" cy="200" r="9" fill="#00c4cc"/>
+
+<!-- Queue -->
+<g class="box queue">
+<rect class="shape" x="620" y="130" width="280" height="140" rx="14" fill="#d4f4f5" stroke="#0f7f85" stroke-width="3"/>
+<text x="760" y="180" font-size="28" font-weight="700" font-family="SFMono-Regular, Menlo, monospace">Thread::Queue</text>
+<rect class="cell" x="660" y="206" width="44" height="40" rx="6" fill="#ffffff" stroke="#12abb1" stroke-width="2"/>
+<rect class="cell d1" x="714" y="206" width="44" height="40" rx="6" fill="#ffffff" stroke="#12abb1" stroke-width="2"/>
+<rect class="cell d2" x="768" y="206" width="44" height="40" rx="6" fill="#ffffff" stroke="#12abb1" stroke-width="2"/>
+<rect class="cell d3" x="822" y="206" width="44" height="40" rx="6" fill="#ffffff" stroke="#12abb1" stroke-width="2"/>
+</g>
+
+<!-- pop -->
+<path class="flow" d="M908 200 H1022" fill="none" stroke="#12abb1" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="965" y="180" font-size="24" font-weight="700" fill="#0f7f85">pop</text>
+<circle class="token pop" cx="918" cy="200" r="9" fill="#00c4cc"/>
+<circle class="token pop d1" cx="918" cy="200" r="9" fill="#00c4cc"/>
+<circle class="token pop d2" cx="918" cy="200" r="9" fill="#00c4cc"/>
+
+<!-- Worker スレッド -->
+<text x="1200" y="52" font-size="28" font-weight="700" fill="#4e4c49">Worker スレッド</text>
+<text x="1200" y="86" font-size="20" fill="#4e4c49">（open ごとに 1 本）</text>
+<g class="box">
+<rect class="shape" x="1030" y="110" width="340" height="180" rx="14" fill="#ffffff" stroke="#12abb1" stroke-width="3"/>
+<text x="1200" y="186" font-size="32" font-weight="700">span を組み立て<title>span: OpenTelemetry の用語。1 つの処理（メソッド呼び出しなど）の開始〜終了の区間。親子関係でツリーになる</title></text>
+<text x="1200" y="230" font-size="22" fill="#4e4c49">スレッドごとのスタック</text>
+</g>
+
+<!-- 出力 -->
+<path class="flow" d="M1378 200 H1446" fill="none" stroke="#12abb1" stroke-width="4" marker-end="url(#arrow)"/>
+<g class="box">
+<path class="shape" d="M1458 120 H1596 L1632 156 V280 H1458 Z" fill="#ffffff" stroke="#00c4cc" stroke-width="3" stroke-linejoin="round"/>
+<path d="M1596 120 V156 H1632" fill="none" stroke="#00c4cc" stroke-width="3" stroke-linejoin="round"/>
+<text x="1545" y="200" font-size="26" font-weight="700">OTLP</text>
+<text x="1545" y="236" font-size="26" font-weight="700">JSON</text>
+</g>
+
+<!-- 説明 -->
+<path d="M40 330 H460 M560 330 H960 M1040 330 H1360 M1450 330 H1640" stroke="#69d9de" stroke-width="3" stroke-linecap="round"/>
+<text x="250" y="392" font-size="28">対象メソッドの</text>
+<text x="250" y="436" font-size="28">call / return をフック</text>
+<text x="760" y="392" font-size="28">Event として</text>
+<text x="760" y="436" font-size="28">送り込む</text>
+<text x="1200" y="392" font-size="28">Event から</text>
+<text x="1200" y="436" font-size="28">span を組み立て</text>
+<text x="1200" y="506" font-size="28">重い処理なので</text>
+<text x="1200" y="550" font-size="28">独立スレッド</text>
+<text x="1545" y="392" font-size="28">あとは</text>
+<text x="1545" y="436" font-size="28">専用ビューワで</text>
+</g>
+</svg>
