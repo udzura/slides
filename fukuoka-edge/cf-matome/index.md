@@ -4,7 +4,7 @@ theme: default
 paginate: true
 title: "Cloudflare って実際どんなサービスが使えるん？の話"
 image: "https://udzura.jp/slides/2026/fukuoka-edge-1/ogp.png"
-description: "Fukuoka.edge Cloudflare services summary draft"
+description: "Fukuoka.edge Cloudflare services summary"
 style: |
   h1 { color: #F38020; }
   h2 { color: #F38020; }
