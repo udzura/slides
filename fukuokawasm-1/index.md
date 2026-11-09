@@ -1,6 +1,7 @@
 ---
 marp: true
 theme: udzura-archive
+lang: ja
 paginate: true
 size: 16:9
 title: "入門 Wasmの例外命令"
